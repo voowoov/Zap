@@ -1,0 +1,105 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Pref. Sign-in" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+{% include "accounts/account__nav-0.html" with actualPage="Preferences" %}
+{% include "accounts/account__nav_pref.html" with actualPage="Signin" %}
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                Sign-in and security
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-0 ps-2">
+  <div class="d-flex flex-wrap justify-content-between align-items-baseline">
+    <div class="p-2 pt-4 pb-1 fs-5">
+      {% trans "Sign-in and security" %}
+    </div>
+    <div class="d-flex flex-nowrap">
+      <button type="button" class="rounded-pill btn-login btn-login__help ms-2 me-1"
+        style="width:80px; height:40px;">{% trans "Cancel" %}</button>
+      <button type="button" class="rounded-pill btn-login btn-login__texto__on"
+        style="width:80px; height:40px;">{% trans "Save" %}</button>
+    </div>
+
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:0.5rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Change password
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Change password" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <!-- Entry -->
+      <div>
+        {% trans "Actual password" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputActualPassword"
+            placeholder="Actual password">
+          <label for="inputActualPassword">{% trans "Actual password" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your actual password." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "New password" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputNewPassword"
+            placeholder="New password">
+          <label for="inputNewPassword">{% trans "New password" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your new password." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "New password (repeat)" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputNewPassword2"
+            placeholder="New password (repeat)">
+          <label for="inputNewPassword2">{% trans "New password (repeat)" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your new password (repeat)." %}</label>
+      </div>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:1rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Keep me signed in
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Sign-in preferences" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="inputCheckSigninPref" checked>
+        <label class="form-check-label" for="inputCheckSigninPref">
+          {% trans "Keep me signed-in on this device." %}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:1rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Close account
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Close my account" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <button type="button" class="rounded-pill btn-login btn-login__help ms-2 me-1"
+        style="width:150px; height:40px;">{% trans "Close my account" %}</button>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:1rem;"></div>
+</div>
+{% include "accounts/account__nav-1.html" %}
+{% include 'base/footers/footer_small.html' %}
+{% endblock %}

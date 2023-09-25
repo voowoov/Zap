@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "cmd" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+  <section id="login_section" class="login_section">
+    <div class="container">
+      <div class="row text_color">
+        Email
+        <form action="" method="POST" id="form_1">
+          {% csrf_token %} {{ form_1 }}
+          <input type="submit" value="send_email_account_creation_link_task" form="form_1" name="submit_form_1" />
+        </form>
+        <form action="" method="POST" id="form_2">
+          {% csrf_token %} {{ form_2 }}
+          <input type="submit" value="make_link_create_user" form="form_2" name="submit_form_2" />
+        </form>
+        Typesense
+        <form action="" method="POST" id="form_3">
+          {% csrf_token %}
+          <input type="submit" value="movies fixture to pgdb (warning)" form="form_3" name="submit_form_3" />
+        </form>
+        -
+        <form action="" method="POST" id="form_4">
+          {% csrf_token %}
+          <input type="submit" value="typesense delete a collection" form="form_4" name="submit_form_4" />
+        </form>
+        <form action="" method="POST" id="form_5a">
+          {% csrf_token %}
+          <input type="submit" value="typesense create a collection" form="form_5a" name="submit_form_5a" />
+        </form>
+        <form action="" method="POST" id="form_5">
+          {% csrf_token %}
+          <input type="submit" value="typesense import documents from model" form="form_5" name="submit_form_5" />
+        </form>
+        <form action="" method="POST" id="form_6">
+          {% csrf_token %}
+          <input type="submit" value="typesense test count and retrieve documents" form="form_6" name="submit_form_6" />
+        </form>
+        <form action="" method="POST" id="form_7">
+          {% csrf_token %}
+          <input type="submit" value="typesense add single" form="form_7" name="submit_form_7" />
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+{% include 'base/footers/footer_small.html' %}
+
+
+
+{% endblock %}

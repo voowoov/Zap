@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Edit Address" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+    <h3 class="mt-5 mb-2">Edit your address</h3>
+    <p class="mb-4">Mailling address form</p>
+
+    <form action="e" method="post">
+        {% csrf_token %}
+        {% comment %} {{ form.as_ul }} {% endcomment %}
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+            {{ form.name.errors }}
+            <label for="{{ form.name.id_for_label }}">Name:</label>
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.add_info.errors }}
+            <label for="{{ form.add_info.id_for_label }}">Add info:</label>
+            {{ form.add_info }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.unit_number.errors }}
+            <label for="{{ form.unit_number.id_for_label }}">unit:</label>
+            {{ form.unit_number }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.address_1.errors }}
+            <label for="{{ form.address_1.id_for_label }}">address_1</label>
+            {{ form.address_1 }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.city.errors }}
+            <label for="{{ form.city.id_for_label }}">CC</label>
+            {{ form.city }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.province.errors }}
+            <label for="{{ form.province.id_for_label }}">CC</label>
+            {{ form.province }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.postal_code.errors }}
+            <label for="{{ form.postal_code.id_for_label }}">CC</label>
+            {{ form.postal_code }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.country.errors }}
+            <label for="{{ form.country.id_for_label }}">CC</label>
+            {{ form.country }}
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+</main>
+{% include 'base/footers/footer_small.html' %}
+{% endblock %}

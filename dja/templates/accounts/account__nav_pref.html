@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="p-2 pt-3 pb-1">
+  {%if actualPage == 'Perso'%}
+  <a class="link_1 m-2" style="font-weight:bold; pointer-events: none;" {%else%} <a class="link_1 m-2" {%endif%}
+    href='{% url 'accounts:account_pref_perso' %}'>{% trans "Personal&nbsp;info" %}</a>
+
+  {%if actualPage == 'Socio'%}
+  <a class="link_1 m-2" style="font-weight:bold; pointer-events: none;" {%else%} <a class="link_1 m-2" {%endif%}
+    href='{% url 'accounts:account_pref_socio' %}'>{% trans "Social&nbsp;info" %}</a>
+
+  {%if actualPage == 'Signin'%}
+  <a class="link_1 m-2" style="font-weight:bold; pointer-events: none;" {%else%} <a class="link_1 m-2" {%endif%}
+    href='{% url 'accounts:account_pref_signin' %}'>{% trans "Sign&#8209;in&nbsp;and&nbsp;security" %}</a>
+</div>

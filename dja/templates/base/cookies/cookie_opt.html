@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Cookie settings" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+<main class="d-flex flex-fill">
+
+</main>
+
+{% include 'base/cookies/cookie_opt_modal.html' %}
+<script>
+  $(document).ready(function () {
+    var myModal = new bootstrap.Modal(document.getElementById("cookieSettingsModal"), {
+      backdrop: "static"
+    });
+    myModal.show();
+  });
+</script>
+
+{% include 'base/footers/footer_full.html' %}
+{% endblock %}

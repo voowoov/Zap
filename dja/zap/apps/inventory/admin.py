@@ -1,0 +1,63 @@
+from django.contrib import admin
+
+from .models import (
+    Address,
+    Attribute,
+    Brand,
+    Category,
+    File,
+    Image,
+    NavImage,
+    Order,
+    OrderStatusHistory,
+    Payment,
+    PaymentStatusHistory,
+    PriceHistory,
+    Product,
+    ProductAttribute,
+    ProductCategory,
+    ProductFile,
+    ProductImage,
+    ProductOrder,
+    ProductReview,
+    ProductStatusHistory,
+    ProductVideo,
+    Shipment,
+    ShipmentStatusHistory,
+    Stock,
+    StockTransact,
+    StockTransactStatusHistory,
+    Variant,
+    Video,
+    Warranty,
+)
+
+admin.site.register(Address)
+admin.site.register(Attribute)
+admin.site.register(Brand)
+admin.site.register(Category)
+admin.site.register(File)
+admin.site.register(Image)
+admin.site.register(NavImage)
+admin.site.register(Order)
+admin.site.register(OrderStatusHistory)
+admin.site.register(Payment)
+admin.site.register(PaymentStatusHistory)
+admin.site.register(PriceHistory)
+admin.site.register(Product)
+admin.site.register(ProductAttribute)
+admin.site.register(ProductCategory)
+admin.site.register(ProductFile)
+admin.site.register(ProductImage)
+admin.site.register(ProductOrder)
+admin.site.register(ProductReview)
+admin.site.register(ProductStatusHistory)
+admin.site.register(ProductVideo)
+admin.site.register(Shipment)
+admin.site.register(ShipmentStatusHistory)
+admin.site.register(Stock)
+admin.site.register(StockTransact)
+admin.site.register(StockTransactStatusHistory)
+admin.site.register(Variant)
+admin.site.register(Video)
+admin.site.register(Warranty)

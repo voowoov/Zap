@@ -1,0 +1,24 @@
+{% load i18n %}
+<main class="d-flex flex-fill">
+  <section id="legal_section" class="legal_section">
+    <div class="container-fluid">
+      <div class="row justify-content-center legal_row">
+        <div class="d-flex flex-wrap">
+          <div class="col-12 col-lg-3 col-md-auto">
+            <div class="legal_nav legal-font--small">
+              <ul class="list-inline">
+                <li><a class="text-{%if actualPage == 'TOS'%}select{%else%}normal{%endif%}" href="
+                  {% url 'legal:terms_of_service' %}">{% trans "Terms of Service" %}</a></li>
+                <li><a class="text-{%if actualPage == 'PP'%}select{%else%}normal{%endif%}" href="
+                  {% url 'legal:privacy_policy' %}">{% trans "Privacy Policy" %}</a></li>
+                <li><a class="text-{%if actualPage == 'CP'%}select{%else%}normal{%endif%}" href="
+                  {% url 'legal:cookie_policy' %}">{% trans "Cookie Policy" %}</a></li>
+                <li><a class="text-{%if actualPage == 'AUP'%}select{%else%}normal{%endif%}" href="
+                  {% url 'legal:acceptable_use_policy' %}">{% trans "Acceptable Use Policy" %}</a></li>
+                <li><a class="text-{%if actualPage == 'RRP'%}select{%else%}normal{%endif%}" href="
+                  {% url 'legal:return_and_refund_policy' %}">{% trans "Return and Refund Policy" %}</a></li>
+              </ul>
+            </div>
+          </div>
+          <span class="col-12 col-lg-9 col-md">
+            <div class="legal_doc legal-font">

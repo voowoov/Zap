@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %}
+{% block title %}{% trans "Home" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+<main class="d-flex flex-fill">
+  <!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                    Home  
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+  <section id="home_section" class="home_section section_min-height">
+    <div class="container-fluid">
+      <div class="row align-items-center text-white">
+        <!-- START THE CONTENT FOR THE INTRO -->
+      </div>
+    </div>
+    {% include 'base/footers/footer_full.html' %}
+  </section>
+</main>
+
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

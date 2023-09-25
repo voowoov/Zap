@@ -1,0 +1,20 @@
+[
+{
+    "model": "articles.article",
+    "pk": 1,
+    "fields": {
+        "article_slug": "sdfg",
+        "author": 1,
+        "title_fr": "titlefr",
+        "title_en": "titleen",
+        "subtitle_fr": "grwrf",
+        "subtitle_en": "subtitleen",
+        "content_fr": "",
+        "content_en": "",
+        "created_at": "2023-07-26T02:30:05Z",
+        "updated_at": "2023-07-26T02:02:33Z",
+        "image_main": "article/images/8739043bregulatory-roadmap.png",
+        "image_tumbnail": "article/images/84a98c8athumbnail.jpg"
+    }
+}
+]

@@ -1,0 +1,148 @@
+version: '3'
+services:
+  web:
+    container_name: web_zap
+    build: ./dja/
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    # command: gunicorn zap.wsgi:application --bind 0.0.0.0:8000
+    # command: python manage.py test chat.tests
+    # command: daphne -b 0.0.0.0 -p 8001 zap.asgi:application
+    env_file:
+      - .env
+    volumes:
+      - ./dja/:/usr/src/app/
+      - ./media:/usr/src/media
+      - ./priv_files:/usr/src/priv_files
+      - ./cstatic:/usr/src/cstatic # dev runserver django directly
+      - ./static_collect:/usr/src/static_collect # func collectstatic only
+    # expose:
+    #   - 8001
+    ports:
+      - 8000:8000
+    links:
+      - redis ### for channel_layer
+    depends_on:
+      - redis
+      - pgdb
+  ### Nginx in browser, dont put :8000, just 127.0.0.1
+  proxy:
+    build: ./docker/proxy_dev/
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/proxy_dev/conf.d/:/etc/nginx/conf.d/
+      - ./media:/home/app/media
+      # - ./static_collect:/home/app/static
+      - ./priv_files:/home/app/priv_files
+    depends_on:
+      - web
+
+  ### redis is used to send tasks to celery workers AND for channel_redis:
+  redis:
+    restart: always
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    build: ./dja/
+    command: celery -A zap worker -l info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./dja/:/usr/src/app/
+
+  celery-beat:
+    restart: always
+    build: ./dja/
+    command: celery -A zap beat -l info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - celery
+    volumes:
+      - ./dja/:/usr/src/app
+
+  # Flower is to monitor all celery tasks (Async et Celery-beat). Go to 127.0.0.1:8888
+  flower:
+    image: mher/flower # port 8888
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=8888
+      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
+      - FLOWER_URL_PREFIX=/flower54321
+    ports:
+      - 8888:8888
+
+  pgdb:
+    image: postgres # port 5432
+    restart: always
+    volumes:
+      - ./pgdb/pgdb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRESQL_NAME}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    volumes:
+      - ./pgdb/pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: 5050
+
+  ## Go to 127.0.0.1:8200, Add Backup.. for source select MyComputer/source
+  duplicati:
+    # image: linuxserver/duplicati:latest # port 8200
+    image: duplicati/duplicati # port 8200
+    environment:
+      ### put PUID and PGID at 0 during restore, but 1000 during normal runing
+      - PUID=1000
+      - PGID=1000
+      #   - PUID=0
+      #   - PGID=0
+      - TZ=Canada/Eastern
+    #   - CLI_ARGS= #optional
+    volumes:
+      - ./duplicati/:/config
+      - ./duplicati_backups/:/backups
+      - ./pgdb/pgdb:/source/pgdb
+      - ./media:/source/media
+      - ./priv_files:/source/priv_files
+    restart: unless-stopped
+
+  typesense:
+    image: typesense/typesense:0.26.0.rc19 # port 8108
+    volumes:
+      - ./typesense:/data
+    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
+    #
+    ### for tests.py with selenium and chrome:
+    # selenium:
+    #   image: openstax/selenium-chrome-debug
+    #   ports:
+    #     - 4444:4444 # Selenium
+    #     - 5900:5900 # VNC server
+
+    # dns:
+    #   build: ./docker/dns/
+    #   restart: always
+    #   ports:
+    #     - 53:53
+    #     - 53:53/udp
+    #   volumes:
+    #     - ./dns/named.conf:/etc/bind/named.conf
+    #     - ./dns/zone/:/etc/bind/zone/
+    #   command: named -c /etc/bind/named.conf -g -u named
+

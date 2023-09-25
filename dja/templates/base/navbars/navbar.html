@@ -1,0 +1,232 @@
+{% load i18n %} {% load static %}
+<header>
+  <nav class="navbar navbar-expand fixed-top mset_nav ddnav">
+    <div class="container-fluid">
+      <!-- Menu -->
+      <div class="dropdown">
+        <div class="btn_nav btn_nav__main_menu" type="button" id="dropdownMenuMenu" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <text>&nbsp&nbsp</text>
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+            class="bi bi-layout-text-sidebar" viewBox="0 0 16 16">
+            <path
+              d="M3.5 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM3 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z" />
+            <path
+              d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm12-1v14h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zm-1 0H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h9V1z" />
+          </svg>
+        </div>
+        <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuMenu">
+          <li class="px-0" style="padding-bottom: 0.8rem;">
+            <!-- Accordion -->
+            <div class="accordion" id="accordionExample">
+              <!-- Sidebar ... Item 1 ... -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="heading1">
+                  <button class="btn_menu" type="button" onclick="window.location.href='#'">
+                    <span>{% trans "Something else here" %}</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Sidebar ... Item 2 ... -->
+              <div class="accordion-item ddtogled">
+                <div class="accordion-header" id="heading2">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                    <span>{% trans "Something else" %}</span>
+                  </button>
+                </div>
+                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2"
+                  data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <div class="d-flex">
+                      <div class="acorlev2preblock"></div>
+                      <button class="btn_menu btn_menu__sub" type="button" onclick="window.location.href='#'">
+                        <span>{% trans "Something else here" %}</span>
+                      </button>
+                    </div>
+                    <div class="d-flex">
+                      <div class="acorlev2preblock"></div>
+                      <button class="btn_menu btn_menu__sub" type="button" onclick="window.location.href='#'">
+                        <span>{% trans "Something else here" %}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Sidebar ... Item 3 ... -->
+              <div class="accordion-item ddtogled">
+                <div class="accordion-header" id="heading3">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                    <span>{% trans "Something else" %}</span>
+                  </button>
+                </div>
+                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                  data-bs-parent="#accordionExample">
+                  <div class="accordion-body d-flex">
+                    <div class="acorlev2preblock"></div>
+                    <button class="btn_menu btn_menu__sub" type="button" onclick="window.location.href='#'">
+                      <span>{% trans "Something else here" %}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Sidebar ... Item 4 ... -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="heading4">
+                  <button class="btn_menu" type="button" onclick="window.location.href='#'">
+                    <span>{% trans "Something else here" %}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- Logo      -->
+      <a class="btn_nav" href='{% url 'admin:index' %}' title="Home" , alt="zap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 16 16">
+          <path style="fill:var(--color-logo1-1)"
+            d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z" />
+          <path style="fill:var(--color-logo1-2)"
+            d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1l6 3.577zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z" />
+        </svg>
+        {% comment %} <img class="navbar_logo_1" src="{% static '/images/logo1_light.png' %}" height="30px" alt="Logo"
+          name="logo1_light">
+        <img class="navbar_logo_1" src="{% static '/images/logo1_dark.png' %}" height="30px" alt="Logo"
+          name="logo1_dark" hidden> {% endcomment %}
+        <!-- <img  class="nb_brand" src="static/images/logo.png" alt="logo image"> -->
+      </a>
+      <!-- Links      -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item btn_nav  d-none d-sm-block">
+          <a class="nav-link active" aria-current="page" href="{% url 'base:home' %}">{% trans "Home" %}</a></li>
+        <li class="nav-item btn_nav d-none d-sm-block">
+          <a class="nav-link" href="{% url 'users:signin_0' %}">{% trans "Signin" %}</a></li>
+        <li class="nav-item btn_nav d-none d-sm-block">
+          <a class="nav-link" href="{% url 'users:create_account_info' %}">{% trans "Signup" %}</a></li>
+        <li class="nav-item btn_nav d-none d-sm-block">
+          <a class="nav-link" href="{% url 'accounts:account_summary' %}">{% trans "Account" %}</a></li>
+        <li class="nav-item btn_nav d-none d-sm-block">
+          <a class="nav-link" href="{% url 'xcmd:cmd' %}">{% trans "Cmd" %}</a></li>
+        <li class="nav-item btn_nav d-none d-sm-block">
+          <a class="nav-link" href="{% url 'monitor:staff_monitor' %}">{% trans "Monitor" %}</a></li>
+      </ul>
+
+      <!-- Search      -->
+      <div class="dropdown ms-auto">
+        <div class="btn_nav" type="button" id="dropdownMenuSearch" data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+          </svg>
+        </div>
+        <ul class="dropdown-menu dropdown-menu__search scrollable-menu text-end" aria-labelledby="dropdownMenuSearch">
+          <li style="padding-bottom: 0.8rem;">
+            <form class="dropdown-item" action="#" method="GET" autocomplete="off">
+              {% csrf_token %}
+              <input class="form-control" id="search_box_1" type="search" placeholder="Search" aria-label="Search"
+                title="Lookup into the Database" name="Recherche" />
+            </form>
+          </li>
+          <li class="search_suggest_list">
+            <div class="container " id="search_suggest">
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- Login      -->
+      <div class="dropdown ddhead ">
+        <div class="btn_nav btn_nav__main_menu" type="button" id="dropdownMenuLogin" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <div class="avatar {% if request.user.is_authenticated %}avatar__active{% endif %}">
+            {% if request.user.is_authenticated and request.user.avatar %}
+            <img src="{{ request.user.avatar.url }}" width="30px" alt="Avatar">
+            {% else %}
+            <img src="{% static '/images/icons/avatar.svg' %}" width="30px" alt="Avatar">
+            {% endif %}
+          </div>
+          <text>&nbsp&nbsp</text>
+        </div>
+        <ul class="dropdown-menu hover_end dropdown-menu-end text-center" aria-labelledby="dropdownMenuLogin">
+          {% if request.user.is_authenticated %}
+          <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{{request.user.email}}</a></li>
+          <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Logout" %}</a></li>
+          {% else %}
+          <li><a class="dropdown-item" href="#">{% trans "Sign in" %}</a></li>
+          <li><a class="dropdown-item" href="#">{% trans "Create an account" %}</a></li>
+          {% endif %}
+          <!-- Language -->
+          <li>
+            {% if CURRENT_LANGUAGE == "en" %}
+            <a class="dropdown-item" href="{% url 'xcmd:set_webpage_preference' 'lang' "fr" %}">
+              &nbsp français&nbsp
+            </a>
+            {% endif %}
+            {% if CURRENT_LANGUAGE == "fr" %}
+            <a class="dropdown-item" href="{% url 'xcmd:set_webpage_preference' 'lang' "en" %}">
+              &nbsp English&nbsp
+            </a>
+            {% endif %}
+          </li>
+          {% comment %} <li class="dropdown-submenu">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as AVAILABLE_LANGUAGES %}
+            {% get_language_info_list for AVAILABLE_LANGUAGES as LANGUAGES_INFO_LIST %}
+            <div class="dropdown-item dropdown-toggle ddtogled " tabindex="1" type="button">
+              <img src="{% static '/images/icons/canada-flag-icon.png' %}" alt="Canada">
+              <span class="">
+                {% if CURRENT_LANGUAGE == "fr" %} &nbsp français &nbsp {% endif %}
+                {% if CURRENT_LANGUAGE == "en" %} &nbsp English &nbsp {% endif %}
+              </span>
+            </div>
+            <ul class="dropdown-menu mdropdown_multilevel">
+              {% for language in LANGUAGES_INFO_LIST %}
+              <li>
+                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'lang' language.code %}">
+                  {{ language.name_local }} ({{ language.code }})
+                </a>
+              <li>
+                {% endfor %}
+            </ul>
+          </li> {% endcomment %}
+          <!-- theme -->
+          <li class="dropdown-submenu">
+            <div class="dropdown-item dropdown-toggle ddtogled " tabindex="1" type="button">
+              <span class=""> {% trans "theme" %}
+              </span>
+            </div>
+            <ul class="dropdown-menu mdropdown_multilevel text_color text-center">
+              <li>
+                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'light' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0  0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+                  </svg>
+                  <span class=""> &nbsp&nbsp {% trans "light" %} </span>
+                </a>
+              <li>
+              <li>
+                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'dark' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-brightness-alt-high-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 3zm8 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm-13.5.5a.5.5 0 0 0 0-1h-2a.5.5 0 0 0 0 1h2zm11.157-6.157a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm-9.9 2.121a.5.5 0 0 0 .707-.707L3.05 5.343a.5.5 0 1 0-.707.707l1.414 1.414zM8 7a4 4 0 0 0-4 4 .5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5 4 4 0 0 0-4-4z" />
+                  </svg>
+                  <span class=""> &nbsp&nbsp {% trans "dark" %} </span>
+                </a>
+              <li>
+              <li>
+                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'Auto' %}">
+                  <span class=""> &nbsp&nbsp {% trans "Auto" %} </span>
+                </a>
+              <li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

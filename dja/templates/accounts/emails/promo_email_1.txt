@@ -1,0 +1,9 @@
+{% load i18n %}
+
+{% autoescape off %}
+
+
+Bonjour {{ first_name }},
+Ceci est un courriel promotionnel pour {{ email }}.
+
+{% endautoescape %}

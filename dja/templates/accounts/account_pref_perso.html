@@ -1,0 +1,179 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Pref. Perso" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+{% include "accounts/account__nav-0.html" with actualPage="Preferences" %}
+{% include "accounts/account__nav_pref.html" with actualPage="Perso" %}
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                Personal info
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-0 ps-2">
+  <div class="d-flex flex-wrap justify-content-between align-items-baseline">
+    <div class="p-2 pt-4 pb-1 fs-5">
+      {% trans "Personal info" %}
+    </div>
+    <div class="d-flex flex-nowrap">
+      <button type="button" class="rounded-pill btn-accchange btn-accchange__cancel ms-2 me-1"
+        style="">{% trans "Cancel" %}</button>
+      <button type="button" class="rounded-pill btn-accchange btn-accchange__save"
+        style="min-width:80px; height:40px;">{% trans "Save" %}</button>
+    </div>
+
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:0.5rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Account type
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Account type" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <div class="form-check pb-2">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+        <label class="form-check-label" for="flexRadioDefault1">
+          {% trans "Individual" %}
+        </label>
+      </div>
+      <div class="form-check pb-2">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+        <label class="form-check-label" for="flexRadioDefault2">
+          {% trans "Company" %}
+        </label>
+      </div>
+      <div class="text-black pb-2">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputOrganisation"
+            placeholder="Company name">
+          <label for="inputOrganisation">{% trans "Company name" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your company name." %}</label>
+      </div>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:1rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Contact info
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Contact info" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <div>
+        {% trans "Email address" %}
+      </div>
+      <div class="text-black pb-2">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputEmail"
+            placeholder="Email address">
+          <label for="inputEmail">{% trans "Email address" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your email address." %}</label>
+      </div>
+      <div class="ps-2 pb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="green" class="bi bi-check"
+          viewBox="0 0 16 16">
+          <path
+            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+        </svg>
+        {% trans "Verified email" %}
+      </div>
+      <div>
+        {% trans "Phone number" %}
+      </div>
+      <div class="text-black pb-2">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputPhone"
+            placeholder="Phone number">
+          <label for="inputPhone">{% trans "Phone number" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your phone number." %}</label>
+      </div>
+      <div class="ps-2 pb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="green" class="bi bi-check"
+          viewBox="0 0 16 16">
+          <path
+            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+        </svg>
+        {% trans "Verified phone" %}
+      </div>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:1rem;"></div>
+  <!-- //////////////////////////////////////////////////////////////////////////////
+                                        Personal info
+        ///////////////////////////////////////////////////////////////////////////////////-->
+  <div class="row account_preference_row p-2">
+    <div class="p-2 col-12 col-md-5">
+      <strong>{% trans "Personal info" %}</strong>
+    </div>
+    <div class="p-2 col-12 col-md-7">
+      <!-- Entry -->
+      <div>
+        {% trans "First name" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputFirstName"
+            placeholder="First name">
+          <label for="inputFirstName">{% trans "First name" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your first name." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "Last name" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputLastName"
+            placeholder="Last name">
+          <label for="inputLastName">{% trans "Last name" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your last name." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "Street address" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputAddress"
+            placeholder="Street address">
+          <label for="inputAddress">{% trans "Street address" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your street address." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "City" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputCity"
+            placeholder="City">
+          <label for="inputCity">{% trans "City" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your city." %}</label>
+      </div>
+      <!-- Entry -->
+      <div>
+        {% trans "Postal code" %}
+      </div>
+      <div class="text-black pb-3">
+        <div class="form-floating">
+          <input type="text" class="form-control login_inp-error" style="max-width:300px;" id="inputPostalCode"
+            placeholder="Postal code">
+          <label for="inputPostalCode">{% trans "Postal code" %}</label>
+        </div>
+        <label class="account_validate-label">{% trans "Please enter your postal code." %}</label>
+      </div>
+    </div>
+  </div>
+  <div class="horizontal_separator_full color_tame" style="margin-top:1rem;margin-bottom:2rem;"></div>
+</div>
+{% include "accounts/account__nav-1.html" %}
+{% include 'base/footers/footer_small.html' %}
+{% endblock %}

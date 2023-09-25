@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}{{ author.name_fr }}{% else %}{{ author.name_en }}{% endif %}{% endblock %}
+{% block content %}
+
+
+<main class="d-flex flex-fill">
+  <section class="m-0 p-0 article_style">
+    <div class="container-fluid m-0 p-0">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% if LANGUAGE_CODE == 'en' %}
+
+      {% else %}
+
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+{% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

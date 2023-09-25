@@ -1,0 +1,145 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Summary" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+{% include "accounts/account__nav-0.html" with actualPage="Summary" %}
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      Account Info
+      /////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-2 pb-2 pt-3">
+  <span class="header-2">{% trans "Account Information" %}</span>
+</div>
+<div class="p-0 ps-3 m-2">
+  <div class="p-0 m-2 d-flex flex-wrap">
+    <span class="p-0 m-0 text-end" style="width:120px;">{% trans "Account&nbsp;holder:" %}</span>
+    <span class="ms-3">
+      <div class="p-0 m-0 text-start">{{user.firstname}} {{user.lastname}}</div>
+      {% if user.account_type == 'O' %}
+      <div class="p-0 m-0 text-start">{{user.organisationName}}</div>
+      {%endif%}
+      <div class="p-0 m-0 text-start">{{user.address.street}}</div>
+      <div class="p-0 m-0 text-start">{{user.address.city}} {{user.address.province}} {{user.address.code}}
+      </div>
+    </span>
+  </div>
+  <div class="p-0 m-2 d-flex flex-wrap">
+    <span class="p-0 m-0 text-end" style="width:120px;">{% trans "Account&nbsp;number:" %}</span>
+    <span class="p-0 m-0 ms-3 text-start">{{user.account_number}}</span>
+  </div>
+</div>
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                      Account balance
+      /////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-2 pb-1 d-flex justify-content-between align-items-baseline flex-wrap">
+  <span class="header-2">{% trans "Account balance" %}</span>
+  <div class="small-1 text-end">{% trans "Currency in canadian dollars." %}</div>
+</div>
+<table class="table table-bordered text-end account_table">
+  <tr>
+    <th scope="col" style="width:550px">{% trans "Deposited:" %}</th>
+    <td scope="col" style="min-width:120px; padding-right:0.7rem;">{{ account.deposited }}&nbsp;$</th>
+  </tr>
+  <tr>
+    <th scope="col">{% trans "Amount due:" %}</th>
+    <td scope="col" style="padding-right:0.7rem;">{{ account.amount_due }}&nbsp;$</th>
+  </tr>
+</table>
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                List of invoices
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-2 pb-1">
+  <span class="header-2">{% trans "Invoices" %}</span>
+</div>
+<div class="table-responsive p-0 tableScrollRight">
+  <table class="table account_table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" style="min-width:110px">{% trans "Date" %}</th>
+        <th scope="col" style="min-width:110px">{% trans "Details" %}</th>
+        <th scope="col" style="width:80px">{% trans "Invoice" %}</th>
+        <th scope="col" style="width:120px">{% trans "Ref.&nbsp;project" %}</th>
+        <th class="text-center" scope="col" style="min-width:120px">{% trans "Status" %}</th>
+        <th class="text-end" scope="col" style="min-width:120px; padding-right:0.7rem;">{% trans "Amount" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in account.invoices.all %}
+      <tr>
+        <td scope="row">{{ i.date | date:'M d Y'}}</td>
+        <td><a class="link_1" href="#">{{ i.number }}</a></td>
+        <td><a class="link_1" href="{% url 'accounts:download' i.id %}">PDF</a></td>
+        <td><a class="link_1" href="#">{{ i.project }}</a></td>
+        <td class="text-center">{{ i.status }}</td>
+        <td class="text-end" style="min-width:120px; padding-right:0.7rem;">{{ i.amount }}&nbsp;$</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                List of payments
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="p-2 pb-1">
+  <span class="header-2">{% trans "Deposits" %}</span>
+</div>
+<div class="table-responsive p-0 tableScrollRight">
+  <table class="table account_table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" style="min-width:110px">{% trans "Date" %}</th>
+        <th scope="col" style="min-width:110px">{% trans "Details" %}</th>
+        <th scope="col" style="width:80px">{% trans "Receipt" %}</th>
+        <th scope="col" style="width:120px">{% trans "Ref.&nbsp;invoice" %}</th>
+        <th class="text-center" scope="col" style="min-width:120px">{% trans "Status" %}</th>
+        <th class="text-end" scope="col" style="min-width:120px; padding-right:0.7rem;">{% trans "Amount" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in account.deposits.all %}
+      <tr>
+        <td scope="row">{{ i.date | date:'M d Y'}}</td>
+        <td><a class="link_1" href="#">{{ i.number }}</a></td>
+        <td><a class="link_1" href="{% url 'accounts:download' i.id %}">PDF</a></td>
+        <td><a class="link_1" href="#">{{ i.invoice }}</a></td>
+        <td class="text-center">{{ i.status }}</td>
+        <td class="text-end" style="min-width:120px; padding-right:0.7rem;">{{ i.amount }}&nbsp;$</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                List of project
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div class="row account_row ps-1 pe-1 pb-3 text_color">
+  <div class="p-2 pb-1">
+    <span class="header-2">Projects</span>
+  </div>
+  <div class="d-flex justify-content-start p-0">
+    <div class="table-responsive p-0">
+      <table class="table account_table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col" style="min-width:110px">{% trans "Date" %}</th>
+            <th scope="col" style="min-width:110px">{% trans "Details" %}</th>
+            <th class="text-center" scope="col" style="width:120px">{% trans "Status" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in account.projects.all %}
+          <tr>
+            <td scope="row">{{ i.date | date:'M d Y'}}</th>
+            <td><a class="link_1" href="#">{{ i.number }}</a></td>
+            <td class="text-center text-nowrap">{{ i.status }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% include "accounts/account__nav-1.html" %}
+{% include 'base/footers/footer_small.html' %}
+{% endblock %}

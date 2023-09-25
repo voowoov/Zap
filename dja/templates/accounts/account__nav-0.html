@@ -1,0 +1,35 @@
+{% load i18n %}
+<main class="d-flex flex-fill">
+  <section id="account_section" class="account_section">
+    <div class="container-fluid">
+      <div class="row account_row ps-1 pe-1 text_color">
+        <div class="d-flex flex-wrap justify-content-between align-items-center account_nav_text">
+          <span class="pe-3 header-1">{% trans "My account" %}</span>
+          <span class="link_1 d-flex flex-nowrap align-items-baseline mt-1">
+            <a class="link_1 medium_1" href="#">{{user.email}}</a>
+            <span class="ps-2 me-1" style="padding-top:6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-bookmark"
+                viewBox="0 0 16 16">
+                <path
+                  d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z" />
+              </svg>
+            </span>
+          </span>
+        </div>
+        <div class="d-flex flex-wrap justify-content-start align-items-center p-0 m-0">
+          {%if actualPage == 'Summary'%}
+          <button class="account_btn_menu account_btn_menu__current" disabled {%else%} <button class="account_btn_menu"
+            {%endif%} type="button"
+            onclick="window.location.href='{% url 'accounts:account_summary' %}'">{% trans "Summary" %}</button>
+
+          {%if actualPage == 'Messages'%}
+          <button class="account_btn_menu account_btn_menu__current" disabled {%else%} <button class="account_btn_menu"
+            {%endif%} type="button"
+            onclick="window.location.href='{% url 'accounts:account_messages' %}'">{% trans "Messages" %}</button>
+
+          {%if actualPage == 'Preferences'%}
+          <button class="account_btn_menu account_btn_menu__current" disabled {%else%} <button class="account_btn_menu"
+            {%endif%} type="button"
+            onclick="window.location.href='{% url 'accounts:account_pref_perso' %}'">{% trans "Preferences" %}</button>
+        </div>
+        <div class="horizontal_separator_full" style="margin-top:0rem;margin-bottom:0.5rem;"></div>

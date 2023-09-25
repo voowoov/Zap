@@ -1,0 +1,36 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+<div class="container-fluid p-0" id="target_div_cookieBanner">
+  <div class="text_color cookie_banner p-3">
+    <div class="row">
+      <div class="h5">{% trans "Your privacy" %}</div>
+    </div>
+    <div class="row">
+      <div class="d-flex flex-wrap justify-content-between" style="max-width: 1000px">
+        <div class="me-2 mb-2" style="max-width: 550px">
+          {% if CURRENT_LANGUAGE == "en" %}
+          By clicking “Accept all cookies”, you agree Zap can store cookies on your device and disclose information in
+          accordance with our
+          {% endif %}
+          {% if CURRENT_LANGUAGE == "fr" %}
+          By clicking “Accept all cookies”, you agree Zap can store cookies on your device and disclose information in
+          accordance with our
+          {% endif %}
+          <a href="#">{% trans "Cookie Policy" %}</a>.
+        </div>
+        <div class="">
+          <button type="button" class="btn btn-primary mt-2 me-2" style="width: 160px" id="target_btn_acceptAllCookies"
+            data-bs-toggle="" data-bs-target="#">{% trans "Accept all cookies" %}</button>
+          {% comment %}
+          <!-- Button trigger modal --> {% endcomment %}
+          <button type="button" class="btn btn-secondary mt-2" style="width: 160px" data-bs-toggle="modal"
+            data-bs-target="#cookieSettingsModal">{% trans "Cookie settings" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal Cookie settings -->
+{% include 'base/cookies/cookie_opt_modal.html' %}

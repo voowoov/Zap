@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Pref. Social" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+{% include "accounts/account__nav-0.html" with actualPage="Preferences" %}
+{% include "accounts/account__nav_pref.html" with actualPage="Socio" %}
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                Socio info
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+{% include "accounts/avatar.html" %}
+
+{% include "accounts/account__nav-1.html" %}
+{% include 'base/footers/footer_small.html' %}
+{% endblock %}

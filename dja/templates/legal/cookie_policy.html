@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Cookie Policy" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block content %}
+
+{% include "legal/legal__nav-0.html" with actualPage="CP" %}
+{% if CURRENT_LANGUAGE == "en" %}
+Fugiat sunt cupidatat adipisicing enim magna Lorem. Cupidatat veniam eu fugiat eu irure proident culpa.
+Tempor
+mollit in anim culpa. Non Lorem ea minim id elit ad.
+{% endif %}
+{% if CURRENT_LANGUAGE == "fr" %}
+Fugiat sunt cupidatat adipisicing enim magna Lorem. Cupidatat veniam eu fugiat eu irure proident culpa.
+Tempor
+mollit in anim culpa. Non Lorem ea minim id elit ad.
+{% endif %}
+{% include "legal/legal__nav-1.html" %}
+
+{% endblock %}

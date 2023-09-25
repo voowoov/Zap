@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %}
+{% block title %}{% trans "Message" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+
+<main class="d-flex flex-fill">
+  <section id=" testing_section" class="home_section">
+    <div class=" container">
+      <div class="row text_color">
+        <div class="intros text-start">
+          {{ protected_uri }}
+          <img src="{{ protected_uri }}" alt="My image">
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

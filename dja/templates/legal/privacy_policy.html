@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block content %}
+
+{% include "legal/legal__nav-0.html" with actualPage="PP" %}
+{% if CURRENT_LANGUAGE == "en" %}
+<p class="legal-font--title-1">
+  Zap, inc. Privacy Policy
+</p>
+<p class="legal-font--small">
+  Updated: 25 November, 2022
+</p>
+<p class="legal-font--title-2">
+  About Zap
+</p>
+<p>
+
+  The user's timezone is being detected with JavaScript and stored in the user's session. The timezone information is
+  derived from the user's system settings, not their physical location.
+
+
+  Non incididunt eiusmod elit occaecat. Aliquip ex dolore velit mollit occaecat eu velit cupidatat esse
+  ipsum
+  culpa sint. Laborum mollit minim proident nulla proident anim et exercitation. Cupidatat enim do sint
+  incididunt aliquip mollit. Irure sint irure adipisicing consectetur id duis sint labore do magna commodo
+  nisi
+  est.Dolore ea occaecat nulla fugiat cillum aute enim officia aliquip dolore non magna elit. Sint deserunt
+  commodo culpa pariatur qui anim irure adipisicing commodo ea. Eiusmod est amet do ex cillum in mollit est
+</p>
+<p>WE DO NOT AND WILL NOT SELL YOUR PERSONAL INFORMATION.</p>
+<p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-4">Last</th>
+        <th class="col-8">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="2">Otto</td>
+        <td>@mdo</td>
+      </tr>
+      <tr>
+        <td>@fat</td>
+      </tr>
+      <tr>
+        <td>the Bird</td>
+        <td>@twitter</td>
+      </tr>
+    </tbody>
+  </table>
+</p>
+{% endif %}
+{% if CURRENT_LANGUAGE == "fr" %}
+Fugiat sunt cupidatat adipisicing enim magna Lorem. Cupidatat veniam eu fugiat eu irure proident culpa.
+Tempor
+mollit in anim culpa. Non Lorem ea minim id elit ad.
+{% endif %}
+{% include "legal/legal__nav-1.html" %}
+
+{% endblock %}

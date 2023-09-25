@@ -1,0 +1,10 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
+{% if CURRENT_LANGUAGE == "en" %}
+The web site is in temporary maintenance.
+{% endif %}
+
+{% if CURRENT_LANGUAGE == "fr" %}
+Le site web est en maintenance temporaire.
+{% endif %}

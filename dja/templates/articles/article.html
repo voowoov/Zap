@@ -1,0 +1,85 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %} {% load my_filters %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}{{ article.title_fr }}{% else %}{{ article.title_en }}{% endif %}{% endblock %}
+{% block desc %}{% if LANGUAGE_CODE == 'fr' %}{{ article.subtitle_fr }}{% else %}{{ article.subtitle_en }}{% endif %}{% endblock %}
+{% block jsonld %}
+{% get_current_language as LANGUAGE_CODE %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "{% if LANGUAGE_CODE == 'en' %}{{ article.title_en }}{% else %}{{ article.title_fr }}{% endif %}",
+    "image": [
+      "{{request.site.domain}}{{ article.article_image.url }}",
+    ],
+    "datePublished": "{{ article.created_at|utc|date:'Y-m-d\TH:i:s\Z' }}",
+    "dateModified": "{{ article.updated_at|utc|date:'Y-m-d\TH:i:s\Z' }}",
+    "author": [{
+      "@type": "Person",
+      "name": "{% if LANGUAGE_CODE == 'en' %}{{ article.author.name_en }}{% else %}{{ article.author.name_fr }}{% endif %}",
+      "url": "{{request.site.domain}}{% url 'articles:author' article.author.author_slug %}"
+    }],
+    "isAccessibleForFree": "true",
+  }
+</script>{% endblock %}
+
+{% block content %}
+<main class="d-flex flex-fill">
+  <section class="m-0 p-0 article_style">
+    <div class="container-fluid ">
+      {% get_current_language as LANGUAGE_CODE %}
+
+      <article>
+        <p>
+          {% if LANGUAGE_CODE == 'en' %}
+          <h1>{{ article.title_en }}</h1>
+          <h3>{{ article.subtitle_en }}</h3>
+          {% else %}
+          <h1>{{ article.title_fr }}</h1>
+          <h3>{{ article.subtitle_fr }}</h3>
+          {% endif %}
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="mx-3">{% trans "By" %}
+              {% if article.author.user.avatar %}
+              <img src="{{ article.author.user.avatar.url }}" width="30px" alt="Avatar">
+              {% else %}
+              <img src="{% static '/images/icons/avatar.svg' %}" width="30px" alt="Avatar">
+              {% endif %}
+              <a href="{% url 'articles:author' article.author.author_slug %}">
+                {% if LANGUAGE_CODE == 'en' %}
+                {{ article.author.name_en }}
+                {% else %}
+                {{ article.author.name_fr }}
+                {% endif %}
+              </a>
+            </div>
+            <div class=" m-3 d-flex flex-wrap">
+              <time> {% trans "Created: " %}:
+                {{ article.created_at|date:"Y M d H:i O" }}</time>
+              <time> {% if article.created_at != article.updated_at %}&nbsp&nbsp&nbsp&nbsp {% trans "updated" %}
+                {{ article.updated_at|custom_time_since }}
+                {% endif %}</time>
+            </div>
+          </div>
+          <img
+            src="{% if article.image_main.url is not None %} {{ article.image_main.url }} {% else %} {% static 'images/default/article_image_main.png' %} {% endif %}"
+            width="600px" alt="">
+        </p>
+        <div>
+          {% if LANGUAGE_CODE == 'en' %}
+          {{ article.content_en|safe }}
+          {% else %}
+          {{ article.content_fr|safe }}
+          {% endif %}
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+{% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

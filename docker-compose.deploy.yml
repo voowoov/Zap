@@ -1,0 +1,150 @@
+version: '3'
+services:
+  web:
+    container_name: web_zap
+    build: ./dja/
+    restart: always
+    command: daphne -b 0.0.0.0 -p 8001 zap.asgi:application
+    env_file:
+      - .env
+    volumes:
+      - ./dja/:/usr/src/app/
+      - ./media:/usr/src/media # django must be able to write to media, which here is in parent directory of dja
+      - ./priv_files:/usr/src/priv_files
+    expose:
+      - 8001
+    links:
+      - redis ### for channel_layer
+    depends_on:
+      - redis
+      - pgdb
+
+  proxy:
+    build: ./docker/proxy/
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - certbot-web:/vol/www
+      - proxy-dhparams:/vol/proxy
+      - certbot-certs:/etc/letsencrypt
+      - ./media:/home/app/media
+      - ./static_collect:/home/app/static
+      - ./priv_files:/home/app/priv_files
+    depends_on:
+      - web
+    environment:
+      - DOMAIN=${DOMAIN}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  certbot:
+    build:
+      context: ./docker/certbot
+    command: echo "Skipping..."
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - proxy
+
+  ### redis is used to send tasks to celery workers AND for channel_redis:
+  redis:
+    restart: always
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    build: ./dja/
+    command: celery -A zap worker -l info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./dja/:/usr/src/app/
+
+  celery-beat:
+    restart: always
+    build: ./dja/
+    command: celery -A zap beat -l info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - celery
+    volumes:
+      - ./dja/:/usr/src/app
+
+  # Flower is to monitor all celery tasks (Async et Celery-beat). Go to 127.0.0.1:8888
+  flower:
+    image: mher/flower # port 8888
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=8888
+      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
+      - FLOWER_URL_PREFIX=/flower54321
+    ports:
+      - 8888:8888
+
+  pgdb:
+    image: postgres # port 5432
+    restart: always
+    volumes:
+      - ./pgdb/pgdb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRESQL_NAME}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    volumes:
+      - ./pgdb/pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: 5050
+
+  ## Go to 127.0.0.1:8200, Add Backup.. for source select MyComputer/source
+  duplicati:
+    # image: linuxserver/duplicati:latest # port 8200
+    image: duplicati/duplicati # port 8200
+    environment:
+      ### put PUID and PGID at 0 during restore, but 1000 during normal runing
+      - PUID=1000
+      - PGID=1000
+      #   - PUID=0
+      #   - PGID=0
+      - TZ=Canada/Eastern
+    #   - CLI_ARGS= #optional
+    volumes:
+      - ./duplicati/:/config
+      - ./duplicati_backups/:/backups
+      - ./pgdb/pgdb:/source/pgdb
+      - ./media:/source/media
+      - ./priv_files:/source/priv_files
+    restart: unless-stopped
+
+  typesense:
+    image: typesense/typesense:0.26.0.rc19 # port 8108
+    volumes:
+      - ./typesense:/data
+    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
+
+volumes:
+  certbot-web:
+  proxy-dhparams:
+  certbot-certs:

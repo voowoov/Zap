@@ -1,0 +1,534 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+##
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-27 01:26-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\templates\accounts\account_message.html:3
+msgid "Message"
+msgstr ""
+
+#: .\templates\accounts\account_message.html:7
+msgid "Message content"
+msgstr ""
+
+#: .\templates\accounts\account_message.html:14
+msgid "Back to messages"
+msgstr ""
+
+#: .\templates\accounts\account_message.html:20
+msgid "From:"
+msgstr ""
+
+#: .\templates\accounts\account_message.html:21
+msgid "Sent:"
+msgstr ""
+
+#: .\templates\accounts\account_messages.html:3
+#: .\templates\accounts\account_messages.html:7
+msgid "Messages"
+msgstr ""
+
+#: .\templates\accounts\account_messages.html:27
+msgid "From"
+msgstr ""
+
+#: .\templates\accounts\account_messages.html:28
+msgid "Subject"
+msgstr ""
+
+#: .\templates\accounts\account_messages.html:29
+msgid "Received"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:3
+msgid "Pref. Perso"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:13
+#: .\templates\accounts\account_pref_perso.html:109
+msgid "Personal info"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:17
+#: .\templates\accounts\account_pref_signin.html:17
+msgid "Cancel"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:19
+#: .\templates\accounts\account_pref_signin.html:19
+msgid "Save"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:29
+msgid "Account type"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:35
+msgid "Individual"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:41
+msgid "Company"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:48
+msgid "Company name"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:50
+msgid "Please enter your company name."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:60
+msgid "Contact info"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:64
+#: .\templates\accounts\account_pref_perso.html:70
+msgid "Email address"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:72
+msgid "Please enter your email address."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:80
+msgid "Verified email"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:83
+#: .\templates\accounts\account_pref_perso.html:89
+msgid "Phone number"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:91
+msgid "Please enter your phone number."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:99
+msgid "Verified phone"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:114
+#: .\templates\accounts\account_pref_perso.html:120
+msgid "First name"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:122
+msgid "Please enter your first name."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:126
+#: .\templates\accounts\account_pref_perso.html:132
+msgid "Last name"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:134
+msgid "Please enter your last name."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:138
+#: .\templates\accounts\account_pref_perso.html:144
+msgid "Street address"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:146
+msgid "Please enter your street address."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:150
+#: .\templates\accounts\account_pref_perso.html:156
+msgid "City"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:158
+msgid "Please enter your city."
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:162
+#: .\templates\accounts\account_pref_perso.html:168
+msgid "Postal code"
+msgstr ""
+
+#: .\templates\accounts\account_pref_perso.html:170
+msgid "Please enter your postal code."
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:3
+msgid "Pref. Sign-in"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:13
+msgid "Sign-in and security"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:29
+msgid "Change password"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:34
+#: .\templates\accounts\account_pref_signin.html:40
+msgid "Actual password"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:42
+msgid "Please enter your actual password."
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:46
+#: .\templates\accounts\account_pref_signin.html:52
+msgid "New password"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:54
+msgid "Please enter your new password."
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:58
+#: .\templates\accounts\account_pref_signin.html:64
+msgid "New password (repeat)"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:66
+msgid "Please enter your new password (repeat)."
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:76
+msgid "Sign-in preferences"
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:82
+msgid "Keep me signed-in on this device."
+msgstr ""
+
+#: .\templates\accounts\account_pref_signin.html:93
+#: .\templates\accounts\account_pref_signin.html:97
+msgid "Close my account"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:3
+msgid "Summary"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:11
+msgid "Account Information"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:15
+msgid "Account&nbsp;holder:"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:27
+msgid "Account&nbsp;number:"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:35
+msgid "Account balance"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:36
+msgid "Currency in canadian dollars."
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:40
+msgid "Deposited:"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:44
+msgid "Amount due:"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:52
+msgid "Invoices"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:58
+#: .\templates\accounts\account_summary.html:90
+#: .\templates\accounts\account_summary.html:124
+msgid "Date"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:59
+#: .\templates\accounts\account_summary.html:91
+#: .\templates\accounts\account_summary.html:125
+msgid "Details"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:60
+msgid "Invoice"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:61
+msgid "Ref.&nbsp;project"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:62
+#: .\templates\accounts\account_summary.html:94
+#: .\templates\accounts\account_summary.html:126
+msgid "Status"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:63
+#: .\templates\accounts\account_summary.html:95
+msgid "Amount"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:84
+msgid "Deposits"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:92
+msgid "Receipt"
+msgstr ""
+
+#: .\templates\accounts\account_summary.html:93
+msgid "Ref.&nbsp;invoice"
+msgstr ""
+
+#: .\templates\accounts\edit_address_cp.html:3
+msgid "Edit Address"
+msgstr ""
+
+#: .\templates\base\cookies\cookie_opt.html:3
+msgid "Cookie settings"
+msgstr ""
+
+#: .\templates\base\navbars\navbar.html:98
+msgid "Home"
+msgstr ""
+
+#: .\templates\base\navbars\navbar.html:100
+msgid "Switch"
+msgstr ""
+
+#: .\templates\base\navbars\navbar.html:102
+msgid "Signup"
+msgstr "Inscription"
+
+#: .\templates\base\navbars\navbar.html:104
+msgid "Account"
+msgstr ""
+
+#: .\templates\base\navbars\navbar.html:106
+msgid "Cmd"
+msgstr ""
+
+#: .\templates\users\signin_password.html:13
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: .\templates\users\signin_switch.html:10
+msgid "Hello"
+msgstr "Bonjour"
+
+#: .\templates\users\signin_switch.html:37
+msgid "email"
+msgstr "courriel"
+
+#: .\zap\apps\accounts\forms.py:21
+#, python-format
+msgid ""
+"Unit number and Street address together must total less than %(value)s "
+"characters."
+msgstr ""
+"Le numéro d'unité et l'address de rue doivent être ensemble moins de "
+"%(value)s caractères."
+
+#: .\zap\apps\accounts\models.py:149
+msgid "Full Name"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:9
+msgid "account_summary/"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:10
+msgid "account_messages/"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:11
+msgid "account_message/<int:pk>"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:12
+msgid "account_pref_perso"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:13
+msgid "account_pref_signin"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:14
+msgid "download/<int:pk>"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:15
+msgid "project/"
+msgstr ""
+
+#: .\zap\apps\accounts\urls.py:16
+msgid "e"
+msgstr ""
+
+#: .\zap\apps\inventory\models.py:102
+msgid "categories"
+msgstr ""
+
+#: .\zap\apps\inventory\models.py:121
+msgid "product_categories"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:7
+msgid "legal/terms-of-service"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:8
+msgid "legal/privacy-policy"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:9
+msgid "legal/cookie-policy"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:10
+msgid "legal/acceptable-use-policy"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:11
+msgid "legal/return-and-refund-policy"
+msgstr ""
+
+#: .\zap\apps\legal\urls.py:12
+msgid "legal/"
+msgstr ""
+
+#: .\zap\apps\users\models.py:27
+msgid "Mr."
+msgstr ""
+
+#: .\zap\apps\users\models.py:28
+msgid "Ms."
+msgstr ""
+
+#: .\zap\apps\users\models.py:29
+msgid "Dr."
+msgstr ""
+
+#: .\zap\apps\users\models.py:30
+msgid "Prof."
+msgstr ""
+
+#: .\zap\apps\users\models.py:106
+msgid "responsible of the account"
+msgstr ""
+
+#: .\zap\apps\users\models.py:108
+msgid "Designates whether the user have write permission to the account"
+msgstr ""
+
+#: .\zap\apps\users\models.py:123
+msgid "email address"
+msgstr ""
+
+#: .\zap\apps\users\models.py:128
+msgid "staff status"
+msgstr ""
+
+#: .\zap\apps\users\models.py:130
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: .\zap\apps\users\models.py:133
+msgid "active"
+msgstr ""
+
+#: .\zap\apps\users\models.py:136
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\zap\apps\users\models.py:139
+msgid "date joined"
+msgstr ""
+
+#: .\zap\apps\users\models.py:149
+msgid "user"
+msgstr ""
+
+#: .\zap\apps\users\models.py:150
+msgid "users"
+msgstr ""
+
+#: .\zap\apps\users\urls.py:10
+msgid "signin_switch/"
+msgstr "se_connecter_courriel"
+
+#: .\zap\apps\users\urls.py:11
+msgid "signin_password/"
+msgstr "se_connecter_mot_de_passe"
+
+#: .\zap\apps\users\urls.py:12
+msgid "logout/"
+msgstr ""
+
+#: .\zap\apps\users\urls.py:14
+msgid "create_an_account_info"
+msgstr ""
+
+#: .\zap\apps\users\urls.py:18
+msgid "create_an_account/<slug:uidb64>/<slug:token>"
+msgstr "ouvrir_un_compte/<slug:uidb64>/<slug:token>"
+
+#: .\zap\apps\users\urls.py:19
+#, fuzzy
+#| msgid "create_an_account/<slug:uidb64>/<slug:token>"
+msgid "password_reset/<slug:uidb64>/<slug:token>"
+msgstr "ouvrir_un_compte/<slug:uidb64>/<slug:token>"
+
+#: .\zap\settings.py:152
+msgid "English"
+msgstr ""
+
+#: .\zap\settings.py:153
+msgid "French"
+msgstr ""
+
+#~ msgid "eat my shorts"
+#~ msgstr "mange de la crotteéê^^çàü"
+
+#~ msgid "signup/"
+#~ msgstr "inscription/"
+
+#~ msgid "Canada/Atlantic"
+#~ msgstr "Canada/Atlantique"
+
+#~ msgid "Canada/Central"
+#~ msgstr "Canada/Centre"
+
+#~ msgid "Canada/Eastern"
+#~ msgstr "Canada/Est"
+
+#~ msgid "Canada/Mountain"
+#~ msgstr "Canada/Montagne"
+
+#~ msgid "Canada/Newfoundland"
+#~ msgstr "Canada/Terre-Neuve"
+
+#~ msgid "Canada/Pacific"
+#~ msgstr "Canada/Pacifique"

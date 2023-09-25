@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block title %}{% trans "Invite" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+  <h3 class="mt-5 mb-2">
+    {% if CURRENT_LANGUAGE == "en" %}
+    It is required to verify your email address before completing the initial account registration to Zap. Zap sent you
+    an email to <strong>{{ emailAddress }}</strong> that contains a secure
+    activation link that you must click on to continue the registration process.
+    {% endif %}
+    {% if CURRENT_LANGUAGE == "fr" %}
+    It is required to verify your email address before completing the initial account registration to Zap. Zap sent you
+    an email to <strong>{{ emailAddress }}</strong> that contains a secure
+    activation link that you must click on to continue the registration process.
+    {% endif %}
+  </h3>
+</main>
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

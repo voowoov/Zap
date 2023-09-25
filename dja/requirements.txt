@@ -1,0 +1,34 @@
+daphne
+channels
+channels_redis
+Django
+Pillow
+psycopg2-binary
+python-dateutil
+six
+sqlparse
+tomli
+python-dotenv
+celery
+redis
+django-tz-detect
+django-maintenance-mode
+django-tinymce
+django-scheduler
+django-htmx
+django-debug-toolbar
+typesense
+# django-elasticsearch-dsl
+# django-hosts    # for subdomains running in the same django project
+# django-mptt
+# django-cors-headers
+# django-js-asset
+# gunicorn
+
+#### Tests ####
+pytest
+pytest-django
+# selenium
+# chromedriver-autoinstaller
+# pytest-factoryboy
+

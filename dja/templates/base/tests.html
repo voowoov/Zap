@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %}
+{% block title %}{% trans "Test" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                    Tests  
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<main class="d-flex flex-fill">
+  <section id=" testing_section" class="home_section">
+    <div class=" container">
+      <div class="row text_color">
+        <div class="intros text-start">
+          <h1>
+            <div> {{ 0.5|localize }} </div>
+            <div> {% if my_list.1.1 %}asdf{% endif %} </div>
+            <div> {{ my_list.1.1 }} </div>
+          </h1>
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+
+
+{% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
+{% include 'base/footers/footer_small.html' %}
+
+
+
+{% endblock %}
