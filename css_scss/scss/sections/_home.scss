@@ -1,7 +1,0 @@
-@use '../custom' as *;
-@use '../components/mixins' as *;
-.home_section {
-  @include gradientBg;
-  padding: 3rem 0rem 0rem 0rem;
-  width: 100%;
-}
