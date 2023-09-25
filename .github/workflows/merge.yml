@@ -20,5 +20,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout AA
-          git merge -s recursive -X theirs AAdev
+          git merge --no-ff AAdev
           git push origin AA
