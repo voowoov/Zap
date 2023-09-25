@@ -3,7 +3,7 @@ services:
   web:
     container_name: web_zap
     build: ./dja/
-    command: python manage.py init-db #tail -f /dev/null
+    command: tail -f /dev/null # python manage.py init-db 
     env_file:
       - .env
     volumes:
@@ -11,6 +11,7 @@ services:
       - ./media:/usr/src/media
       - ./priv_files:/usr/src/priv_files
       - ./cstatic:/usr/src/cstatic
+      - ./static_collect:/usr/src/static_collect # func collectstatic only
     depends_on:
       - pgdb
 
