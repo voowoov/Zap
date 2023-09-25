@@ -27,8 +27,8 @@ RUN adduser --disabled-password --no-create-home django
 ### for sqlite database to be available to django, make the user own the database directory
 RUN chown -R django:django /usr/src
 RUN chown -R django:django /usr/src/app
+RUN mkdir /usr/src/static_collect
+RUN chown -R django:django /usr/src/static_collect
 
 USER django
 
-RUN chmod -R +x /usr/src/app/
-RUN mkdir /usr/src/static_collect
