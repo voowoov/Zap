@@ -11,6 +11,7 @@ services:
       - ./dja/:/usr/src/app/
       - ./media:/usr/src/media # django must be able to write to media, which here is in parent directory of dja
       - ./priv_files:/usr/src/priv_files
+      - ./static_collect:/usr/src/static_collect # func collectstatic only
     expose:
       - 8001
     links:
