@@ -1,0 +1,119 @@
+@use '../custom' as *;
+@use '../components/mixins' as *;
+
+
+.account_section {
+  @include gradientBg;
+  padding: 3rem 0rem 1.5rem 0rem;
+  width: 100%;
+  & .container-fluid {
+    padding:0;
+    margin:0;
+  }
+}
+.account_nav_text {
+  padding: 0;
+  padding-top:4rem;
+  padding-bottom:1.2rem;
+}
+.account_row {
+  max-width: 670px;
+  margin: auto;
+  padding: 0;
+}
+.account_btn_menu {
+  height: 35px !important; 
+  min-width: 90px;
+  padding: 0 0.6rem;
+  margin: 0;
+  // margin-right: 0.3rem;
+  // margin-top:0.3rem;
+  color: var(--color-nav-text); 
+  background-color:rgba(0, 0, 0, 0);
+  border: none;
+  font-size: large;
+  @include flexCenter;
+  &:not(&__current):hover {
+    background-color: var(--color-nav-hover);
+    border-bottom: 3px solid var(--color-nav-text-hover);
+    color: var(--color-nav-text-hover); 
+  }
+  &__current {
+    border-bottom: 3px solid var(--color-nav-text);
+    font-weight: bold;
+  }
+}
+.account_table {
+  --bs-table-color: var(--color-text);
+  --bs-table-bg: var(--color-account-table-bg);
+  --bs-table-border-color: var(--color-account-table-border);
+  font-weight: 400;
+  font-size:16px;
+}
+.account_tab_message {
+  --bs-table-color: var(--color-text);
+  --bs-table-bg: var(--color-account-table-bg);
+  --bs-table-border-color: var(--color-account-table-border);
+  --bs-table-hover-bg: var(--color-account-table-hover-bg);
+  --bs-table-hover-color: var(--color-text);
+  font-weight: 400;
+  font-size:16px;
+}
+// Table row pointer
+.table_row_link{
+  cursor:pointer;
+}
+// Message div area
+.account_message_div {
+  background-color: var(--color-account-table-bg);
+  border:1px solid var(--color-account-table-border);
+}
+.pagination li a {
+  background-color: var(--color-account-table-bg);
+  color: var(--color-text);
+  border-color: var(--color-account-table-border);
+  font-size: 14px;
+  font-weight: 500;
+  padding:0.4rem;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  height:20px;
+  width:2.3rem;
+}
+.account_validate-label {
+  position: absolute;
+  color: rgb(218, 0, 0);
+  font-size: smaller;
+}
+.account_preference_row {
+  max-width:500px;
+  margin:auto;
+}
+
+.btn-accchange {
+  display: block;
+  min-width:80px; 
+  height:40px;
+  font-weight: 600;
+  font-size: 1rem;
+  &__cancel {
+    background-color: $gray-100;
+    border: 0.05rem solid $primary;
+    color:  $primary;
+    font-size: 1rem;
+    &:hover {
+      border-color:black;
+      color:black;
+    }
+  }
+  &__save {
+    background-color: $primary;
+    border: none;
+    color: white;
+    &:hover {
+      background-color: blue;
+      color: white;
+    }
+  }
+}

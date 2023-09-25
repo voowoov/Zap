@@ -1,0 +1,39 @@
+@use '../custom' as *;
+.pagetop_message {
+  position: sticky;
+  top: $navBarHeight;
+  background-color: $warning;
+  color: black;
+  border: 0.05rem solid white;
+}
+
+.horizontal_separator_full {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  content: "";
+  flex: 1 1;
+  border-bottom: 1px solid;
+}
+
+.color_tame {
+  color: var(--color-text-tame2);
+}
+
+// Button with no-drop cursor
+.no-drop {
+  cursor: no-drop;
+}
+
+.spinner_style {
+  position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
