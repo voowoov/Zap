@@ -1,0 +1,20 @@
+// @use 'custom';
+
+// IMPORT THE COMPONENTS 
+@use 'components/mixins';
+@use 'components/page';
+@use 'components/typography';
+
+
+// IMPORT THE SECTIONS 
+@use 'sections/navbar';
+@use 'sections/get-started';
+@use 'sections/footer';
+@use 'sections/cookie-banner';
+@use 'sections/legal';
+@use 'sections/home';
+
+@use 'sections/login';
+@use 'sections/account';
+@use 'sections/article';
+@use 'sections/_page-actions';

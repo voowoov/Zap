@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Embedding a Tweet using a Tweet ID</title>
+</head>
+
+<body>
+  <h1>Embedding a Tweet using a Tweet ID</h1>
+  <div id="tweet-container"></div>
+
+  <script>
+    const tweetId = '463440424141459456'; // The ID of the tweet you want to embed
+    const url = `https://publish.twitter.com/oembed?url=https://twitter.com/Interior/status/${tweetId}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const tweetContainer = document.getElementById('tweet-container');
+        tweetContainer.innerHTML = data.html;
+      });
+  </script>
+</body>
+
+</html>

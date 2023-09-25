@@ -1,0 +1,169 @@
+@use '../custom' as *;
+@use '../components/mixins' as *;
+.login_section {
+  @include gradientBg;
+  padding: 3rem 0.5rem 1rem 0.5rem;
+  width: 100%;
+  .container-fluid {
+    max-width: 400px;
+    margin: auto;
+    padding: 2rem;
+    border: 0.05rem solid var(--color-text);
+    border-radius: 0.4rem;
+  }
+}
+
+.login_input {
+  background-color: $gray-100;
+  border: 0.05rem solid black;
+  border-radius: 0.6rem;
+  &:focus {
+    background-color: white;
+  }
+}
+
+.login_inp-error {
+  background-color: rgb(240, 231, 231);
+  border: 0.05rem solid rgb(218, 0, 0);
+  border-radius: 0.6rem;
+  &:focus {
+    border: 0.05rem solid rgb(0, 0, 0);
+    background-color: white;
+  }
+}
+
+// eye icon is on the line below, it is justified-end in the html
+// and then translated here in the css. Pos. absolute makes icon overlap.
+.eye-icon {
+  position: absolute;
+  transform: translate(-15px, -28px);
+}
+
+.login_validate-label {
+  color: rgb(218, 0, 0);
+  font-size: smaller;
+  max-width: 250px;
+}
+
+.login_warning {
+  display: none;
+  color: rgb(218, 0, 0);
+}
+
+.login-agreement {
+  font-size: 0.9rem;
+  color: var(--color-text-tame1);
+  padding: 0;
+}
+
+.btn-login {
+  display: block;
+  height: 50px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  &__signin {
+    background-color: $primary;
+    border: none;
+    color: white;
+    &:hover {
+      background-color: blue;
+      color: white;
+    }
+  }
+  &__texto {
+    &__on {
+      background-color: $primary;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      &:hover {
+        background-color: blue;
+        color: white;
+      }
+    }
+    &__off {
+      background-color: $gray-500;
+      border: none;
+      color: white;
+      font-size: 1rem;
+    }
+  }
+  &__receive {
+    background-color: $primary;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    height: $navBarHeight;
+    width: 260px;
+    // margin-left: 35px !important;
+    // margin-right: 20px;
+    &:hover {
+      background-color: rgb(31, 31, 122);
+      color: white;
+    }
+  }
+  &__help {
+    background-color: $gray-100;
+    border: 0.05rem solid $primary;
+    color: $primary;
+    font-size: 1rem;
+    &:hover {
+      border-color: black;
+      color: black;
+    }
+  }
+  &__google {
+    background-color: $gray-100;
+    border: 0.05rem solid black;
+    color: black;
+    margin-bottom: 2rem;
+    &:hover {
+      background-color: $gray-300;
+    }
+    user-select: none;
+  }
+}
+
+.horizontal_separator_or {
+  max-width: 370px;
+  display: flex;
+  flex-direction: row;
+  color: var(--color-text);
+  margin: auto;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  &:before,
+  &:after {
+    content: "";
+    flex: 1 1;
+    border-bottom: 1px solid;
+    margin-bottom: 0.55rem;
+  }
+  &:before {
+    margin-right: 8px;
+  }
+  &:after {
+    margin-left: 8px;
+  }
+}
+
+// Div toggle - learn more
+.login-learn {
+  margin-top: 0.8rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 350px;
+  font-size: small;
+  color: white;
+  background-color: $primary;
+  padding: 1rem;
+  &__info-icon {
+    @include absoluteCenter;
+    // margin:auto;
+  }
+}
+
+// Remove default password reveal eye
+input[type=password]::-ms-reveal {
+  display: none;
+}

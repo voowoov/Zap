@@ -1,0 +1,251 @@
+@use '../custom' as *;
+@use '../components/mixins' as *;
+// Navbar settings
+.mset_nav {
+  height: $navBarHeight !important;
+  background: var(--color-nav-bg);
+  .container-fluid {
+    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+// navbar links
+.navbar-nav>li>a {
+  color: var(--color-nav-text);
+  &:hover {
+    color: var(--color-nav-text-hover);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//           Buttons of navbar
+////////////////////////////////////////////////////////////////////////////////////////
+// Navbar buttons settings
+.btn_nav {
+  height: $navBarHeight !important;
+  min-width: 60px;
+  padding: 0 0.3rem;
+  margin: 0;
+  color: var(--color-nav-text);
+  @include flexCenter;
+  h1,
+  .navbar_logo_1 {
+    padding: 0 0.5rem 0 0.4rem;
+  }
+  a {
+    padding-top: 0.6rem;
+  }
+  &:hover {
+    background-color: var(--color-nav-hover);
+    color: var(--color-nav-text-hover);
+  }
+  &__main_menu {
+    width: 65px;
+  }
+}
+
+// Menu buttons inside dropdown and inside accordion (__sub)
+.btn_menu {
+  width: 269px;
+  height: $navBarHeight !important;
+  padding-left: 20px !important;
+  text-align: left;
+  background-color: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  padding: 0;
+  margin: 0;
+  border: none;
+  &:hover {
+    background-color: var(--color-nav-hover);
+    color: var(--color-nav-text-hover);
+  }
+  &__sub {
+    width: 249px !important;
+    background-color: var(--color-nav-lev2);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//           Accordion menu
+////////////////////////////////////////////////////////////////////////////////////////
+.accordion-body {
+  padding: 0px !important;
+}
+
+.accordion .accordion-item {
+  border: none;
+}
+
+// identation block before level2 button
+.acorlev2preblock {
+  background-color: var(--color-nav-select);
+  width: 20px !important;
+  height: $navBarHeight !important;
+}
+
+// accordion button
+.accordion-button {
+  height: $navBarHeight !important;
+  background-color: var(--color-nav-bg);
+  padding-left: 20px !important;
+  color: var(--color-nav-text);
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  &:not(.collapsed) {
+    color: var(--color-nav-text);
+    background-color: var(--color-nav-select);
+  }
+  &:hover,
+  &:not(.collapsed):hover {
+    background-color: var(--color-nav-hover);
+    color: var(--color-nav-text-hover);
+  }
+  // toggle icon
+  &:after {
+    background-image: var(--accordion-toggle-image-close);
+  }
+  &:not(.collapsed):after {
+    background-image: var(--accordion-toggle-image-open);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//           Dropdowns of navbar
+////////////////////////////////////////////////////////////////////////////////////////
+// See also Javascript code
+// Position dropdown sub-menu
+.ddnav .dropdown-submenu {
+  position: relative;
+}
+
+.ddnav .dropdown-submenu>.dropdown-menu {
+  // top: 0;
+  left: -10rem;
+  /* 10rem is the min-width of dropdown-menu */
+  // margin-top: -6px;
+}
+
+// caret (triangle) color and rotation on hover
+.ddnav .dropdown-menu {
+  li>div:after {
+    color: var(--color-nav-text);
+  }
+  li>div:focus:after {
+    transform: rotate(90deg);
+  }
+  // submenu hover keeps caret rotated
+  li:hover {
+    .ddtogled:after {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// Dropdown menus
+.ddnav .dropdown-menu {
+  &__search {
+    width: 300px;
+    transform: translate(-180px, 0);
+  }
+  background-color: var(--color-nav-bg);
+  a,
+  hr,
+  span {
+    color: var(--color-nav-text);
+  }
+  .ddtogled:focus {
+    background-color: var(--color-nav-bg);
+  }
+  li:hover {
+    a:hover {
+      color: var(--color-nav-text);
+      background-color: var(--color-nav-hover);
+    }
+    form:hover {
+      background-color: var(--color-nav-hover);
+    }
+    .ddtogled {
+      background-color: var(--color-nav-hover);
+      color: var(--color-nav-text);
+    }
+  }
+}
+
+// Dropdown hover
+// @media (hover: hover) is used to disable hover on mobile devices
+@media (hover: hover) {
+  .ddnav .dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+  }
+  .ddnav .dropdown:hover .dropdown-menu:not(.mdropdown_multilevel) {
+    display: block;
+  }
+  .ddnav .dropdown:hover .hover_end:not(.mdropdown_multilevel) {
+    right: 0;
+  }
+}
+
+// make main menu scrollable
+.scrollable-menu {
+  height: auto;
+  max-height: calc(100vh - $navBarHeight);
+  overflow-x: hidden;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//           Search dropdown
+////////////////////////////////////////////////////////////////////////////////////////
+.search_suggest_list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search_suggest_title {
+  text-align: left;
+  font-size: 15px;
+}
+
+.search_suggest_date {
+  text-align: left;
+  font-size: 12px;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//           Login Avatar
+////////////////////////////////////////////////////////////////////////////////////////
+.avatar {
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid #71c6dd;
+  img {
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+  }
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    background-color: #8b8b8b;
+    z-index: 111;
+    border-radius: 50%;
+    border: 0.12rem solid #3f4156;
+    width: 0.7rem;
+    height: 0.7rem;
+    bottom: 0px;
+    right: -3px;
+  }
+  &__active:after {
+    background-color: #00ff22;
+  }
+}
+
+.navbar_separator_height {
+  height: $navBarHeight;
+}

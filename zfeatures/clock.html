@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <div id="clock" ></div>
+
+  <script>
+    var clock=document.getElementById("clock");
+    function displayTime(){
+      var dateTime = new Date();
+      clock.innerHTML=dateTime;
+    }
+    setInterval(displayTime, 1000)
+  </script>
+
+</body>
+
+</html>
