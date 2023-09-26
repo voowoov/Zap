@@ -43,8 +43,8 @@ services:
   redis:
     restart: always
     image: redis:alpine
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
 
   celery:
     restart: always
@@ -77,8 +77,8 @@ services:
       - FLOWER_PORT=8888
       - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
       - FLOWER_URL_PREFIX=/flower54321
-    ports:
-      - 8888:8888
+    # ports:
+    #   - 8888:8888
 
   pgdb:
     image: postgres # port 5432
@@ -89,8 +89,8 @@ services:
       - POSTGRES_DB=${POSTGRESQL_NAME}
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
 
   pgadmin:
     image: dpage/pgadmin4
