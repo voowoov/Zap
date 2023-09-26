@@ -116,7 +116,7 @@ services:
   duplicati:
     # image: linuxserver/duplicati:latest # port 8200
     image: duplicati/duplicati # port 8200
-    command: /usr/bin/duplicati-server --webservice-port=8200 --webservice-interface=any --webservice-allowed-hostnames=*
+    command: /usr/bin/duplicati-server --webservice-port=8200 --webservice-interface=any --webservice-allowed-hostnames=${DUPLICATI_ALLOWED_HOSTNAMES}
     environment:
       ### put PUID and PGID at 0 during restore, but 1000 during normal runing
       - PUID=1000
