@@ -82,6 +82,6 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme; # this tells django if request is http or https, see HTTP_X_FORWARDED_PROTO setting
     client_max_body_size 2M;
-    proxy_no_cache 1;
+    # proxy_no_cache 1;
   }
 }
