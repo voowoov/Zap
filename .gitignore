@@ -1,10 +1,10 @@
 # Directories
-/static_collect
 /css_scss/node_modules
 /duplicati
 /duplicati_backups
 /pgdb
 /typesense
+/static_collect
 
 # Environments
 venv/
