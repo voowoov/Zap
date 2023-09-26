@@ -22,22 +22,14 @@ else:
 
 if PROD:
     CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS").split(",")
-    CSRF_COOKIE_DOMAIN = os.getenv("DJANGO_CSRF_COOKIE_DOMAIN").split(",")
-    SESSION_COOKIE_DOMAIN = os.getenv("DJANGO_SESSION_COOKIE_DOMAIN").split(",")
+    CSRF_COOKIE_DOMAIN = os.getenv("DJANGO_CSRF_COOKIE_DOMAIN")
+    SESSION_COOKIE_DOMAIN = os.getenv("DJANGO_SESSION_COOKIE_DOMAIN")
     SESSION_COOKIE_SECURE = bool(int(os.getenv("DJANGO_SESSION_COOKIE_SECURE")))
     SESSION_COOKIE_SAMESITE = os.getenv("DJANGO_SESSION_COOKIE_SAMESITE")
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
     )  # nginx sends this wether http or https request with X-Forwarded-Proto
-
-print(PROD)
-print(CSRF_TRUSTED_ORIGINS)
-print(CSRF_COOKIE_DOMAIN)
-print(SESSION_COOKIE_DOMAIN)
-print(SESSION_COOKIE_SECURE)
-print(SESSION_COOKIE_SAMESITE)
-print(SECURE_PROXY_SSL_HEADER)
 
 if not PROD:
     ##### in dev, use localhost instead of 127.0.0.1 to run subdomains, ex. beta.localhost:8000
