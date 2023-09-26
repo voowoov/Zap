@@ -31,6 +31,14 @@ if PROD:
         "https",
     )  # nginx sends this wether http or https request with X-Forwarded-Proto
 
+print(PROD)
+print(CSRF_TRUSTED_ORIGINS)
+print(CSRF_COOKIE_DOMAIN)
+print(SESSION_COOKIE_DOMAIN)
+print(SESSION_COOKIE_SECURE)
+print(SESSION_COOKIE_SAMESITE)
+print(SECURE_PROXY_SSL_HEADER)
+
 if not PROD:
     ##### in dev, use localhost instead of 127.0.0.1 to run subdomains, ex. beta.localhost:8000
     INTERNAL_IPS = [
@@ -247,8 +255,7 @@ TZ_DETECT_COUNTRIES = (
 USE_L10N = False  # format of numbers, dates and currency.
 
 ###### Dev email backends only. Comment to use real email. #######
-if not PROD:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ###### External email acccount #######
 EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST")
