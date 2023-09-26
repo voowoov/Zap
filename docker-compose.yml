@@ -41,10 +41,9 @@ services:
 
   ### redis is used to send tasks to celery workers AND for channel_redis:
   redis:
+    # port 6379
     restart: always
     image: redis:alpine
-    # ports:
-    #   - "6379:6379"
 
   celery:
     restart: always
@@ -77,8 +76,6 @@ services:
       - FLOWER_PORT=8888
       - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
       - FLOWER_URL_PREFIX=/flower54321
-    # ports:
-    #   - 8888:8888
 
   pgdb:
     image: postgres # port 5432
@@ -89,8 +86,6 @@ services:
       - POSTGRES_DB=${POSTGRESQL_NAME}
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
-    # ports:
-    #   - 5432:5432
 
   pgadmin:
     image: dpage/pgadmin4
