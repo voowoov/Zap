@@ -105,8 +105,8 @@ services:
       ### put PUID and PGID at 0 during restore, but 1000 during normal runing
       - PUID=1000
       - PGID=1000
-      #   - PUID=0
-      #   - PGID=0
+      #   - PUID=0  # for backups change from 1000 to 0
+      #   - PGID=0  # for backups change from 1000 to 0
       - TZ=Canada/Eastern
     #   - CLI_ARGS= #optional
     volumes:
