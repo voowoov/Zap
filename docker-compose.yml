@@ -25,7 +25,7 @@ services:
     depends_on:
       - redis
       - pgdb
-  ### Nginx in browser, dont put :8000, just 127.0.0.1
+  ## Nginx in browser, dont put :8000, just 127.0.0.1
   proxy:
     build: ./docker/proxy_dev/
     restart: always
@@ -45,38 +45,6 @@ services:
     restart: always
     image: redis:alpine
 
-  celery:
-    restart: always
-    build: ./dja/
-    command: celery -A zap worker -l info
-    env_file:
-      - .env
-    depends_on:
-      - redis
-    volumes:
-      - ./dja/:/usr/src/app/
-
-  celery-beat:
-    restart: always
-    build: ./dja/
-    command: celery -A zap beat -l info
-    env_file:
-      - .env
-    depends_on:
-      - redis
-      - celery
-    volumes:
-      - ./dja/:/usr/src/app
-
-  # Flower is to monitor all celery tasks (Async et Celery-beat). Go to 127.0.0.1:8888
-  flower:
-    image: mher/flower # port 8888
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - FLOWER_PORT=8888
-      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
-      - FLOWER_URL_PREFIX=/flower54321
-
   pgdb:
     image: postgres # port 5432
     restart: always
@@ -87,9 +55,48 @@ services:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
 
+  typesense:
+    image: typesense/typesense:0.26.0.rc19 # port 8108
+    volumes:
+      - ./typesense:/data
+    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
+    #
+    # celery:
+    #   restart: always
+    #   build: ./dja/
+    #   command: celery -A zap worker -l info
+    #   env_file:
+    #     - .env
+    #   depends_on:
+    #     - redis
+    #   volumes:
+    #     - ./dja/:/usr/src/app/
+
+    # celery-beat:
+    #   restart: always
+    #   build: ./dja/
+    #   command: celery -A zap beat -l info
+    #   env_file:
+    #     - .env
+    #   depends_on:
+    #     - redis
+    #     - celery
+    #   volumes:
+    #     - ./dja/:/usr/src/app
+
+    ### Flower is to monitor all celery tasks (Async et Celery-beat). Go to 127.0.0.1:8888
+  flower:
+    image: mher/flower # port 8888
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=8888
+      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
+      - FLOWER_URL_PREFIX=/flower54321
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always
+    user: root #<- this one on Windows
     volumes:
       - ./pgdb/pgadmin:/var/lib/pgadmin
     environment:
@@ -116,12 +123,6 @@ services:
       - ./media:/source/media
       - ./priv_files:/source/priv_files
     restart: unless-stopped
-
-  typesense:
-    image: typesense/typesense:0.26.0.rc19 # port 8108
-    volumes:
-      - ./typesense:/data
-    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
     #
     ### for tests.py with selenium and chrome:
     # selenium:

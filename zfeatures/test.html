@@ -6,20 +6,15 @@
 </head>
 
 <body>
-  <h1>Embedding a Tweet using a Tweet ID</h1>
-  <div id="tweet-container"></div>
+  <div class="logo"></div>
 
-  <script>
-    const tweetId = '463440424141459456'; // The ID of the tweet you want to embed
-    const url = `https://publish.twitter.com/oembed?url=https://twitter.com/Interior/status/${tweetId}`;
+  <a href="https://twitter.com/colorlib" title="Twitter" target="_blank" rel="noopener noreferrer" style="color: green;">
+    <svg>
+      <use href="../cstatic/images/icons/youtube.svg#img"></use>
+    </svg>
+    <!-- <img src="../cstatic/images/icons/youtube.svg" onload="SVGInject(this)" /> -->
+  </a>
 
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const tweetContainer = document.getElementById('tweet-container');
-        tweetContainer.innerHTML = data.html;
-      });
-  </script>
 </body>
 
 </html>
