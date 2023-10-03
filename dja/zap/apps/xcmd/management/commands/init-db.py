@@ -1,4 +1,5 @@
 import datetime
+import platform
 import subprocess  # to run .bat .sh files
 from time import sleep
 
@@ -16,17 +17,13 @@ from zap.apps.users.models import User
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        # delete all migration files and db.sqlite3
-        # subprocess.call(
-        #     [r"C:\Users\etien\OneDrive\Desktop\MyPython\Dja\Zap\dja\delmig.bat"]
-        # )
         subprocess.call("cd /usr/src/app/", shell=True)
         subprocess.call('find . -path "*/migrations/0*.py" -delete', shell=True)
         subprocess.call('find . -path "*/__pycache__/*.pyc" -delete', shell=True)
 
         # initiate migrations
-        # call_command("makemigrations")
-        subprocess.call(["/usr/src/app/manage.py", "makemigrations"])
+        call_command("makemigrations")
+        # subprocess.call(["/usr/src/app/manage.py", "makemigrations"])
         call_command("migrate")
 
         call_command("compilemessages")
@@ -39,6 +36,7 @@ class Command(BaseCommand):
         superuser = User.objects.create_superuser(
             email="a@a.com",
             password="p",
+            first_name="Etienne",
             social_name="Etienne",
             social_desc="staff",
         )
@@ -46,8 +44,8 @@ class Command(BaseCommand):
         user = User.objects.create_user(
             email="e@e.com",
             password="p",
+            first_name="John",
         )
-        user.first_name = "john"
         user.last_name = "lennon"
         user.is_staff = True
         user.is_responsible = True

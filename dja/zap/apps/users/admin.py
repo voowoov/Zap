@@ -57,7 +57,10 @@ class UserAdmin(BaseUserAdmin):
     ### These override the definitions on the base UserAdmin
     ### that reference specific fields on auth.User model.
     fieldsets = (
-        (None, {"fields": ("email", "password", "account", "is_responsible", "is_active")}),
+        (
+            None,
+            {"fields": ("email", "password", "account", "is_responsible", "is_active")},
+        ),
         (
             _("Personal info"),
             {
@@ -66,17 +69,24 @@ class UserAdmin(BaseUserAdmin):
                     "first_name",
                     "middle_name",
                     "last_name",
+                    "social_name",
                     "suffix_title",
                     "time_zone",
                     "avatar",
                 )
             },
         ),
-        (_("Permissions"), {"fields": ("is_superuser", "is_staff", "user_permissions", "groups")}),
+        (
+            _("Permissions"),
+            {"fields": ("is_superuser", "is_staff", "user_permissions", "groups")},
+        ),
     )
     ### My custom fieldsets for staff, see get_fieldsets addon below too
     fieldsets_staff = (
-        (None, {"fields": ("email", "password", "account", "is_responsible", "is_active")}),
+        (
+            None,
+            {"fields": ("email", "password", "account", "is_responsible", "is_active")},
+        ),
         (
             _("Personal info"),
             {

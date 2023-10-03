@@ -6,7 +6,6 @@
       <div class="dropdown">
         <div class="btn_nav btn_nav__main_menu" type="button" id="dropdownMenuMenu" data-bs-toggle="dropdown"
           aria-expanded="false">
-          <text>&nbsp&nbsp</text>
           <svg width="25" height="25">
             <use href="{% static '/images/icons/menu-app.svg' %}#img"></use>
           </svg>
@@ -133,93 +132,70 @@
         </ul>
       </div>
       <!-- Login      -->
-      <div class="dropdown ddhead ">
-        <div class="btn_nav btn_nav__main_menu" type="button" id="dropdownMenuLogin" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <div class="avatar {% if request.user.is_authenticated %}avatar__active{% endif %}">
+      <div class="dropdown">
+        <div class="btn_nav btn_nav__main_menu pe-1" type="button" id="dropdownMenuLogin" data-bs-toggle="dropdown"
+          data-bs-auto-close="outside" aria-expanded="false">
+          <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
             {% if request.user.is_authenticated and request.user.avatar %}
             <img src="{{ request.user.avatar.url }}" width="30px" alt="Avatar">
             {% else %}
             <img src="{% static '/images/icons/avatar.svg' %}" width="30px" alt="Avatar">
             {% endif %}
           </div>
-          <text>&nbsp&nbsp</text>
         </div>
-        <ul class="dropdown-menu hover_end dropdown-menu-end text-center" aria-labelledby="dropdownMenuLogin">
+        <ul class="dropdown-menu hover_end dropdown-menu-end scrollable-menu text-center"
+          aria-labelledby="dropdownMenuLogin">
           {% if request.user.is_authenticated %}
-          <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{{request.user.email}}</a></li>
-          <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Logout" %}</a></li>
-          {% else %}
-          <li><a class="dropdown-item" href="#">{% trans "Sign in" %}</a></li>
-          <li><a class="dropdown-item" href="#">{% trans "Create an account" %}</a></li>
-          {% endif %}
-          <!-- Language -->
           <li>
-            {% if CURRENT_LANGUAGE == "en" %}
-            <a class="dropdown-item" href="{% url 'xcmd:set_webpage_preference' 'lang' "fr" %}">
-              &nbsp français&nbsp
-            </a>
-            {% endif %}
-            {% if CURRENT_LANGUAGE == "fr" %}
-            <a class="dropdown-item" href="{% url 'xcmd:set_webpage_preference' 'lang' "en" %}">
-              &nbsp English&nbsp
-            </a>
-            {% endif %}
+            <h6 class="dropdown-header">{% trans "Welcome" %} {{request.user.first_name}}</h6>
           </li>
-          {% comment %} <li class="dropdown-submenu">
-            {% get_current_language as CURRENT_LANGUAGE %}
-            {% get_available_languages as AVAILABLE_LANGUAGES %}
-            {% get_language_info_list for AVAILABLE_LANGUAGES as LANGUAGES_INFO_LIST %}
-            <div class="dropdown-item dropdown-toggle ddtogled " tabindex="1" type="button">
-              <img src="{% static '/images/icons/canada-flag-icon.png' %}" alt="Canada">
-              <span class="">
-                {% if CURRENT_LANGUAGE == "fr" %} &nbsp français &nbsp {% endif %}
-                {% if CURRENT_LANGUAGE == "en" %} &nbsp English &nbsp {% endif %}
-              </span>
+          <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
+          </li>
+          <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Sign out" %}</a></li>
+          {% else %}
+          <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
+          <li><a class="dropdown-item" href="{% url 'users:create_account_info' %}">{% trans "Create an account" %}</a>
+          </li>
+          {% endif %}
+          <!-- Settings -->
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <h6 class="dropdown-header">{% trans "Language" %}</h6>
+          </li>
+          <li>
+            <div class="d-flex justify-content-center flex-nowrap">
+              <a href="{% url 'xcmd:set_webpage_preference' 'lang' "fr" %}"
+                class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "fr" %}disabled{% endif %} me-2">Français</a>
+              <a href="{% url 'xcmd:set_webpage_preference' 'lang' "en" %}"
+                class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "en" %}disabled{% endif %}">English</a>
             </div>
-            <ul class="dropdown-menu mdropdown_multilevel">
-              {% for language in LANGUAGES_INFO_LIST %}
-              <li>
-                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'lang' language.code %}">
-                  {{ language.name_local }} ({{ language.code }})
-                </a>
-              <li>
-                {% endfor %}
-            </ul>
-          </li> {% endcomment %}
-          <!-- theme -->
-          <li class="dropdown-submenu">
-            <div class="dropdown-item dropdown-toggle ddtogled " tabindex="1" type="button">
-              <span class=""> {% trans "theme" %}
-              </span>
+          </li>
+          <li>
+            <h6 class="dropdown-header">{% trans "Theme" %}</h6>
+          </li>
+          <li>
+            <div class="d-flex justify-content-center flex-nowrap">
+              <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'light' %}"
+                class="btn btn-primary btn-sm me-2 btn_ddnavpagesettings" id="jsddnavthemelight">
+                <svg width="16" height="16">
+                  <use href="{% static '/images/icons/sun.svg' %}#img"></use>
+                </svg>
+              </a>
+              <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'dark' %}"
+                class="btn btn-primary btn-sm me-2 btn_ddnavpagesettings" id="jsddnavthemedark">
+                <svg width="16" height="16">
+                  <use href="{% static '/images/icons/sunset.svg' %}#img"></use>
+                </svg>
+              </a>
+              <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'Auto' %}"
+                class="btn btn-primary btn-sm btn_ddnavpagesettings" id="jsddnavthemeauto">
+                <svg width="16" height="16">
+                  <use href="{% static '/images/icons/pc-display-horizontal.svg' %}#img"></use>
+                </svg>
+              </a>
             </div>
-            <ul class="dropdown-menu mdropdown_multilevel text_color text-center">
-              <li>
-                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'light' %}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun"
-                    viewBox="0 0 16 16">
-                    <path
-                      d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0  0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
-                  </svg>
-                  <span class=""> &nbsp&nbsp {% trans "light" %} </span>
-                </a>
-              <li>
-              <li>
-                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'dark' %}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-brightness-alt-high-fill" viewBox="0 0 16 16">
-                    <path
-                      d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 3zm8 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zm-13.5.5a.5.5 0 0 0 0-1h-2a.5.5 0 0 0 0 1h2zm11.157-6.157a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm-9.9 2.121a.5.5 0 0 0 .707-.707L3.05 5.343a.5.5 0 1 0-.707.707l1.414 1.414zM8 7a4 4 0 0 0-4 4 .5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5 4 4 0 0 0-4-4z" />
-                  </svg>
-                  <span class=""> &nbsp&nbsp {% trans "dark" %} </span>
-                </a>
-              <li>
-              <li>
-                <a class="nav-link" href="{% url 'xcmd:set_webpage_preference' 'theme' 'Auto' %}">
-                  <span class=""> &nbsp&nbsp {% trans "Auto" %} </span>
-                </a>
-              <li>
-            </ul>
           </li>
         </ul>
       </div>

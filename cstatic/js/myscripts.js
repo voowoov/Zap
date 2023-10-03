@@ -9,12 +9,16 @@ function detectColorScheme() {
   var theme = "";
   //local storage is used to override OS theme settings
   switch (getCookie("theme")) {
+    case "light":
+      document.getElementById("jsddnavthemelight").classList.add("disabled");
+      break;
     case "dark":
       theme = "dark";
-      break;
-    case "light":
+      document.getElementById("jsddnavthemedark").classList.add("disabled");
       break;
     case "Auto":
+      document.getElementById("jsddnavthemeauto").classList.add("disabled");
+      break;
     case "":
       if (!window.matchMedia) {
         return false;
@@ -22,6 +26,7 @@ function detectColorScheme() {
         //OS theme setting detected as dark
         theme = "dark";
       }
+      document.getElementById("jsddnavthemeauto").classList.add("disabled");
       break;
     default:
   }
@@ -41,29 +46,6 @@ function detectColorScheme() {
   }
 }
 detectColorScheme();
-
-/////////////////////////////////////////////////////////////////////////////////
-// For the multilevel Dropdowns
-/////////////////////////////////////////////////////////////////////////////////
-$('.ddtogled').on('click', function(e) {
-  if (!$(this).next().hasClass('show')) {
-    $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
-  }
-  var $subMenu = $(this).next(".dropdown-menu");
-  $subMenu.toggleClass('show');
-  $(this).parents('.ddhead.show').on('hidden.bs.dropdown', function(e) {
-    $('.dropdown-submenu .show').removeClass("show");
-  });
-  return false;
-});
-$('body').on('click', function(e) {
-  if (!$('li.dropdown').is(e.target) &&
-    $('li.dropdown').has(e.target).length === 0 &&
-    $('.open').has(e.target).length === 0
-  ) {
-    $('.dropdown-submenu .show').removeClass("show");
-  }
-});
 
 /////////////////////////////////////////////////////////////////////////////////
 // Button toggle a <div>

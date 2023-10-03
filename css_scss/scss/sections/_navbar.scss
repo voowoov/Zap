@@ -67,6 +67,10 @@
   }
 }
 
+.btn_ddnavpagesettings {
+  @include flexCenter;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //           Accordion menu
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -116,44 +120,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //           Dropdowns of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
-// See also Javascript code
-// Position dropdown sub-menu
-.ddnav .dropdown-submenu {
-  position: relative;
-}
-
-.ddnav .dropdown-submenu>.dropdown-menu {
-  // top: 0;
-  left: -10rem;
-  /* 10rem is the min-width of dropdown-menu */
-  // margin-top: -6px;
-}
-
-// caret (triangle) color and rotation on hover
-.ddnav .dropdown-menu {
-  li>div:after {
-    color: var(--color-nav-text);
-  }
-  li>div:focus:after {
-    transform: rotate(90deg);
-  }
-  // submenu hover keeps caret rotated
-  li:hover {
-    .ddtogled:after {
-      transform: rotate(90deg);
-    }
-  }
-}
-
-// Dropdown menus
 .ddnav .dropdown-menu {
   &__search {
-    width: 300px;
+    width: 350px;
     transform: translate(-180px, 0);
   }
   background-color: var(--color-nav-bg);
   a,
-  hr,
   span {
     color: var(--color-nav-text);
   }
@@ -175,21 +148,6 @@
   }
 }
 
-// Dropdown hover
-// @media (hover: hover) is used to disable hover on mobile devices
-@media (hover: hover) {
-  .ddnav .dropdown-submenu:hover>.dropdown-menu {
-    display: block;
-  }
-  .ddnav .dropdown:hover .dropdown-menu:not(.mdropdown_multilevel) {
-    display: block;
-  }
-  .ddnav .dropdown:hover .hover_end:not(.mdropdown_multilevel) {
-    right: 0;
-  }
-}
-
-// make main menu scrollable
 .scrollable-menu {
   height: auto;
   max-height: calc(100vh - $navBarHeight);
@@ -217,7 +175,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //           Login Avatar
 ////////////////////////////////////////////////////////////////////////////////////////
-.avatar {
+.nav_avatar {
   position: relative;
   display: inline-block;
   border-radius: 50%;
@@ -246,6 +204,9 @@
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//           in main.html
+////////////////////////////////////////////////////////////////////////////////////////
 .navbar_separator_height {
   height: $navBarHeight;
 }
