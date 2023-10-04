@@ -4,15 +4,10 @@
 .mset_nav {
   height: $navBarHeight !important;
   background: var(--color-nav-bg);
-  .container-fluid {
-    padding: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
 }
 
 // navbar links
-.navbar-nav>li>a {
+.navbar_links>li>a {
   color: var(--color-nav-text);
   &:hover {
     color: var(--color-nav-text-hover);
@@ -23,40 +18,70 @@
 //           Buttons of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
 .btn_nav {
-  height: $navBarHeight !important;
-  min-width: 55px;
-  padding: 0 0.3rem;
-  margin: 0;
+  height: $navBarHeight;
   color: var(--color-nav-text);
   @include flexCenter;
-  h1,
-  .navbar_logo_1 {
-    padding: 0 0.5rem 0 0.4rem;
-  }
-  a {
-    padding-top: 0.6rem;
-  }
   &:hover {
     background-color: var(--color-nav-hover);
     color: var(--color-nav-text-hover);
   }
-  &__com_menu {
-    width: 60px;
-    height: 45px;
+  &__link {
+    padding: 0 0.5rem;
+    @media (min-width: 610px) {
+      padding: 0 0.8rem;
+    }
+    text-decoration: none;
+  }
+  &__logo {
+    width: 40px;
+    @media (min-width: 300px) {
+      width: 50px;
+    }
+    @media (min-width: 359px) {
+      width: 55px;
+    }
+    @media (min-width: 388px) {
+      width: 60px;
+    }
+  }
+  &__search {
+    min-width: 40px;
+    @media (min-width: 300px) {
+      min-width: 50px;
+    }
+    @media (min-width: 359px) {
+      min-width: 55px;
+    }
+    @media (min-width: 388px) {
+      min-width: 60px;
+    }
+  }
+  &__com {
+    width: 40px;
+    @media (min-width: 359px) {
+      width: 45px;
+    }
+    @media (min-width: 399px) {
+      width: 50px;
+    }
   }
   &__side_menus {
-    @media (min-width: 300px) {
-      /* Styles for small screens sm */
+    width: 55px;
+    @media (min-width: 359px) {
       width: 68px;
     }
-    @media (min-width: 576px) {
+    @media (min-width: 992px) {
       /* Styles for small screens sm */
       width: 80px;
     }
   }
 }
 
-.btn_ddnavpagesettings {
+.navfullsearchbar {
+  max-width: 300px;
+}
+
+.btn_ddnavthemecenter {
   @include flexCenter;
 }
 
@@ -133,7 +158,7 @@
 .ddnav .dropdown-menu {
   &__com {
     width: 190px;
-    transform: translate(55px, 0);
+    // transform: translate(55px, 0);
   }
   &__login {
     min-width: 190px;
