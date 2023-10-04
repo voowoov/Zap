@@ -22,10 +22,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //           Buttons of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
-// Navbar buttons settings
 .btn_nav {
   height: $navBarHeight !important;
-  min-width: 60px;
+  min-width: 55px;
   padding: 0 0.3rem;
   margin: 0;
   color: var(--color-nav-text);
@@ -41,13 +40,28 @@
     background-color: var(--color-nav-hover);
     color: var(--color-nav-text-hover);
   }
-  &__main_menu {
-    width: 65px;
+  &__com_menu {
+    width: 60px;
+    height: 45px;
+  }
+  &__side_menus {
+    @media (min-width: 300px) {
+      /* Styles for small screens sm */
+      width: 68px;
+    }
+    @media (min-width: 576px) {
+      /* Styles for small screens sm */
+      width: 80px;
+    }
   }
 }
 
+.btn_ddnavpagesettings {
+  @include flexCenter;
+}
+
 // Menu buttons inside dropdown and inside accordion (__sub)
-.btn_menu {
+.navbtn_accordion {
   width: 269px;
   height: $navBarHeight !important;
   padding-left: 20px !important;
@@ -65,10 +79,6 @@
     width: 249px !important;
     background-color: var(--color-nav-lev2);
   }
-}
-
-.btn_ddnavpagesettings {
-  @include flexCenter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -121,9 +131,13 @@
 //           Dropdowns of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
 .ddnav .dropdown-menu {
-  &__search {
-    width: 350px;
-    transform: translate(-180px, 0);
+  &__com {
+    width: 190px;
+    transform: translate(55px, 0);
+  }
+  &__login {
+    min-width: 190px;
+    max-width: 250px;
   }
   background-color: var(--color-nav-bg);
   a,
@@ -148,7 +162,7 @@
   }
 }
 
-.scrollable-menu {
+.scrollable_menu {
   height: auto;
   max-height: calc(100vh - $navBarHeight);
   overflow-x: hidden;
