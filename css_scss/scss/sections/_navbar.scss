@@ -30,6 +30,9 @@
     @media (min-width: 610px) {
       padding: 0 0.8rem;
     }
+    @media (min-width: 1300px) {
+      padding: 0 1rem;
+    }
     text-decoration: none;
   }
   &__logo {
@@ -42,6 +45,9 @@
     }
     @media (min-width: 388px) {
       width: 60px;
+    }
+    @media (min-width: 1400px) {
+      width: 140px;
     }
   }
   &__search {
@@ -57,12 +63,15 @@
     }
   }
   &__com {
-    width: 40px;
+    min-width: 40px;
     @media (min-width: 359px) {
-      width: 45px;
+      min-width: 45px;
     }
     @media (min-width: 399px) {
-      width: 50px;
+      min-width: 50px;
+    }
+    @media (min-width: 1400px) {
+      min-width: 90px;
     }
   }
   &__side_menus {
@@ -70,15 +79,76 @@
     @media (min-width: 359px) {
       width: 68px;
     }
-    @media (min-width: 992px) {
-      /* Styles for small screens sm */
+    @media (min-width: 1200px) {
+      /* Styles for small screens lg */
       width: 80px;
+    }
+    @media (min-width: 1450px) {
+      /* Styles for small screens lg */
+      width: 95px;
     }
   }
 }
 
 .navfullsearchbar {
-  max-width: 300px;
+  max-width: 360px;
+  @media (min-width: 1200px) {
+    width: 360px;
+  }
+}
+
+.btn_nav[aria-expanded="true"] {
+  background: red;
+}
+
+.navlinkbarparent {
+  overflow: hidden;
+  @media (min-width: 992px) and (max-width: 1200px) {
+    overflow: visible;
+  }
+}
+
+.navlinkbarswipe {
+  display: flex;
+  align-items: center;
+  max-width: fit-content;
+  height: calc($navBarHeight - 0px);
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Firefox */
+  scrollbar-width: thin;
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  a {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+  &::-webkit-scrollbar {
+    height: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-nav-hover);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #afafaf;
+  }
+  @media (min-width: 992px) and (max-width: 1200px) {
+    min-width: 500px;
+  }
+}
+
+.navavatarimageimg {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .btn_ddnavthemecenter {
@@ -156,9 +226,17 @@
 //           Dropdowns of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
 .ddnav .dropdown-menu {
+  &__search {
+    width: 450px;
+    height: 40px;
+    @media (max-width: 576px) {
+      /* Styles for small screens sm */
+      width: 100vw;
+      top: -(calc($navBarHeight + 3px)) !important;
+    }
+  }
   &__com {
     width: 190px;
-    // transform: translate(55px, 0);
   }
   &__login {
     min-width: 190px;

@@ -5,7 +5,7 @@
       <div class="p-0 m-0 d-flex align-items-center flex-nowrap">
         <!-- Menu -->
         <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus ps-3 ps-lg-4" type="button" id="navddMainMenu"
+          <div class="btn_nav btn_nav__side_menus ps-3 ps-xl-4" type="button" id="navddMainMenu"
             data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <svg width="25" height="25">
               <use href="{% static '/images/icons/menu-app.svg' %}#img"></use>
@@ -91,9 +91,12 @@
               d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1l6 3.577zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z" />
           </svg>
         </a>
-        <!-- Links      -->
-        <div class="d-none d-sm-block">
-          <div class="d-flex align-items-center flex-nowrap">
+        <!--   Links      -->
+        <div class="d-none d-sm-block navlinkbarparent">
+          <div class="navlinkbarswipe" id="navbarswipemenu">
+            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
@@ -101,15 +104,15 @@
         </div>
 
         <!--    Search      -->
-        <div class="ms-auto flex-md-grow-1 dropdown navfullsearchbar">
+        <div class="ms-auto flex-lg-grow-1 flex-xl-grow-0 dropdown-center navfullsearchbar">
           <div class="btn_nav btn_nav__search" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
             aria-expanded="false">
-            <div class="d-block d-md-none">
-              <svg class="" width="24" height="24">
+            <div class="d-block d-lg-none">
+              <svg class="" width="25" height="25">
                 <use href="{% static '/images/icons/search.svg' %}#img"></use>
               </svg>
             </div>
-            <div class="d-none d-md-block" style="width:100%">
+            <div class="d-none d-lg-block" style="width:100%">
               <div class="ps-3 d-flex align-items-center flex-nowrap text_color">
                 <input class="w-100" type="text" id="search-input" oninput="sendWebSocketMessage()" />
                 <svg class="mx-3" width="20" height="20">
@@ -118,7 +121,7 @@
               </div>
             </div>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end text-center dropdown-menu__com scrollable_menu">
+          <ul class="dropdown-menu text-center dropdown-menu__search scrollable_menu">
             <li>
               <div id="response-container"></div>
               {{ CURRENT_LANGUAGE|json_script:"current-language" }}
@@ -129,9 +132,12 @@
         <div class="dropdown-center">
           <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
             aria-expanded="false">
-            <svg class="" width="19" height="19">
-              <use href="{% static '/images/icons/calendar3.svg' %}#img"></use>
-            </svg>
+            <div class="d-flex flex-column justify-content-end align-items-center">
+              <svg class="" width="20" height="20">
+                <use href="{% static '/images/icons/calendar3.svg' %}#img"></use>
+              </svg>
+              <div class="d-none d-xxl-block fnavcommini">{% trans "Calendar" %}</div>
+            </div>
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
             {% if request.user.is_authenticated %}
@@ -147,9 +153,12 @@
         <div class="dropdown-center">
           <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
             aria-expanded="false">
-            <svg class="" width="22" height="22">
-              <use href="{% static '/images/icons/chat.svg' %}#img"></use>
-            </svg>
+            <div class="d-flex flex-column justify-content-end align-items-center">
+              <svg class="" width="20" height="20">
+                <use href="{% static '/images/icons/chat.svg' %}#img"></use>
+              </svg>
+              <div class="d-none d-xxl-block fnavcommini">{% trans "Messaging" %}</div>
+            </div>
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
             {% if request.user.is_authenticated %}
@@ -164,13 +173,16 @@
 
         <!-- Login      -->
         <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus pe-3 pe-lg-4" type="button" id="ddnavMenuLogin"
+          <div class="btn_nav btn_nav__side_menus pe-3 pe-xl-4" type="button" id="ddnavMenuLogin"
             data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
               {% if request.user.is_authenticated and request.user.avatar %}
-              <img src="{{ request.user.avatar.url }}" width="30px" alt="Avatar">
+              <img class="navavatarimageimg" src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar"
+                draggable="false">
               {% else %}
-              <img src="{% static '/images/icons/avatar.svg' %}" width="30px" alt="Avatar">
+              <svg class="" width="30" height="30">
+                <use href="{% static '/images/icons/avatar.svg' %}#img"></use>
+              </svg>
               {% endif %}
             </div>
           </div>

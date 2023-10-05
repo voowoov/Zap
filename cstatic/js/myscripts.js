@@ -401,5 +401,70 @@ function startChat(button) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
+//    navbar swipe link string with touch, mouse wheel or drag
+/////////////////////////////////////////////////////////////////////////////////
+const navbarswipemenu = document.getElementById("navbarswipemenu");
+// mouse wheel scroll horizontally
+navbarswipemenu.addEventListener("wheel", event => {
+  event.preventDefault();
+  navbarswipemenu.scrollLeft += event.deltaY / 7;
+});
+
+// mouse click-drag-release scroll horizontally
+let navswipeIsScrolling = false;
+let navswipeIsDragging = false;
+let navswipeStartPosition = 0;
+let navswipeStartScrollLeft = 0;
+
+navbarswipemenu.addEventListener("mousedown", event => {
+  console.log('asdf')
+  navswipeIsDragging = true;
+  navswipeIsScrolling = false
+  navswipeStartPosition = event.clientX;
+  navswipeStartScrollLeft = navbarswipemenu.scrollLeft;
+  document.addEventListener("mousemove", navswipemousemoveHandler);
+  document.addEventListener("mouseup", navswipemouseupHandler);
+});
+navbarswipemenu.addEventListener("click", event => {
+  if (navswipeIsScrolling) {
+    event.preventDefault();
+  }
+});
+
+function navswipemousemoveHandler(event) {
+  if (navswipeIsDragging) {
+    const displacementInPixels = navswipeStartPosition - event.clientX;
+    navbarswipemenu.scrollLeft = navswipeStartScrollLeft + displacementInPixels;
+    if (Math.abs(displacementInPixels) > 2) {
+      navswipeIsScrolling = true;
+    }
+  }
+}
+
+function navswipemouseupHandler(event) {
+  if (navswipeIsDragging) {
+    navswipeIsDragging = false;
+    document.removeEventListener("mousemove", navswipemousemoveHandler);
+    document.removeEventListener("mouseup", navswipemouseupHandler);
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////
 // 
 /////////////////////////////////////////////////////////////////////////////////
