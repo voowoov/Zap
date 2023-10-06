@@ -5,11 +5,14 @@
       <div class="p-0 m-0 d-flex align-items-center flex-nowrap">
         <!-- Menu -->
         <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus ps-3 ps-xl-4" type="button" id="navddMainMenu"
+          <div class="btn_nav btn_nav__side_menus ps-2 ps-xl-3" type="button" id="navddMainMenu"
             data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-            <svg width="25" height="25">
-              <use href="{% static '/images/icons/menu-app.svg' %}#img"></use>
-            </svg>
+            <div class="d-flex flex-column justify-content-center align-items-center">
+              <svg width="23" height="13">
+                <use href="{% static '/images/icons/menu-double.svg' %}#img"></use>
+              </svg>
+              <div class="fnavmenu">MENU</div>
+            </div>
           </div>
           <ul class="dropdown-menu scrollable-menu" aria-labelledby="navddMainMenu">
             <li class="px-0" style="padding-bottom: 0.8rem;">
@@ -136,7 +139,7 @@
               <svg class="" width="20" height="20">
                 <use href="{% static '/images/icons/calendar3.svg' %}#img"></use>
               </svg>
-              <div class="d-none d-xxl-block fnavcommini">{% trans "Calendar" %}</div>
+              <div class="d-none d-xxl-block fnavcom">{% trans "Scheduling" %}</div>
             </div>
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
@@ -157,7 +160,7 @@
               <svg class="" width="20" height="20">
                 <use href="{% static '/images/icons/chat.svg' %}#img"></use>
               </svg>
-              <div class="d-none d-xxl-block fnavcommini">{% trans "Messaging" %}</div>
+              <div class="d-none d-xxl-block fnavcom">{% trans "Messaging" %}</div>
             </div>
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
@@ -177,8 +180,7 @@
             data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
               {% if request.user.is_authenticated and request.user.avatar %}
-              <img class="navavatarimageimg" src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar"
-                draggable="false">
+              <img src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar" draggable="false">
               {% else %}
               <svg class="" width="30" height="30">
                 <use href="{% static '/images/icons/avatar.svg' %}#img"></use>

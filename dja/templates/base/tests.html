@@ -21,8 +21,27 @@
           <svg width="30" height="30">
             <use href="{% static '/images/icons/person-fill.svg' %}#img"></use>
           </svg>
-
         </div>
+
+        <div class="p-0 m-0" style="height: 40px;">
+          <div class="p-0 m-0 d-flex align-items-center searchboxctn">
+            <div class="p-0 m-0 searchinputcontainer">
+              <svg class="mx-3" width="16" height="16">
+                <use href="{% static '/images/icons/search.svg' %}#img"></use>
+              </svg>
+              <input class="w-100" type="text" id="search-input" oninput="sendWebSocketMessage()" />
+            </div>
+            <div class="p-0 m-0 searchenterbutton" type="button">
+              <svg class="mx-3" width="20" height="20">
+                <use href="{% static '/images/icons/search.svg' %}#img"></use>
+              </svg>
+            </div>
+
+          </div>
+        </div>
+
+
+
       </div>
     </div>
 

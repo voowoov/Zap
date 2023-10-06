@@ -4,6 +4,13 @@
 .mset_nav {
   height: $navBarHeight !important;
   background: var(--color-nav-bg);
+  // prevent dragging and selecting
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 // navbar links
@@ -34,12 +41,12 @@
       padding: 0 1rem;
     }
     text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
   &__logo {
-    width: 40px;
-    @media (min-width: 300px) {
-      width: 50px;
-    }
+    width: 50px;
     @media (min-width: 359px) {
       width: 55px;
     }
@@ -103,7 +110,7 @@
 
 .navlinkbarparent {
   overflow: hidden;
-  @media (min-width: 992px) and (max-width: 1200px) {
+  @media (min-width: 992px) and (max-width: 1199px) {
     overflow: visible;
   }
 }
@@ -120,14 +127,6 @@
   scrollbar-width: thin;
   /* IE and Edge */
   -ms-overflow-style: none;
-  a {
-    user-drag: none;
-    -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-  }
   &::-webkit-scrollbar {
     height: 2px;
   }
@@ -137,18 +136,26 @@
   &::-webkit-scrollbar-track {
     background-color: #afafaf;
   }
-  @media (min-width: 992px) and (max-width: 1200px) {
+  @media (min-width: 992px) and (max-width: 1199px) {
     min-width: 500px;
   }
 }
 
-.navavatarimageimg {
-  user-drag: none;
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+.searchboxctn {
+  display: flex;
+  align-items: center;
+  width: 500px;
+  height: 40px;
+  background-color: black;
+}
+
+.searchinputcontainer {
+  display: flex;
+  align-items: center;
+}
+
+.searchenterbutton {
+  @include flexCenter;
 }
 
 .btn_ddnavthemecenter {
@@ -228,9 +235,9 @@
 .ddnav .dropdown-menu {
   &__search {
     width: 450px;
-    height: 40px;
-    @media (max-width: 576px) {
+    @media (max-width: 575px) {
       /* Styles for small screens sm */
+      min-height: 41px;
       width: 100vw;
       top: -(calc($navBarHeight + 3px)) !important;
     }
@@ -314,7 +321,7 @@
     width: 0.7rem;
     height: 0.7rem;
     bottom: 0px;
-    right: -3px;
+    right: -5px;
   }
   &__active:after {
     background-color: #00ff22;
