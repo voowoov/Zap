@@ -1,27 +1,32 @@
 @use '../custom' as *;
-
 // GRADIENT MIXIN 
 @mixin gradientBg {
-    background: linear-gradient(to right, var(--color-1), var(--color-2));
+  background: linear-gradient(to right, var(--color-1), var(--color-2));
 }
 
 // ABSOLUTE CENTER 
 @mixin absoluteCenter {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 // FLEX CENTER
 @mixin flexCenter {
-  display:flex;
-  align-items:center;
-  justify-content:center;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // TRANSITION PROPERTY 
 @mixin transitionProperty {
-    transition-duration: 1s;
-    transition-property: height;
+  transition-duration: 1s;
+  transition-property: height;
+}
+
+.mcenter {
+  height: 100%;
+  width: 100%;
+  @include flexCenter;
 }

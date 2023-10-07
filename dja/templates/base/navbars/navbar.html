@@ -97,12 +97,16 @@
         <!--   Links      -->
         <div class="d-none d-sm-block navlinkbarparent">
           <div class="navlinkbarswipe" id="navbarswipemenu">
-            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
           </div>
         </div>
 
@@ -117,7 +121,7 @@
             </div>
             <div class="d-none d-lg-block" style="width:100%">
               <div class="ps-3 d-flex align-items-center flex-nowrap text_color">
-                <input class="w-100" type="text" id="search-input" oninput="sendWebSocketMessage()" />
+                <input class="w-100" type="text" />
                 <svg class="mx-3" width="20" height="20">
                   <use href="{% static '/images/icons/search.svg' %}#img"></use>
                 </svg>
