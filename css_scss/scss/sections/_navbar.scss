@@ -1,6 +1,11 @@
 @use '../custom' as *;
 @use '../components/mixins' as *;
 @use '../components/typography' as *;
+$screenwidth_sm: 576px;
+$screenwidth_md: 768px;
+$screenwidth_lg: 992px;
+$screenwidth_xl: 1200px;
+$screenwidth_xxl: 1400px;
 // Navbar settings
 .mset_nav {
   height: $navBarHeight !important;
@@ -38,7 +43,7 @@
     @media (min-width: 610px) {
       padding: 0 0.8rem;
     }
-    @media (min-width: 1300px) {
+    @media (min-width: 1250px) {
       padding: 0 1rem;
     }
     text-decoration: none;
@@ -54,8 +59,8 @@
     @media (min-width: 388px) {
       width: 60px;
     }
-    @media (min-width: 1400px) {
-      width: 140px;
+    @media (min-width: $screenwidth_xl) {
+      width: 110px;
     }
   }
   &__search {
@@ -78,7 +83,7 @@
     @media (min-width: 399px) {
       min-width: 50px;
     }
-    @media (min-width: 1400px) {
+    @media (min-width: $screenwidth_xxl) {
       min-width: 90px;
     }
   }
@@ -87,7 +92,7 @@
     @media (min-width: 359px) {
       width: 68px;
     }
-    @media (min-width: 1200px) {
+    @media (min-width: $screenwidth_xl) {
       /* Styles for small screens lg */
       width: 80px;
     }
@@ -98,22 +103,12 @@
   }
 }
 
-.navfullsearchbar {
-  max-width: 380px;
-  @media (min-width: 1200px) {
-    width: 380px;
-  }
-}
-
 .btn_nav[aria-expanded="true"] {
   background: red;
 }
 
 .navlinkbarparent {
   overflow: hidden;
-  @media (min-width: 992px) and (max-width: 1199px) {
-    overflow: visible;
-  }
 }
 
 .navlinkbarswipe {
@@ -137,8 +132,8 @@
   &::-webkit-scrollbar-track {
     background-color: #afafaf;
   }
-  @media (min-width: 992px) and (max-width: 1199px) {
-    min-width: 500px;
+  @media (min-width: $screenwidth_lg) and (max-width: calc($screenwidth_xl - 0.1px)) {
+    width: 480px;
   }
 }
 
@@ -218,11 +213,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 .ddnav .dropdown-menu {
   &__search {
-    width: 450px;
-    @media (max-width: 575px) {
-      /* Styles for small screens sm */
-      min-height: 41px;
-      width: 100vw;
+    //  assumin scrollbar width in 17 but may not be
+    width: 100vw;
+    max-width: 600px;
+    @media (max-width: calc($screenwidth_sm - 0.1px)) {
       top: -(calc($navBarHeight + 3px)) !important;
     }
   }
@@ -260,24 +254,6 @@
   height: auto;
   max-height: calc(100vh - $navBarHeight);
   overflow-x: hidden;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-//           Search dropdown
-////////////////////////////////////////////////////////////////////////////////////////
-.search_suggest_list {
-  max-height: 380px;
-  overflow-y: auto;
-}
-
-.search_suggest_title {
-  text-align: left;
-  font-size: 15px;
-}
-
-.search_suggest_date {
-  text-align: left;
-  font-size: 12px;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -327,6 +303,27 @@ $halfheight: calc($heightseachbox / 2);
 $searchbuttoncolor: #555;
 $searchinputcolor: #222222;
 $searchborderselectcolor: #5900ff;
+.searchboxctn0 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  @media screen and (max-width: calc($screenwidth_sm + 0.1px)) {
+    margin-top: 5px;
+    margin-bottom: 7px;
+  }
+  @media screen and (min-width: $screenwidth_sm) and (max-width: calc($screenwidth_lg - 0.1px)) {
+    max-width: 500px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  @media screen and (min-width: $screenwidth_lg) {
+    max-width: 360px;
+  }
+  @media screen and (min-width: $screenwidth_xl) {
+    width: 360px;
+  }
+}
+
 .searchboxctn1 {
   @include flexCenter;
   position: relative;
@@ -335,7 +332,7 @@ $searchborderselectcolor: #5900ff;
   height: $heightseachbox;
   margin-right: calc(7vw - 10px);
   /* This margin will be 5% of the viewport's width */
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $screenwidth_sm) {
     margin-right: 0;
   }
 }
@@ -407,27 +404,33 @@ $searchborderselectcolor: #5900ff;
   }
 }
 
-.search_nobackbtn {
-  .searchboxctn1 {
-    margin-right: 0;
-  }
-  .searchbtnback {
-    display: none !important;
-  }
-}
-
-.searchdropdownmenu {
+////////////////////////////////////////////////////////////////////////////////////////
+//      search result menu container  
+////////////////////////////////////////////////////////////////////////////////////////
+.searchresultsctn1 {
   display: none;
-  // padding: 0;
-  width: 100vw;
-  max-width: 500px;
-  background-color: black;
+  width: 100%;
+  background-color: var(--color-nav-bg);
+  border-radius: 5px;
+  // Scrollable :
+  height: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - $navBarHeight - 10px);
+  @media screen and (min-width: $screenwidth_sm) and (max-width: calc($screenwidth_lg - 0.1px)) {
+    max-height: calc(100vh - $navBarHeight - 62px);
+  }
+  @media screen and (min-width: $screenwidth_lg) {
+    max-height: calc(100vh - $navBarHeight - 5px);
+  }
 }
 
-.searchresultsmenu {
-  // padding: 0;
-  width: 100vw;
-  max-width: 500px;
+.searchisresultsposfixedcss {
+  .searchresultsctn1 {
+    width: 700px;
+    position: fixed;
+    top: calc($navBarHeight + 3px);
+    right: 0px;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

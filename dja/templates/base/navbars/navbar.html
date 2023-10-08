@@ -95,8 +95,18 @@
           </svg>
         </a>
         <!--   Links      -->
-        <div class="d-none d-sm-block navlinkbarparent">
+        <div class="me-3 d-none d-sm-block navlinkbarparent">
           <div class="navlinkbarswipe" id="navbarswipemenu">
+            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" draggable="false"
+              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
             <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
             <a class="btn_nav btn_nav__link" draggable="false"
               href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
@@ -111,30 +121,21 @@
         </div>
 
         <!--    Search      -->
-        <div class="ms-auto flex-lg-grow-1 flex-xl-grow-0 dropdown-center navfullsearchbar">
+        <div class="d-block d-lg-none ms-auto dropdown-center searchdropdownjs">
           <div class="btn_nav btn_nav__search" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
             aria-expanded="false">
-            <div class="d-block d-lg-none">
-              <svg class="" width="25" height="25">
-                <use href="{% static '/images/icons/search.svg' %}#img"></use>
-              </svg>
-            </div>
-            <div class="d-none d-lg-block" style="width:100%">
-              <div class="ps-3 d-flex align-items-center flex-nowrap text_color">
-                <input class="w-100" type="text" />
-                <svg class="mx-3" width="20" height="20">
-                  <use href="{% static '/images/icons/search.svg' %}#img"></use>
-                </svg>
-              </div>
-            </div>
+            <svg class="" width="25" height="25">
+              <use href="{% static '/images/icons/search.svg' %}#img"></use>
+            </svg>
           </div>
-          <ul class="dropdown-menu text-center dropdown-menu__search scrollable_menu">
-            <li>
-              <div id="response-container"></div>
-              {{ CURRENT_LANGUAGE|json_script:"current-language" }}
-            </li>
-          </ul>
+          <div class="p-0 dropdown-menu dropdown-menu__search">
+            <div class="searchboxmainjs searchisinbsdropdownjs"></div>
+          </div>
         </div>
+        <div class="d-none d-lg-block flex-lg-grow-1 flex-xl-grow-0 ms-auto me-3">
+          <div class="searchboxmainjs searchisresultsposfixedcss"></div>
+        </div>
+
         <!--   calendrier      -->
         <div class="dropdown-center">
           <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"

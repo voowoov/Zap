@@ -215,29 +215,6 @@ function changeDivInnerHtml(parentID, newInnerHTML) {
   }
   parent_element.appendChild(div);
 }
-/////////////////////////////////////////////////////////////////////////////////
-// Add search items to dropdown menu dynamically
-/////////////////////////////////////////////////////////////////////////////////
-function createListSearchResults(obj_list) {
-  let innerHTML = ``;
-  let title = '';
-  for (let i = 0; i < obj_list.length; i++) {
-    title = obj_list[i][0] + "&#10;" + obj_list[i][1];
-    innerHTML += `
-      <div class="row">
-        <a class="dropdown-item" title="${title}" href="#">
-          <div class="d-flex flex-wrap align-items-center">
-            <div class="col-12 text-truncate search_suggest_title" >${obj_list[i][0]}</div>
-            <div class="col-9 search_suggest_date">${obj_list[i][1]}</div>
-            <div class="col-3 search_suggest_date">${obj_list[i][1]}</div>
-          </div>
-        </a>
-        <hr class="dropdown-divider" />
-      </div>
-    `;
-  }
-  changeDivInnerHtml('search_suggest', innerHTML)
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 // Back-to-top button functions
@@ -451,13 +428,181 @@ function navswipemouseupHandler(event) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//    Navbar Search Box
 /////////////////////////////////////////////////////////////////////////////////
+var searchboxmainjs_list = document.getElementsByClassName('searchboxmainjs');
+for (var i = 0; i < searchboxmainjs_list.length; i++) {
+  let searchboxmainjs = searchboxmainjs_list[i];
+  // Fill the div with HTML code
+  if (page_language == "fr") {
+    searchplaceholder = "Rechercher";
+  } else {
+    searchplaceholder = "Search";
+  }
+  searchboxmainjs.innerHTML = `
+    <div class="d-flex flex-column align-items-center text_color">
+      <div class="searchboxctn0">
+        <div class="d-flex d-sm-none searchbtnback searchbtnround" type="button">
+          <svg width="30" height="30">
+            <use href="/static/images/icons/arrowb.svg#img"></use>
+          </svg>
+        </div>
+        <div class="searchboxctn1">
+          <div class=" searchboxctn2">
+            <input class="searchinputit" type="text" placeholder="${searchplaceholder}"
+              oninput="sendWebSocketMessage()" />
+          </div>
+          <div class="searchbtnenter" type="button">
+            <svg width="18" height="18">
+              <use href="/static/images/icons/search.svg#img"></use>
+            </svg>
+          </div>
+          <svg class="searchiconloupe" width="14" height="14">
+            <use href="/static/images/icons/search.svg#img"></use>
+          </svg>
+          <div class="searchbtnx searchbtnround" type="button">
+            <svg width="20" height="20">
+              <use href="/static/images/icons/x-lg.svg#img"></use>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="searchresultsctn1" id="response-container">
+        <a class="btn_nav btn_nav__link" draggable="false"
+          href="{% url 'base:home' %}">resultat 1wwwwwwwwwwwww wwwwwwwwww wwwwwwwwwwwww wwwwwwwwwww</a>
+        <a class="btn_nav btn_nav__link" draggable="false"
+          href="{% url 'base:home' %}">resultat 2</a>
+      </div>
+    </div>
+  `;
+
+  // For each one, get a second level of elements by class name within the iteration
+  let searchinputit = searchboxmainjs_list[i].getElementsByClassName('searchinputit')[0];
+  let searchiconloupe = searchboxmainjs_list[i].getElementsByClassName('searchiconloupe')[0];
+  let searchbtnx = searchboxmainjs_list[i].getElementsByClassName('searchbtnx')[0];
+  let searchbtnenter = searchboxmainjs_list[i].getElementsByClassName('searchbtnenter')[0];
+  let searchbtnback = searchboxmainjs_list[i].getElementsByClassName('searchbtnback')[0];
+  let searchboxctn2 = searchboxmainjs_list[i].getElementsByClassName('searchboxctn2')[0];
+  let searchresultsctn1 = searchboxmainjs_list[i].getElementsByClassName('searchresultsctn1')[0];
+
+  // Add an event listener for input changes
+  searchinputit.addEventListener("input", function() {
+    // Unhide searchbtnx if there is text inside the input field
+    if (this.value !== "") {
+      searchbtnx.style.display = "flex";
+    } else {
+      // Hide searchbtnx if the input field is empty
+      searchbtnx.style.display = "none";
+    }
+  });
+
+  searchbtnx.addEventListener("mousedown", function(event) {
+    // Prevent the button from taking focus
+    event.preventDefault();
+    event.stopPropagation();
+  });
+  searchbtnx.addEventListener("mouseup", function() {
+    // Empty the input element
+    searchinputit.value = "";
+    // Set the focus on the input element
+    searchinputit.focus();
+    searchinputit.dispatchEvent(new MouseEvent('mousedown'));
+    searchbtnx.style.display = "none";
+  });
+
+  searchinputit.addEventListener('mousedown', function() {
+    // Unhide searchbtnx if there is text inside the input field
+    if (this.value !== "") {
+      searchbtnx.style.display = "flex";
+    }
+
+    if (window.getComputedStyle(searchresultsctn1).display === 'none') {
+      searchiconloupe.style.display = "block";
+      searchresultsctn1.style.display = 'block';
+      searchboxctn2.style.marginLeft = '0';
+      searchboxctn2.style.paddingLeft = '25px';
+      searchboxctn2.style.border = '1px solid var(--searchborderselectcolor)';
+    }
+
+    function handleClick(event) {
+      if (document.documentElement.clientWidth <= event.clientY) {
+        console.log("asdf");
+      }
+      let clickedonscrollbar = document.documentElement.clientWidth <= event.clientX;
+      if (!clickedonscrollbar &&
+        !searchboxctn2.contains(event.target) && !
+        searchresultsctn1.contains(event.target)) {
+        // The click occurred outside of both elements
+        searchiconloupe.style.display = "none";
+        searchresultsctn1.style.display = 'none';
+        searchboxctn2.style.marginLeft = '25px';
+        searchboxctn2.style.paddingLeft = '0';
+        searchboxctn2.style.border = '1px solid var(--searchbuttoncolor)';
+        document.removeEventListener('mousedown', handleClick);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+  });
+
+  searchboxctn2.addEventListener('mousedown', function(event) {
+    if (event.target !== searchinputit) {
+      event.preventDefault();
+    }
+  });
 
 
-/////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
+  searchbtnenter.addEventListener("click", function() {
+    console.log("asdf")
+  });
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // (within for loop) search box is in a bootstrap dropdown menu
+  /////////////////////////////////////////////////////////////////////////////////
+  if (searchboxmainjs.classList.contains('searchisinbsdropdownjs')) {
+    let dropdownmenu__search = document.getElementsByClassName('dropdown-menu__search')[0];
+    let btn_nav__search = document.getElementsByClassName('btn_nav__search')[0];
+
+    dropdownmenu__search.addEventListener('mousedown', function(event) {
+      if (event.target !== searchinputit) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
+    btn_nav__search.addEventListener('click', function() {
+      setTimeout(function() {
+        searchinputit.focus();
+        searchinputit.dispatchEvent(new MouseEvent('mousedown'));
+      }, 0);
+    });
+    searchbtnback.addEventListener("click", function() {
+      btn_nav__search.click();
+    });
+  }
+
+  //  make the entire parent container scroll the results
+  searchboxmainjs.addEventListener('wheel', function(e) {
+    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+    searchresultsctn1.scrollTop -= (delta * 30);
+    e.preventDefault();
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    var dropdown = document.querySelector('.searchdropdownjs');
+    var links = document.querySelectorAll('a:not(.dropdown a)');
+    dropdown.addEventListener('show.bs.dropdown', function() {
+      // deactivate scrolling on the main page while search dropdown menu is open
+      if (window.innerWidth < 620) {
+        document.body.style.overflowY = 'hidden';
+      }
+    });
+    dropdown.addEventListener('hide.bs.dropdown', function() {
+      document.body.style.overflowY = 'auto';
+    });
+  });
+
+
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
