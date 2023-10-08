@@ -356,6 +356,9 @@ $searchborderselectcolor: #5900ff;
   border: none;
   background: transparent;
   color: var(--color-text);
+  &:not(:focus) {
+    color: gray;
+  }
 }
 
 .searchbtnenter {
@@ -426,7 +429,7 @@ $searchborderselectcolor: #5900ff;
 
 .searchisresultsposfixedcss {
   .searchresultsctn1 {
-    width: 700px;
+    width: 670px;
     position: fixed;
     top: calc($navBarHeight + 3px);
     right: 0px;

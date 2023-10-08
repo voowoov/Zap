@@ -467,7 +467,7 @@ for (var i = 0; i < searchboxmainjs_list.length; i++) {
           </div>
         </div>
       </div>
-      <div class="searchresultsctn1" id="response-container">
+      <div class="searchresultsctn1 response-container">
         <a class="btn_nav btn_nav__link" draggable="false"
           href="{% url 'base:home' %}">resultat 1wwwwwwwwwwwww wwwwwwwwww wwwwwwwwwwwww wwwwwwwwwww</a>
         <a class="btn_nav btn_nav__link" draggable="false"
@@ -524,24 +524,34 @@ for (var i = 0; i < searchboxmainjs_list.length; i++) {
       searchboxctn2.style.border = '1px solid var(--searchborderselectcolor)';
     }
 
-    function handleClick(event) {
-      if (document.documentElement.clientWidth <= event.clientY) {
-        console.log("asdf");
-      }
+    function closeSearchResults() {
+      searchiconloupe.style.display = "none";
+      searchresultsctn1.style.display = 'none';
+      searchboxctn2.style.marginLeft = '25px';
+      searchboxctn2.style.paddingLeft = '0';
+      searchboxctn2.style.border = '1px solid var(--searchbuttoncolor)';
+      searchinputit.blur();
+      document.removeEventListener('mousedown', handleClickedOutside);
+      document.removeEventListener('keydown', handleEscapeKeydown);
+    }
+
+    function handleClickedOutside(event) {
       let clickedonscrollbar = document.documentElement.clientWidth <= event.clientX;
       if (!clickedonscrollbar &&
         !searchboxctn2.contains(event.target) && !
         searchresultsctn1.contains(event.target)) {
         // The click occurred outside of both elements
-        searchiconloupe.style.display = "none";
-        searchresultsctn1.style.display = 'none';
-        searchboxctn2.style.marginLeft = '25px';
-        searchboxctn2.style.paddingLeft = '0';
-        searchboxctn2.style.border = '1px solid var(--searchbuttoncolor)';
-        document.removeEventListener('mousedown', handleClick);
+        closeSearchResults()
       }
     }
-    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('mousedown', handleClickedOutside);
+
+    function handleEscapeKeydown(event) {
+      if (event.key === 'Escape') {
+        closeSearchResults()
+      }
+    }
+    document.addEventListener('keydown', handleEscapeKeydown);
   });
 
   searchboxctn2.addEventListener('mousedown', function(event) {
@@ -550,14 +560,18 @@ for (var i = 0; i < searchboxmainjs_list.length; i++) {
     }
   });
 
+  //  make the entire parent container scroll the results
+  searchboxmainjs.addEventListener('wheel', function(e) {
+    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+    searchresultsctn1.scrollTop -= (delta * 30);
+    e.preventDefault();
+  });
 
   searchbtnenter.addEventListener("click", function() {
     console.log("asdf")
   });
 
-  /////////////////////////////////////////////////////////////////////////////////
   // (within for loop) search box is in a bootstrap dropdown menu
-  /////////////////////////////////////////////////////////////////////////////////
   if (searchboxmainjs.classList.contains('searchisinbsdropdownjs')) {
     let dropdownmenu__search = document.getElementsByClassName('dropdown-menu__search')[0];
     let btn_nav__search = document.getElementsByClassName('btn_nav__search')[0];
@@ -578,37 +592,32 @@ for (var i = 0; i < searchboxmainjs_list.length; i++) {
       btn_nav__search.click();
     });
   }
+}
 
-  //  make the entire parent container scroll the results
-  searchboxmainjs.addEventListener('wheel', function(e) {
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-    searchresultsctn1.scrollTop -= (delta * 30);
-    e.preventDefault();
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    var dropdown = document.querySelector('.searchdropdownjs');
-    var links = document.querySelectorAll('a:not(.dropdown a)');
-    dropdown.addEventListener('show.bs.dropdown', function() {
-      // deactivate scrolling on the main page while search dropdown menu is open
+// hide the main page scroll bar when search dropdown menu is open
+document.addEventListener('DOMContentLoaded', function() {
+  var searchdropdownjs_list = document.getElementsByClassName('searchdropdownjs');
+  for (var i = 0; i < searchdropdownjs_list.length; i++) {
+    let searchdropdownjs = searchdropdownjs_list[i];
+    searchdropdownjs.addEventListener('show.bs.dropdown', function() {
       if (window.innerWidth < 620) {
         document.body.style.overflowY = 'hidden';
       }
     });
-    dropdown.addEventListener('hide.bs.dropdown', function() {
+    searchdropdownjs.addEventListener('hide.bs.dropdown', function() {
       document.body.style.overflowY = 'auto';
     });
-  });
-
-
-}
-
-
+  }
+});
 
 
 /////////////////////////////////////////////////////////////////////////////////
 // 
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
 // 
