@@ -41,13 +41,13 @@ function detectColorScheme() {
     document.documentElement.setAttribute("color_theme", "dark");
   }
   // All logos color theme
-  let logo1_light = document.getElementsByName("logo1_light");
-  let logo1_dark = document.getElementsByName("logo1_dark");
-  for (let i = 0; i < logo1_light.length; i++) {
-    logo1_light[i].hidden = true;
+  let Logo1Light = document.getElementsByName("Logo1Light");
+  let Logo1Dark = document.getElementsByName("Logo1Dark");
+  for (let i = 0; i < Logo1Light.length; i++) {
+    Logo1Light[i].hidden = true;
   }
-  for (let i = 0; i < logo1_dark.length; i++) {
-    logo1_dark[i].hidden = false;
+  for (let i = 0; i < Logo1Dark.length; i++) {
+    Logo1Dark[i].hidden = false;
   }
 }
 detectColorScheme();

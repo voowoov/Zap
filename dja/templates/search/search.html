@@ -9,63 +9,64 @@
   <section id="login_section" class="login_section">
     <div class="container-fluid">
       <div class="row text_color text-start">
-        <input type="text" id="search-input" oninput="sendWebSocketMessage()" />
-        <div id="response-container"></div>
+        <input type="text" id="navsearchinput" oninput="sendWebSocketMessage()" />
+        <div id="navsearchresultsctn"></div>
         {{ CURRENT_LANGUAGE|json_script:"current-language" }}
       </div>
     </div>
   </section>
 </main>
 <script>
-  var websocket; // Declare a global variable for the WebSocket object
+  var websocketnavsearch; // Declare a global variable for the WebSocket object
 
-  function createWebSocket() {
+  function createWebSocketNavsearch() {
     const currentLanguage = JSON.parse(document.getElementById('current-language').textContent);
-    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    websocket = new WebSocket(
-      protocol +
+    const currenthttpprotocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    websocketnavsearch = new WebSocket(
+      currenthttpprotocol +
       window.location.host + '/' +
       currentLanguage + '/ws/search/'
     );
     // Handle WebSocket connection open event
-    websocket.onopen = function (event) {
+    websocketnavsearch.onopen = function (event) {
       console.log('WebSocket connection established.');
     };
 
     // Handle WebSocket message received event
-    websocket.onmessage = function (event) {
+    websocketnavsearch.onmessage = function (event) {
       const message = event.data;
-      handleWebSocketMessage(message);
+      handleWebSocketMessageNavsearch(message);
     };
 
     // Handle WebSocket connection close event
-    websocket.onclose = function (event) {
+    websocketnavsearch.onclose = function (event) {
       console.log('WebSocket connection closed.');
     };
 
-    websocket.onerror = function (event) {
+    websocketnavsearch.onerror = function (event) {
       // Handle the error event
       console.log("WebSocket error: " + event.message);
     };
   }
 
-  // Add an event listener for the focus event
-  const searchBox = document.getElementById('search-input');
-  searchBox.addEventListener("focus", function (event) {
-    // Call the createWebSocket function
-    createWebSocket();
+  const navsearchinputele = document.getElementById('navsearchinput');
+  navsearchinputele.addEventListener("focus", function (event) {
+    if (!websocketnavsearch) {
+      createWebSocketNavsearch();
+    }
   });
 
   // Send a WebSocket message to the Django consumer
   function sendWebSocketMessage() {
-    const inputText = document.getElementById('search-input').value;
-    startTime = performance.now();
+    const inputText = navsearchinputele.value;
+    startTimerNavsearch = performance.now();
     // Send the input text as a WebSocket message
-    websocket.send(inputText);
+    websocketnavsearch.send(inputText);
   }
 
+  const navsearchResultsctn = document.getElementById('navsearchresultsctn');
   // Handle WebSocket message received from the Django consumer
-  function handleWebSocketMessage(message) {
+  function handleWebSocketMessageNavsearch(message) {
     var jsonArray = JSON.parse(message);
     var ul = document.createElement("ul");
     for (var i = 0; i < jsonArray.length; i++) {
@@ -76,12 +77,10 @@
       // Append the list item to the list
       ul.appendChild(li);
     }
-    const responseContainer = document.getElementById('response-container');
-    responseContainer.innerHTML = "";
-    responseContainer.appendChild(ul);
+    navsearchResultsctn.innerHTML = "";
+    navsearchResultsctn.appendChild(ul);
 
-    let endTime = performance.now();
-    let timeDiff = endTime - startTime;
+    let timeDiff = performance.now() - startTimerNavsearch;
     console.log(`${timeDiff} milliseconds to execute.`);
   }
 </script>

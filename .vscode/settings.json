@@ -17,9 +17,9 @@
   "emmet.triggerExpansionOnTab": true,
   "beautify.language": {
     "html": [
-        "htm",
-        "html",
-        "django-html"
+      "htm",
+      "html",
+      "django-html"
     ]
   },
   "files.autoSave": "onFocusChange",
@@ -29,4 +29,7 @@
   "scss.format.enable": false,
   "css.format.enable": true,
   "sass.format.enabled": false,
+  "JSObfuscator.changeFileExtension": "min.js",
+  "JSObfuscator.overwriteExistingFiles": true,
+  "JSObfuscator.subPathInWorkspace": "cstatic/js",
 }

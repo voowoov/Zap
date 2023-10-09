@@ -35,47 +35,59 @@ function detectColorScheme() {
     // document.documentElement.setAttribute("color_theme", "dark");
 
     // All logos color theme
-    let logo1_light = document.getElementsByName("logo1_light");
-    let logo1_dark = document.getElementsByName("logo1_dark");
-    for (let i = 0; i < logo1_light.length; i++) {
-      logo1_light[i].hidden = true;
+    let Logo1Light = document.getElementsByName("Logo1Light");
+    let Logo1Dark = document.getElementsByName("Logo1Dark");
+    for (let i = 0; i < Logo1Light.length; i++) {
+      Logo1Light[i].hidden = true;
     }
-    for (let i = 0; i < logo1_dark.length; i++) {
-      logo1_dark[i].hidden = false;
+    for (let i = 0; i < Logo1Dark.length; i++) {
+      Logo1Dark[i].hidden = false;
     }
   }
 }
 detectColorScheme();
 
 /////////////////////////////////////////////////////////////////////////////////
-// Button toggle a <div>
+// Get page language from html header
 /////////////////////////////////////////////////////////////////////////////////
-const targetDiv_div = document.getElementById("toggleDiv_div");
-const targetDiv_btn = document.getElementById("toggleDiv_btn");
-if (targetDiv_btn !== null) {
-  targetDiv_btn.onclick = function() {
-    if (targetDiv_div.style.display !== "none") {
-      targetDiv_div.style.display = "none";
-    } else {
-      targetDiv_div.style.display = "block";
-    }
-  };
+const pageLanguage = document.documentElement.lang
+
+/////////////////////////////////////////////////////////////////////////////////
+// Button toggle container display
+// Parent class  toggleDisplayCtnWithBtn, childs  toggleDisplayCtn and toggleDisplayBtn
+/////////////////////////////////////////////////////////////////////////////////
+var toggleDisplayCtnWithBtn = document.getElementsByClassName("toggleDisplayCtnWithBtn");
+for (var i = 0; i < toggleDisplayCtnWithBtn.length; i++) {
+  let toggleDisplayCtn = toggleDisplayCtnWithBtn[i].getElementsByClassName("toggleDisplayCtn")[0];
+  let toggleDisplayBtn = toggleDisplayCtnWithBtn[i].getElementsByClassName("toggleDisplayBtn")[0];
+  if (toggleDisplayBtn !== null && toggleDisplayCtn !== null) {
+    toggleDisplayBtn.onclick = function() {
+      if (toggleDisplayCtn.style.display !== "none") {
+        toggleDisplayCtn.style.display = "none";
+      } else {
+        toggleDisplayCtn.style.display = "block";
+      }
+    };
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 // Password eye toggling
 /////////////////////////////////////////////////////////////////////////////////
-const togglePassword = document.querySelector("#togglePassword");
-const password1 = document.querySelector("#inputPassword");
-if (togglePassword !== null) {
-  togglePassword.addEventListener("click", function() {
-    // toggle the type attribute
-    const type = password1.getAttribute("type") === "password" ? "text" : "password";
-    password1.setAttribute("type", type);
-    // toggle the eye icon
-    this.classList.toggle('fa-eye');
-    this.classList.toggle('fa-eye-slash');
-  });
+var toggleDisplayPasswordWithBtn = document.getElementsByClassName("toggleDisplayPasswordWithBtn");
+for (var i = 0; i < toggleDisplayPasswordWithBtn.length; i++) {
+  let toggleDisplayPassword = toggleDisplayPasswordWithBtn[i].getElementsByClassName("toggleDisplayPassword")[0];
+  let toggleDisplayPassBtn = toggleDisplayPasswordWithBtn[i].getElementsByClassName("toggleDisplayPassBtn")[0];
+  if (toggleDisplayPassword !== null !== null && toggleDisplayPassBtn) {
+    toggleDisplayPassBtn.onclick = function() {
+      // toggle the type attribute
+      const type = toggleDisplayPassword.getAttribute("type") === "password" ? "text" : "password";
+      toggleDisplayPassword.setAttribute("type", type);
+      // toggle the eye icon
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    };
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -136,13 +148,12 @@ const target_div_cookieBanner = document.getElementById("target_div_cookieBanner
 const target_btn_acceptAllCookies = document.getElementById("target_btn_acceptAllCookies");
 const target_btn_customOptCookies = document.getElementById("target_btn_customOptCookies");
 const target_btn_customAllCookies = document.getElementById("target_btn_customAllCookies");
-const page_language = document.documentElement.lang
 
 // Cookie banner
 function closeCookieBanner() {
-  if (page_language == "fr") {
+  if (pageLanguage == "fr") {
     sendMessageOnPage("Préférence de cookie enregistrée.");
-  } else if (page_language == "en") {
+  } else if (pageLanguage == "en") {
     sendMessageOnPage("Your cookie preference was set.");
   }
   if (target_div_cookieBanner.style.display !== "none") {
@@ -384,7 +395,7 @@ const navbarswipemenu = document.getElementById("navbarswipemenu");
 // mouse wheel scroll horizontally
 navbarswipemenu.addEventListener("wheel", event => {
   event.preventDefault();
-  navbarswipemenu.scrollLeft += event.deltaY / 7;
+  navbarswipemenu.scrollLeft += event.deltaY / 5;
 });
 
 // mouse click-drag-release scroll horizontally
@@ -394,7 +405,6 @@ let navswipeStartPosition = 0;
 let navswipeStartScrollLeft = 0;
 
 navbarswipemenu.addEventListener("mousedown", event => {
-  console.log('asdf')
   navswipeIsDragging = true;
   navswipeIsScrolling = false
   navswipeStartPosition = event.clientX;
@@ -428,65 +438,120 @@ function navswipemouseupHandler(event) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
+//    
 //    Navbar Search Box
+//    
 /////////////////////////////////////////////////////////////////////////////////
-var searchboxmainjs_list = document.getElementsByClassName('searchboxmainjs');
-for (var i = 0; i < searchboxmainjs_list.length; i++) {
-  let searchboxmainjs = searchboxmainjs_list[i];
-  // Fill the div with HTML code
-  if (page_language == "fr") {
-    searchplaceholder = "Rechercher";
-  } else {
-    searchplaceholder = "Search";
-  }
-  searchboxmainjs.innerHTML = `
-    <div class="d-flex flex-column align-items-center text_color">
-      <div class="searchboxctn0">
-        <div class="d-flex d-sm-none searchbtnback searchbtnround" type="button">
-          <svg width="30" height="30">
-            <use href="/static/images/icons/arrowb.svg#img"></use>
-          </svg>
+
+var screenwidth_lg = 992; // Replace with your value
+
+const searchtriggerbtn = document.getElementsByClassName('btn_nav__search')[0];
+const searchboxmain = document.getElementsByClassName('searchboxmain')[0];
+// Fill the div with HTML code
+if (pageLanguage == "fr") {
+  searchplaceholder = "Rechercher";
+} else {
+  searchplaceholder = "Search";
+}
+searchboxmain.innerHTML = `
+  <div class="d-flex flex-column align-items-center text_color">
+    <div class="searchboxctn0">
+      <div class="d-flex d-sm-none searchbtnback searchbtnround" type="button">
+        <svg width="30" height="30">
+          <use href="/static/images/icons/arrowb.svg#img"></use>
+        </svg>
+      </div>
+      <div class="searchboxctn1">
+        <div class=" searchboxctn2">
+          <input class="searchinputit" type="text" placeholder="${searchplaceholder}"
+            oninput="sendWebSocketMessage()" />
         </div>
-        <div class="searchboxctn1">
-          <div class=" searchboxctn2">
-            <input class="searchinputit" type="text" placeholder="${searchplaceholder}"
-              oninput="sendWebSocketMessage()" />
-          </div>
-          <div class="searchbtnenter" type="button">
-            <svg width="18" height="18">
-              <use href="/static/images/icons/search.svg#img"></use>
-            </svg>
-          </div>
-          <svg class="searchiconloupe" width="14" height="14">
+        <div class="searchbtnenter" type="button">
+          <svg width="18" height="18">
             <use href="/static/images/icons/search.svg#img"></use>
           </svg>
-          <div class="searchbtnx searchbtnround" type="button">
-            <svg width="20" height="20">
-              <use href="/static/images/icons/x-lg.svg#img"></use>
-            </svg>
-          </div>
+        </div>
+        <svg class="searchiconloupe" width="14" height="14">
+          <use href="/static/images/icons/search.svg#img"></use>
+        </svg>
+        <div class="searchbtnx searchbtnround" type="button">
+          <svg width="20" height="20">
+            <use href="/static/images/icons/x-lg.svg#img"></use>
+          </svg>
         </div>
       </div>
-      <div class="searchresultsctn1 response-container">
-        <a class="btn_nav btn_nav__link" draggable="false"
-          href="{% url 'base:home' %}">resultat 1wwwwwwwwwwwww wwwwwwwwww wwwwwwwwwwwww wwwwwwwwwww</a>
-        <a class="btn_nav btn_nav__link" draggable="false"
-          href="{% url 'base:home' %}">resultat 2</a>
-      </div>
     </div>
-  `;
+    <div class="searchresctn0">
+    </div>
+  </div>
+`;
 
-  // For each one, get a second level of elements by class name within the iteration
-  let searchinputit = searchboxmainjs_list[i].getElementsByClassName('searchinputit')[0];
-  let searchiconloupe = searchboxmainjs_list[i].getElementsByClassName('searchiconloupe')[0];
-  let searchbtnx = searchboxmainjs_list[i].getElementsByClassName('searchbtnx')[0];
-  let searchbtnenter = searchboxmainjs_list[i].getElementsByClassName('searchbtnenter')[0];
-  let searchbtnback = searchboxmainjs_list[i].getElementsByClassName('searchbtnback')[0];
-  let searchboxctn2 = searchboxmainjs_list[i].getElementsByClassName('searchboxctn2')[0];
-  let searchresultsctn1 = searchboxmainjs_list[i].getElementsByClassName('searchresultsctn1')[0];
+// For each one, get a second level of elements by class name within the iteration
+const searchinputit = searchboxmain.getElementsByClassName('searchinputit')[0];
+const searchiconloupe = searchboxmain.getElementsByClassName('searchiconloupe')[0];
+const searchbtnx = searchboxmain.getElementsByClassName('searchbtnx')[0];
+const searchbtnenter = searchboxmain.getElementsByClassName('searchbtnenter')[0];
+const searchbtnback = searchboxmain.getElementsByClassName('searchbtnback')[0];
+const searchboxctn0 = searchboxmain.getElementsByClassName('searchboxctn0')[0];
+const searchboxctn2 = searchboxmain.getElementsByClassName('searchboxctn2')[0];
+const searchresctn0 = searchboxmain.getElementsByClassName('searchresctn0')[0];
 
-  // Add an event listener for input changes
-  searchinputit.addEventListener("input", function() {
+function showSearchControl() {
+  searchiconloupe.style.display = "block";
+  searchboxctn2.style.marginLeft = '0';
+  searchboxctn2.style.paddingLeft = '25px';
+  searchboxctn2.style.border = '1px solid var(--color-searchborderselect)';
+  searchresctn0.style.display = 'block';
+  if (!window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
+    searchboxmain.style.display = "block";
+  }
+  searchinputit.focus();
+  searchtriggerbtn.setAttribute('aria-expanded', 'true');
+  // hide the main page scroll bar under a certain screen width
+  if (window.innerWidth < 620) {
+    document.body.style.overflowY = 'hidden';
+  }
+}
+
+function hideSearchControl() {
+  searchiconloupe.style.display = "none";
+  searchboxctn2.style.marginLeft = '25px';
+  searchboxctn2.style.paddingLeft = '0';
+  searchboxctn2.style.border = '1px solid var(--color-searchbutton)';
+  searchresctn0.style.display = 'none';
+  if (!window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
+    searchboxmain.style.display = "none";
+  }
+  searchinputit.blur();
+  searchtriggerbtn.setAttribute('aria-expanded', 'false');
+  document.body.style.overflowY = 'auto';
+}
+
+function activateSearchBox() {
+
+  showSearchControl();
+
+  // Unhide searchbtnx if there is text inside the input field
+  if (searchinputit.value !== "") {
+    searchbtnx.style.display = "flex";
+  }
+  if (window.getComputedStyle(searchresctn0).display === 'none') {
+    showSearchResultsCtn();
+  }
+
+  function closeSearchResults() {
+    document.removeEventListener('input', handleInputTextChange);
+    document.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
+    document.removeEventListener('mouseup', handleClickOnXbutton);
+    document.removeEventListener('mousedown', handlePreventLeavingInput);
+    document.removeEventListener('wheel', handleScrollingFromMainCtn);
+    document.removeEventListener('mousedown', handleClickedOutside);
+    document.removeEventListener('keydown', handleEscapeKeydown);
+    document.removeEventListener('click', handleBackButtonClick);
+    hideSearchControl();
+  }
+
+  function handleInputTextChange(event) {
     // Unhide searchbtnx if there is text inside the input field
     if (this.value !== "") {
       searchbtnx.style.display = "flex";
@@ -494,130 +559,187 @@ for (var i = 0; i < searchboxmainjs_list.length; i++) {
       // Hide searchbtnx if the input field is empty
       searchbtnx.style.display = "none";
     }
-  });
+  }
+  searchinputit.addEventListener('input', handleInputTextChange);
 
-  searchbtnx.addEventListener("mousedown", function(event) {
-    // Prevent the button from taking focus
+  function handlePreventXbuttonFocusLoss(event) {
     event.preventDefault();
     event.stopPropagation();
-  });
-  searchbtnx.addEventListener("mouseup", function() {
+  }
+  searchbtnx.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
+
+  function handleClickOnXbutton(event) {
     // Empty the input element
     searchinputit.value = "";
     // Set the focus on the input element
     searchinputit.focus();
     searchinputit.dispatchEvent(new MouseEvent('mousedown'));
     searchbtnx.style.display = "none";
-  });
+  }
+  searchbtnx.addEventListener('mouseup', handleClickOnXbutton);
 
-  searchinputit.addEventListener('mousedown', function() {
-    // Unhide searchbtnx if there is text inside the input field
-    if (this.value !== "") {
-      searchbtnx.style.display = "flex";
-    }
-
-    if (window.getComputedStyle(searchresultsctn1).display === 'none') {
-      searchiconloupe.style.display = "block";
-      searchresultsctn1.style.display = 'block';
-      searchboxctn2.style.marginLeft = '0';
-      searchboxctn2.style.paddingLeft = '25px';
-      searchboxctn2.style.border = '1px solid var(--searchborderselectcolor)';
-    }
-
-    function closeSearchResults() {
-      searchiconloupe.style.display = "none";
-      searchresultsctn1.style.display = 'none';
-      searchboxctn2.style.marginLeft = '25px';
-      searchboxctn2.style.paddingLeft = '0';
-      searchboxctn2.style.border = '1px solid var(--searchbuttoncolor)';
-      searchinputit.blur();
-      document.removeEventListener('mousedown', handleClickedOutside);
-      document.removeEventListener('keydown', handleEscapeKeydown);
-    }
-
-    function handleClickedOutside(event) {
-      let clickedonscrollbar = document.documentElement.clientWidth <= event.clientX;
-      if (!clickedonscrollbar &&
-        !searchboxctn2.contains(event.target) && !
-        searchresultsctn1.contains(event.target)) {
-        // The click occurred outside of both elements
-        closeSearchResults()
-      }
-    }
-    document.addEventListener('mousedown', handleClickedOutside);
-
-    function handleEscapeKeydown(event) {
-      if (event.key === 'Escape') {
-        closeSearchResults()
-      }
-    }
-    document.addEventListener('keydown', handleEscapeKeydown);
-  });
-
-  searchboxctn2.addEventListener('mousedown', function(event) {
+  function handlePreventLeavingInput(event) {
     if (event.target !== searchinputit) {
       event.preventDefault();
     }
-  });
-
-  //  make the entire parent container scroll the results
-  searchboxmainjs.addEventListener('wheel', function(e) {
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-    searchresultsctn1.scrollTop -= (delta * 30);
-    e.preventDefault();
-  });
-
-  searchbtnenter.addEventListener("click", function() {
-    console.log("asdf")
-  });
-
-  // (within for loop) search box is in a bootstrap dropdown menu
-  if (searchboxmainjs.classList.contains('searchisinbsdropdownjs')) {
-    let dropdownmenu__search = document.getElementsByClassName('dropdown-menu__search')[0];
-    let btn_nav__search = document.getElementsByClassName('btn_nav__search')[0];
-
-    dropdownmenu__search.addEventListener('mousedown', function(event) {
-      if (event.target !== searchinputit) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    });
-    btn_nav__search.addEventListener('click', function() {
-      setTimeout(function() {
-        searchinputit.focus();
-        searchinputit.dispatchEvent(new MouseEvent('mousedown'));
-      }, 0);
-    });
-    searchbtnback.addEventListener("click", function() {
-      btn_nav__search.click();
-    });
   }
+  searchboxctn2.addEventListener('mousedown', handlePreventLeavingInput);
+
+  function handleScrollingFromMainCtn(event) {
+    var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+    searchresctn0.scrollTop -= (delta * 30);
+    event.preventDefault();
+  }
+  searchboxmain.addEventListener('wheel', handleScrollingFromMainCtn);
+
+  function handleClickedOutside(event) {
+    let clickedonscrollbar = document.documentElement.clientWidth <= event.clientX;
+    if (!clickedonscrollbar &&
+      !searchboxmain.contains(event.target) &&
+      !searchresctn0.contains(event.target) &&
+      !searchtriggerbtn.contains(event.target)) {
+      // The click occurred outside of both elements
+      closeSearchResults();
+    }
+  }
+  document.addEventListener('mousedown', handleClickedOutside);
+
+  function handleEscapeKeydown(event) {
+    if (event.key === 'Escape') {
+      closeSearchResults();
+    }
+  }
+  document.addEventListener('keydown', handleEscapeKeydown);
+
+  function handleBackButtonClick(event) {
+    closeSearchResults();
+  }
+  searchbtnback.addEventListener("click", handleBackButtonClick);
+
 }
 
-// hide the main page scroll bar when search dropdown menu is open
-document.addEventListener('DOMContentLoaded', function() {
-  var searchdropdownjs_list = document.getElementsByClassName('searchdropdownjs');
-  for (var i = 0; i < searchdropdownjs_list.length; i++) {
-    let searchdropdownjs = searchdropdownjs_list[i];
-    searchdropdownjs.addEventListener('show.bs.dropdown', function() {
-      if (window.innerWidth < 620) {
-        document.body.style.overflowY = 'hidden';
-      }
-    });
-    searchdropdownjs.addEventListener('hide.bs.dropdown', function() {
-      document.body.style.overflowY = 'auto';
-    });
+searchinputit.addEventListener("mousedown", function() {
+  activateSearchBox();
+});
+
+searchbtnenter.addEventListener("click", function() {
+  console.log("search button click")
+});
+
+searchtriggerbtn.addEventListener('click', function() {
+  if (searchtriggerbtn.getAttribute('aria-expanded') === 'false') {
+    activateSearchBox();
+  } else {
+    hideSearchControl();
   }
+});
+
+// Change the display based on windows width
+function setSearchBoxDisplayPerScreenWidth() {
+  if (window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
+    searchboxmain.style.display = "block";
+  } else {
+    if (searchboxmain.style.display == "block" &&
+      searchresctn0.style.display == "none") {
+      searchboxmain.style.display = "none";
+    }
+  }
+}
+searchboxmain.style.display = "none";
+searchresctn0.style.display = "none";
+setSearchBoxDisplayPerScreenWidth()
+
+window.addEventListener('resize', function() {
+  setSearchBoxDisplayPerScreenWidth();
 });
 
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
+var websocketnavsearch; // Declare a global variable for the WebSocket object
+
+function createWebSocketNavsearch() {
+  const currentHttpProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  websocketnavsearch = new WebSocket(
+    currentHttpProtocol +
+    window.location.host + '/' +
+    pageLanguage + '/ws/search/'
+  );
+  // Handle WebSocket connection open event
+  websocketnavsearch.onopen = function(event) {
+    console.log('WebSocket connection established.');
+  };
+
+  // Handle WebSocket message received event
+  websocketnavsearch.onmessage = function(event) {
+    const message = event.data;
+    handleWebSocketSearchResults(message);
+  };
+
+  // Handle WebSocket connection close event
+  websocketnavsearch.onclose = function(event) {
+    console.log('WebSocket connection closed.');
+  };
+
+  websocketnavsearch.onerror = function(event) {
+    // Handle the error event
+    console.log("WebSocket error: " + event.message);
+  };
+}
+
+searchinputit.addEventListener("focus", function(event) {
+  if (!websocketnavsearch) {
+    createWebSocketNavsearch();
+  }
+});
+
+// Send a WebSocket message to the Django consumer
+function sendWebSocketMessage() {
+  startTimerNavsearch = performance.now();
+  // Send the input text as a WebSocket message
+  websocketnavsearch.send(searchinputit.value);
+}
+
+// Handle WebSocket message search results received from the Django consumer
+function handleWebSocketSearchResults(message) {
+  var jsonArray = JSON.parse(message);
+  var ul = document.createElement("ul");
+  for (var i = 0; i < jsonArray.length; i++) {
+    // Create a list item element
+    var li = document.createElement("li");
+    // Set the content of the list item to the name and age of each person
+    li.innerHTML = jsonArray[i].title + " (" + jsonArray[i].vote + ")";
+    // Append the list item to the list
+    ul.appendChild(li);
+  }
+  searchresctn0.innerHTML = "";
+  searchresctn0.appendChild(ul);
+
+  let timeDiff = performance.now() - startTimerNavsearch;
+  console.log(`${timeDiff} milliseconds to execute.`);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//  close open bs dropdown menus with escape key
 /////////////////////////////////////////////////////////////////////////////////
+// window.addEventListener('keydown', function(event) {
+//   if (event.key === 'Escape') {
+//     // Get all shown dropdown elements
+//     const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+//     // Loop through each dropdown and remove the 'show' class
+//     for (var i = 0; i < dropdowns.length; i++) {
+//       dropdowns[i].classList.remove('show');
+//       // Get the button that controls this dropdown
+//       const button = dropdowns[i].parentNode.querySelector('[aria-expanded]');
+//       if (button) {
+//         // Set 'aria-expanded' to 'false'
+//         button.setAttribute('aria-expanded', 'false');
+//       }
+//     }
+//   }
+// });
 
 /////////////////////////////////////////////////////////////////////////////////
 // 

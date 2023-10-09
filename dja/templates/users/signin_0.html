@@ -9,10 +9,10 @@
   <section id="login_section" class="login_section">
     <div class="container-fluid">
       <div class="row text_color text-start">
-        <img class="p-0" src="{% static '/images/logo1_light.png' %}" height="30px" style="width: auto;" alt="Logo"
-          name="logo1_light">
-        <img class="p-0" src="{% static '/images/logo1_dark.png' %}" height="30px" style="width: auto;" alt="Logo"
-          name="logo1_dark" hidden>
+        <img class="p-0" src="{% static '/images/Logo1Light.png' %}" height="30px" style="width: auto;" alt="Logo"
+          name="Logo1Light">
+        <img class="p-0" src="{% static '/images/Logo1Dark.png' %}" height="30px" style="width: auto;" alt="Logo"
+          name="Logo1Dark" hidden>
         <div class="fs-4 mt-1 p-0 pb-3">{% trans "Sign in to your account" %}
         </div>
       </div>
@@ -59,20 +59,20 @@
           <button type="submit" class="rounded-pill btn-login 
         btn-login__signin">{% trans "Sign in" %}</button>
         </div>
-        <div class="row mt-4 text_color text-center">
+        <!-- Toggle div display, see javascript -->
+        <div class="row mt-4 text_color text-center toggleDisplayCtnWithBtn">
           <div class="form-check d-flex justify-content-center">
-            <input class="form-check-input me-2" type="checkbox" name="stay_signed_in" id="flexCheckChecked"
-              {% if form.stay_signed_in.value %} checked {% endif %}>
-            <label class="form-check-label" for="flexCheckChecked">
+            <label class="form-check-label">
+              <input class="form-check-input me-2" type="checkbox" name="stay_signed_in"
+                {% if form.stay_signed_in.value %} checked {% endif %}>
               {% trans "Stay&nbsp;" %}
             </label>
-            <span class="link_1" type="button" id="toggleDiv_btn">{% trans "signed in" %}</span>
+            <span class="link_1 toggleDisplayBtn" type="button">{% trans "signed in" %}</span>
           </div>
           <div>
             {% trans "Uncheck if using a public device." %} <br>
           </div>
-          <!-- Toggle div display, see javascript -->
-          <div class="login-learn" id="toggleDiv_div" style="display: none;">
+          <div class="login-learn toggleDisplayCtn" style="display: none;">
             <div class="row">
               <span class="col-2">
 

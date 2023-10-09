@@ -104,7 +104,7 @@ $screenwidth_xxl: 1400px;
 }
 
 .btn_nav[aria-expanded="true"] {
-  background: red;
+  background: var(--color-nav-dropdownbtnshow);
 }
 
 .navlinkbarparent {
@@ -175,7 +175,7 @@ $screenwidth_xxl: 1400px;
 
 // identation block before level2 button
 .acorlev2preblock {
-  background-color: var(--color-nav-select);
+  background-color: var(--color-nav-acc-select);
   width: 20px !important;
   height: $navBarHeight !important;
 }
@@ -192,7 +192,7 @@ $screenwidth_xxl: 1400px;
   }
   &:not(.collapsed) {
     color: var(--color-nav-text);
-    background-color: var(--color-nav-select);
+    background-color: var(--color-nav-acc-select);
   }
   &:hover,
   &:not(.collapsed):hover {
@@ -212,14 +212,6 @@ $screenwidth_xxl: 1400px;
 //           Dropdowns of navbar
 ////////////////////////////////////////////////////////////////////////////////////////
 .ddnav .dropdown-menu {
-  &__search {
-    //  assumin scrollbar width in 17 but may not be
-    width: 100vw;
-    max-width: 600px;
-    @media (max-width: calc($screenwidth_sm - 0.1px)) {
-      top: -(calc($navBarHeight + 3px)) !important;
-    }
-  }
   &__com {
     width: 190px;
   }
@@ -275,7 +267,6 @@ $screenwidth_xxl: 1400px;
     display: block;
     position: absolute;
     background-color: #8b8b8b;
-    z-index: 111;
     border-radius: 50%;
     border: 0.12rem solid #3f4156;
     width: 0.7rem;
@@ -340,11 +331,11 @@ $searchborderselectcolor: #5900ff;
 .searchboxctn2 {
   height: 100%;
   width: 100%;
-  background-color: var(--searchinputcolor);
+  background-color: var(--color-searchinput);
   border-radius: $halfheight 0 0 $halfheight;
   margin-left: 25px;
   padding-left: 0;
-  border: 1px solid var(--searchbuttoncolor);
+  border: 1px solid var(--color-searchbutton);
 }
 
 .searchinputit {
@@ -365,7 +356,7 @@ $searchborderselectcolor: #5900ff;
   @include flexCenter;
   min-width: 52px;
   height: 100%;
-  background-color: var(--searchbuttoncolor);
+  background-color: var(--color-searchbutton);
   border-radius: 0 $halfheight $halfheight 0;
 }
 
@@ -408,10 +399,26 @@ $searchborderselectcolor: #5900ff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-//      search result menu container  
+//      search containers 
 ////////////////////////////////////////////////////////////////////////////////////////
-.searchresultsctn1 {
-  display: none;
+.searchboxmain {
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  max-width: 600px;
+  right: 0;
+  top: 0;
+  background-color: var(--color-nav-bg);
+  @media screen and (min-width: $screenwidth_sm) and (max-width: calc($screenwidth_lg - 0.1px)) {
+    top: calc($navBarHeight + 3px);
+  }
+  @media screen and (min-width: $screenwidth_lg) {
+    position: static;
+  }
+}
+
+.searchresctn0 {
+  position: static;
   width: 100%;
   background-color: var(--color-nav-bg);
   border-radius: 5px;
@@ -424,12 +431,8 @@ $searchborderselectcolor: #5900ff;
   }
   @media screen and (min-width: $screenwidth_lg) {
     max-height: calc(100vh - $navBarHeight - 5px);
-  }
-}
-
-.searchisresultsposfixedcss {
-  .searchresultsctn1 {
     width: 670px;
+    max-width: 100%;
     position: fixed;
     top: calc($navBarHeight + 3px);
     right: 0px;
