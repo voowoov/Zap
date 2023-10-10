@@ -31,18 +31,8 @@ function detectColorScheme() {
     default:
   }
   if (theme == "dark") {
-    // Sets in <html> tag, activates CSS variables for dark color theme
-    // document.documentElement.setAttribute("color_theme", "dark");
-
-    // All logos color theme
-    let Logo1Light = document.getElementsByName("Logo1Light");
-    let Logo1Dark = document.getElementsByName("Logo1Dark");
-    for (let i = 0; i < Logo1Light.length; i++) {
-      Logo1Light[i].hidden = true;
-    }
-    for (let i = 0; i < Logo1Dark.length; i++) {
-      Logo1Dark[i].hidden = false;
-    }
+    $(".Logo1Light").css("display", "none");
+    $(".Logo1Dark").css("display", "block");
   }
 }
 detectColorScheme();
@@ -56,10 +46,10 @@ const pageLanguage = document.documentElement.lang
 // Button toggle container display
 // Parent class  toggleDisplayCtnWithBtn, childs  toggleDisplayCtn and toggleDisplayBtn
 /////////////////////////////////////////////////////////////////////////////////
-var toggleDisplayCtnWithBtn = document.getElementsByClassName("toggleDisplayCtnWithBtn");
-for (var i = 0; i < toggleDisplayCtnWithBtn.length; i++) {
-  let toggleDisplayCtn = toggleDisplayCtnWithBtn[i].getElementsByClassName("toggleDisplayCtn")[0];
-  let toggleDisplayBtn = toggleDisplayCtnWithBtn[i].getElementsByClassName("toggleDisplayBtn")[0];
+const toggleDisplayCtnWithBtn_List = document.getElementsByClassName("toggleDisplayCtnWithBtn");
+for (var i = 0; i < toggleDisplayCtnWithBtn_List.length; i++) {
+  const toggleDisplayCtn = toggleDisplayCtnWithBtn_List[i].getElementsByClassName("toggleDisplayCtn")[0];
+  const toggleDisplayBtn = toggleDisplayCtnWithBtn_List[i].getElementsByClassName("toggleDisplayBtn")[0];
   if (toggleDisplayBtn !== null && toggleDisplayCtn !== null) {
     toggleDisplayBtn.onclick = function() {
       if (toggleDisplayCtn.style.display !== "none") {
@@ -74,10 +64,10 @@ for (var i = 0; i < toggleDisplayCtnWithBtn.length; i++) {
 /////////////////////////////////////////////////////////////////////////////////
 // Password eye toggling
 /////////////////////////////////////////////////////////////////////////////////
-var toggleDisplayPasswordWithBtn = document.getElementsByClassName("toggleDisplayPasswordWithBtn");
-for (var i = 0; i < toggleDisplayPasswordWithBtn.length; i++) {
-  let toggleDisplayPassword = toggleDisplayPasswordWithBtn[i].getElementsByClassName("toggleDisplayPassword")[0];
-  let toggleDisplayPassBtn = toggleDisplayPasswordWithBtn[i].getElementsByClassName("toggleDisplayPassBtn")[0];
+const toggleDisplayPasswordWithBtn_List = document.getElementsByClassName("toggleDisplayPasswordWithBtn");
+for (var i = 0; i < toggleDisplayPasswordWithBtn_List.length; i++) {
+  const toggleDisplayPassword = toggleDisplayPasswordWithBtn_List[i].getElementsByClassName("toggleDisplayPassword")[0];
+  const toggleDisplayPassBtn = toggleDisplayPasswordWithBtn_List[i].getElementsByClassName("toggleDisplayPassBtn")[0];
   if (toggleDisplayPassword !== null !== null && toggleDisplayPassBtn) {
     toggleDisplayPassBtn.onclick = function() {
       // toggle the type attribute
@@ -93,25 +83,30 @@ for (var i = 0; i < toggleDisplayPasswordWithBtn.length; i++) {
 /////////////////////////////////////////////////////////////////////////////////
 // Keep horizontal scroll to the right in tables
 /////////////////////////////////////////////////////////////////////////////////
-$(window).resize(function() {
-  horizontalScrollRight()
-});
-window.onload = (event) => {
-  horizontalScrollRight()
-};
+const tableScrollRight_Lists = document.getElementsByClassName("tableScrollRight");
+if (tableScrollRight_Lists.length > 0) {
 
-function horizontalScrollRight() {
-  var items = document.getElementsByClassName("tableScrollRight");
-  for (var i = 0; i < items.length; i++) {
-    items[i].scrollLeft = items[i].scrollWidth;
+  window.onload = (event) => {
+    setTableScrollRight()
+  };
+
+  $(window).resize(function() {
+    setTableScrollRight()
+  });
+
+  function setTableScrollRight() {
+    for (var i = 0; i < tableScrollRight_Lists.length; i++) {
+      tableScrollRight_Lists[i].scrollLeft = tableScrollRight_Lists[i].scrollWidth;
+    }
   }
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // Make entire table row a link
 /////////////////////////////////////////////////////////////////////////////////
 $(document).ready(function($) {
-  $(".table_row_link").click(function() {
+  $(".entireTableRowIsLink").click(function() {
     window.document.location = $(this).data("href");
   });
 });
@@ -143,89 +138,37 @@ function getCookie(cname) {
   return "";
 }
 
-// Cookie banner - set a cookie that stores cookie settings
-const target_div_cookieBanner = document.getElementById("target_div_cookieBanner");
-const target_btn_acceptAllCookies = document.getElementById("target_btn_acceptAllCookies");
-const target_btn_customOptCookies = document.getElementById("target_btn_customOptCookies");
-const target_btn_customAllCookies = document.getElementById("target_btn_customAllCookies");
-
+/////////////////////////////////////////////////////////////////////////////////
+// Cookie banner and custom options
+/////////////////////////////////////////////////////////////////////////////////
 // Cookie banner
+const cookiesBannerDiv = document.getElementById("cookiesBannerDiv");
+
 function closeCookieBanner() {
-  if (pageLanguage == "fr") {
-    sendMessageOnPage("Préférence de cookie enregistrée.");
-  } else if (pageLanguage == "en") {
-    sendMessageOnPage("Your cookie preference was set.");
-  }
-  if (target_div_cookieBanner.style.display !== "none") {
-    target_div_cookieBanner.style.display = "none";
+  if (cookiesBannerDiv.style.display !== "none") {
+    cookiesBannerDiv.style.display = "none";
   } else {
-    target_div_cookieBanner.style.display = "block";
+    cookiesBannerDiv.style.display = "block";
   }
 }
-if (target_btn_acceptAllCookies !== null) {
-  target_btn_acceptAllCookies.onclick = function() {
-    setCookie("cookie_pref", "111", 120);
-    closeCookieBanner();
-  };
-}
-// Cookie settings
-if (target_btn_customOptCookies !== null) {
-  target_btn_customOptCookies.onclick = function() {
-    // alert(1);
-    let cookie_pref_temp = (document.getElementById("switchCookie2").checked) ? '1' : '0';
-    cookie_pref_temp += (document.getElementById("switchCookie3").checked) ? '1' : '0';
-    cookie_pref_temp += (document.getElementById("switchCookie4").checked) ? '1' : '0';
-    setCookie("cookie_pref", cookie_pref_temp, 120);
-    closeCookieBanner();
-  };
-}
-if (target_btn_customAllCookies !== null) {
-  target_btn_customAllCookies.onclick = function() {
-    setCookie("cookie_pref", "111", 120);
-    closeCookieBanner();
-  };
-}
+$("#cookiesAcceptAllBtn").click(function() {
+  setCookie("cookie_pref", "111", 120);
+  closeCookieBanner();
+});
 
-/////////////////////////////////////////////////////////////////////////////////
-// sendMessageOnPage
-/////////////////////////////////////////////////////////////////////////////////
+// Cookie custom options
+$("#cookiesCustomAllBtn").click(function() {
+  setCookie("cookie_pref", "111", 120);
+  closeCookieBanner();
+});
+$("#cookiesCustomOptBtn").click(function() {
+  let cookiePrefTemp = (document.getElementById("switchCookie2").checked) ? '1' : '0';
+  cookiePrefTemp += (document.getElementById("switchCookie3").checked) ? '1' : '0';
+  cookiePrefTemp += (document.getElementById("switchCookie4").checked) ? '1' : '0';
+  setCookie("cookie_pref", cookiePrefTemp, 120);
+  closeCookieBanner();
+});
 
-function sendMessageOnPage(cmessage) {
-  const newDiv = document.createElement("div");
-  const newContent = document.createTextNode(cmessage);
-  newDiv.appendChild(newContent);
-  newDiv.style.position = "fixed";
-  newDiv.style.backgroundColor = "#55FF55";
-  newDiv.style.left = '10px';
-  newDiv.style.top = '60px';
-  newDiv.style.opacity = 1;
-  var fadeEffect = setInterval(function() {
-    if (newDiv.style.opacity > 0) {
-      newDiv.style.opacity -= 0.04;
-    } else {
-      newDiv.remove();
-      clearInterval(fadeEffect);
-    }
-  }, 200);
-  document.body.insertBefore(newDiv, null);
-}
-// sendMessageOnPage("Cookie preference was set.")
-
-/////////////////////////////////////////////////////////////////////////////////
-//  changeDivInnerHtml
-/////////////////////////////////////////////////////////////////////////////////
-function changeDivInnerHtml(parentID, newInnerHTML) {
-  const div = document.createElement('div');
-  div.className = '';
-  let innerHTML = ``;
-  div.innerHTML = innerHTML + newInnerHTML;
-  let parent_element = document.getElementById(parentID)
-    //  remove all existing items
-  while (parent_element.firstChild) {
-    parent_element.firstChild.remove();
-  }
-  parent_element.appendChild(div);
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 // Back-to-top button functions
@@ -234,10 +177,10 @@ function changeDivInnerHtml(parentID, newInnerHTML) {
 var btnBackToTop = document.getElementById("btnBackToTop");
 if (btnBackToTop) {
   window.onscroll = function() {
-    scrollfunction()
+    scrollTresholdDetectFunction()
   };
 
-  function scrollfunction() {
+  function scrollTresholdDetectFunction() {
     let scroolTrigger = 200;
     if (document.body.scrollTop > scroolTrigger || document.documentElement.scrollTop > scroolTrigger) {
       btnBackToTop.style.opacity = '0.85';
@@ -273,6 +216,8 @@ function loadChatPrepare() {
       toggleChatPrepare();
     })
 }
+
+const chatPrepareDiv = document.getElementById("chat-prepare");
 
 function createListChatHosts(json) {
   var listChatStaff = json.chat_staff_list
@@ -326,11 +271,11 @@ function createListChatHosts(json) {
         </div>
     `;
   }
-  changeDivInnerHtml('chat-prepare', innerHTML)
+  chatPrepareDiv.innerHTML = innerHTML;
 }
 
 function toggleChatPrepare() {
-  document.querySelector('#chat-prepare').classList.toggle("is-active");
+  chatPrepareDiv.classList.toggle("is-active");
 }
 
 /////////// open new tab OR focus on existing tab   ////////////
@@ -391,50 +336,45 @@ function startChat(button) {
 /////////////////////////////////////////////////////////////////////////////////
 //    navbar swipe link string with touch, mouse wheel or drag
 /////////////////////////////////////////////////////////////////////////////////
-const navbarswipemenu = document.getElementById("navbarswipemenu");
+const navbarSwipeMenu = document.getElementById("navbarSwipeMenu");
 // mouse wheel scroll horizontally
-navbarswipemenu.addEventListener("wheel", event => {
+navbarSwipeMenu.addEventListener("wheel", event => {
   event.preventDefault();
-  navbarswipemenu.scrollLeft += event.deltaY / 5;
+  navbarSwipeMenu.scrollLeft += event.deltaY / 5;
 });
 
 // mouse click-drag-release scroll horizontally
-let navswipeIsScrolling = false;
-let navswipeIsDragging = false;
-let navswipeStartPosition = 0;
-let navswipeStartScrollLeft = 0;
+navbarSwipeMenu.addEventListener("mousedown", event => {
+  let preventClickTreshold = false
+  let navswipeStartPosition = event.clientX;
+  let navswipeStartScrollLeft = navbarSwipeMenu.scrollLeft;
 
-navbarswipemenu.addEventListener("mousedown", event => {
-  navswipeIsDragging = true;
-  navswipeIsScrolling = false
-  navswipeStartPosition = event.clientX;
-  navswipeStartScrollLeft = navbarswipemenu.scrollLeft;
-  document.addEventListener("mousemove", navswipemousemoveHandler);
-  document.addEventListener("mouseup", navswipemouseupHandler);
-});
-navbarswipemenu.addEventListener("click", event => {
-  if (navswipeIsScrolling) {
-    event.preventDefault();
-  }
-});
-
-function navswipemousemoveHandler(event) {
-  if (navswipeIsDragging) {
+  function handleNavSwipeMousemove(event) {
     const displacementInPixels = navswipeStartPosition - event.clientX;
-    navbarswipemenu.scrollLeft = navswipeStartScrollLeft + displacementInPixels;
+    navbarSwipeMenu.scrollLeft = navswipeStartScrollLeft + displacementInPixels;
     if (Math.abs(displacementInPixels) > 2) {
-      navswipeIsScrolling = true;
+      preventClickTreshold = true;
     }
   }
-}
+  document.addEventListener("mousemove", handleNavSwipeMousemove);
 
-function navswipemouseupHandler(event) {
-  if (navswipeIsDragging) {
-    navswipeIsDragging = false;
-    document.removeEventListener("mousemove", navswipemousemoveHandler);
-    document.removeEventListener("mouseup", navswipemouseupHandler);
+  function handlePreventLinkClick(event) {
+    if (preventClickTreshold) {
+      event.preventDefault();
+    }
   }
-}
+  navbarSwipeMenu.addEventListener("click", handlePreventLinkClick);
+
+  function handleNavSwipeMouseup(event) {
+    setTimeout(function() {
+      document.removeEventListener("mousemove", handleNavSwipeMousemove);
+      document.removeEventListener("mouseup", handleNavSwipeMouseup);
+      navbarSwipeMenu.removeEventListener("click", handlePreventLinkClick);
+    }, 0);
+  }
+  document.addEventListener("mouseup", handleNavSwipeMouseup);
+
+});
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -443,70 +383,71 @@ function navswipemouseupHandler(event) {
 //    
 /////////////////////////////////////////////////////////////////////////////////
 
-var screenwidth_lg = 992; // Replace with your value
+var screenWidthLg = 992; // Replace with your value
 
-const searchtriggerbtn = document.getElementsByClassName('btn_nav__search')[0];
-const searchboxmain = document.getElementsByClassName('searchboxmain')[0];
+const navSearchTriggerBtn = document.getElementsByClassName('btn_nav__search')[0];
+const navSearchMain = document.getElementsByClassName('navSearchMain')[0];
 // Fill the div with HTML code
+let navSearchPlaceHolder;
 if (pageLanguage == "fr") {
-  searchplaceholder = "Rechercher";
+  navSearchPlaceHolder = "Rechercher";
 } else {
-  searchplaceholder = "Search";
+  navSearchPlaceHolder = "Search";
 }
-searchboxmain.innerHTML = `
+navSearchMain.innerHTML = `
   <div class="d-flex flex-column align-items-center text_color">
-    <div class="searchboxctn0">
-      <div class="d-flex d-sm-none searchbtnback searchbtnround" type="button">
+    <div class="navSearchBoxDiv0">
+      <div class="d-flex d-sm-none navSearchBtnBack navSearchBtnRound" type="button">
         <svg width="30" height="30">
           <use href="/static/images/icons/arrowb.svg#img"></use>
         </svg>
       </div>
-      <div class="searchboxctn1">
-        <div class=" searchboxctn2">
-          <input class="searchinputit" type="text" placeholder="${searchplaceholder}"
+      <div class="navSearchBoxDiv1">
+        <div class=" navSearchBoxDiv2">
+          <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}"
             oninput="sendWebSocketMessage()" />
         </div>
-        <div class="searchbtnenter" type="button">
+        <div class="navSearchBtnEnter" type="button">
           <svg width="18" height="18">
             <use href="/static/images/icons/search.svg#img"></use>
           </svg>
         </div>
-        <svg class="searchiconloupe" width="14" height="14">
+        <svg class="navSearchIconLoupe" width="14" height="14">
           <use href="/static/images/icons/search.svg#img"></use>
         </svg>
-        <div class="searchbtnx searchbtnround" type="button">
+        <div class="navSearchBtnClearX navSearchBtnRound" type="button">
           <svg width="20" height="20">
             <use href="/static/images/icons/x-lg.svg#img"></use>
           </svg>
         </div>
       </div>
     </div>
-    <div class="searchresctn0">
+    <div class="navSearchResDiv0">
     </div>
   </div>
 `;
 
 // For each one, get a second level of elements by class name within the iteration
-const searchinputit = searchboxmain.getElementsByClassName('searchinputit')[0];
-const searchiconloupe = searchboxmain.getElementsByClassName('searchiconloupe')[0];
-const searchbtnx = searchboxmain.getElementsByClassName('searchbtnx')[0];
-const searchbtnenter = searchboxmain.getElementsByClassName('searchbtnenter')[0];
-const searchbtnback = searchboxmain.getElementsByClassName('searchbtnback')[0];
-const searchboxctn0 = searchboxmain.getElementsByClassName('searchboxctn0')[0];
-const searchboxctn2 = searchboxmain.getElementsByClassName('searchboxctn2')[0];
-const searchresctn0 = searchboxmain.getElementsByClassName('searchresctn0')[0];
+const navSearchInputTxt = navSearchMain.getElementsByClassName('navSearchInputTxt')[0];
+const navSearchIconLoupe = navSearchMain.getElementsByClassName('navSearchIconLoupe')[0];
+const navSearchBtnClearX = navSearchMain.getElementsByClassName('navSearchBtnClearX')[0];
+const navSearchBtnEnter = navSearchMain.getElementsByClassName('navSearchBtnEnter')[0];
+const navSearchBtnBack = navSearchMain.getElementsByClassName('navSearchBtnBack')[0];
+const navSearchBoxDiv0 = navSearchMain.getElementsByClassName('navSearchBoxDiv0')[0];
+const navSearchBoxDiv2 = navSearchMain.getElementsByClassName('navSearchBoxDiv2')[0];
+const navSearchResDiv0 = navSearchMain.getElementsByClassName('navSearchResDiv0')[0];
 
 function showSearchControl() {
-  searchiconloupe.style.display = "block";
-  searchboxctn2.style.marginLeft = '0';
-  searchboxctn2.style.paddingLeft = '25px';
-  searchboxctn2.style.border = '1px solid var(--color-searchborderselect)';
-  searchresctn0.style.display = 'block';
-  if (!window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
-    searchboxmain.style.display = "block";
+  navSearchIconLoupe.style.display = "block";
+  navSearchBoxDiv2.style.marginLeft = '0';
+  navSearchBoxDiv2.style.paddingLeft = '25px';
+  navSearchBoxDiv2.style.border = '1px solid var(--color-searchborderselect)';
+  navSearchResDiv0.style.display = 'block';
+  if (!window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
+    navSearchMain.style.display = "block";
   }
-  searchinputit.focus();
-  searchtriggerbtn.setAttribute('aria-expanded', 'true');
+  navSearchInputTxt.focus();
+  navSearchTriggerBtn.setAttribute('aria-expanded', 'true');
   // hide the main page scroll bar under a certain screen width
   if (window.innerWidth < 620) {
     document.body.style.overflowY = 'hidden';
@@ -514,16 +455,16 @@ function showSearchControl() {
 }
 
 function hideSearchControl() {
-  searchiconloupe.style.display = "none";
-  searchboxctn2.style.marginLeft = '25px';
-  searchboxctn2.style.paddingLeft = '0';
-  searchboxctn2.style.border = '1px solid var(--color-searchbutton)';
-  searchresctn0.style.display = 'none';
-  if (!window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
-    searchboxmain.style.display = "none";
+  navSearchIconLoupe.style.display = "none";
+  navSearchBoxDiv2.style.marginLeft = '25px';
+  navSearchBoxDiv2.style.paddingLeft = '0';
+  navSearchBoxDiv2.style.border = '1px solid var(--color-searchbutton)';
+  navSearchResDiv0.style.display = 'none';
+  if (!window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
+    navSearchMain.style.display = "none";
   }
-  searchinputit.blur();
-  searchtriggerbtn.setAttribute('aria-expanded', 'false');
+  navSearchInputTxt.blur();
+  navSearchTriggerBtn.setAttribute('aria-expanded', 'false');
   document.body.style.overflowY = 'auto';
 }
 
@@ -531,11 +472,11 @@ function activateSearchBox() {
 
   showSearchControl();
 
-  // Unhide searchbtnx if there is text inside the input field
-  if (searchinputit.value !== "") {
-    searchbtnx.style.display = "flex";
+  // Unhide navSearchBtnClearX if there is text inside the input field
+  if (navSearchInputTxt.value !== "") {
+    navSearchBtnClearX.style.display = "flex";
   }
-  if (window.getComputedStyle(searchresctn0).display === 'none') {
+  if (window.getComputedStyle(navSearchResDiv0).display === 'none') {
     showSearchResultsCtn();
   }
 
@@ -552,52 +493,52 @@ function activateSearchBox() {
   }
 
   function handleInputTextChange(event) {
-    // Unhide searchbtnx if there is text inside the input field
+    // Unhide navSearchBtnClearX if there is text inside the input field
     if (this.value !== "") {
-      searchbtnx.style.display = "flex";
+      navSearchBtnClearX.style.display = "flex";
     } else {
-      // Hide searchbtnx if the input field is empty
-      searchbtnx.style.display = "none";
+      // Hide navSearchBtnClearX if the input field is empty
+      navSearchBtnClearX.style.display = "none";
     }
   }
-  searchinputit.addEventListener('input', handleInputTextChange);
+  navSearchInputTxt.addEventListener('input', handleInputTextChange);
 
   function handlePreventXbuttonFocusLoss(event) {
     event.preventDefault();
     event.stopPropagation();
   }
-  searchbtnx.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
+  navSearchBtnClearX.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
 
   function handleClickOnXbutton(event) {
     // Empty the input element
-    searchinputit.value = "";
+    navSearchInputTxt.value = "";
     // Set the focus on the input element
-    searchinputit.focus();
-    searchinputit.dispatchEvent(new MouseEvent('mousedown'));
-    searchbtnx.style.display = "none";
+    navSearchInputTxt.focus();
+    navSearchInputTxt.dispatchEvent(new MouseEvent('mousedown'));
+    navSearchBtnClearX.style.display = "none";
   }
-  searchbtnx.addEventListener('mouseup', handleClickOnXbutton);
+  navSearchBtnClearX.addEventListener('mouseup', handleClickOnXbutton);
 
   function handlePreventLeavingInput(event) {
-    if (event.target !== searchinputit) {
+    if (event.target !== navSearchInputTxt) {
       event.preventDefault();
     }
   }
-  searchboxctn2.addEventListener('mousedown', handlePreventLeavingInput);
+  navSearchMain.addEventListener('mousedown', handlePreventLeavingInput);
 
   function handleScrollingFromMainCtn(event) {
     var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
-    searchresctn0.scrollTop -= (delta * 30);
+    navSearchResDiv0.scrollTop -= (delta * 30);
     event.preventDefault();
   }
-  searchboxmain.addEventListener('wheel', handleScrollingFromMainCtn);
+  navSearchMain.addEventListener('wheel', handleScrollingFromMainCtn);
 
   function handleClickedOutside(event) {
-    let clickedonscrollbar = document.documentElement.clientWidth <= event.clientX;
-    if (!clickedonscrollbar &&
-      !searchboxmain.contains(event.target) &&
-      !searchresctn0.contains(event.target) &&
-      !searchtriggerbtn.contains(event.target)) {
+    let clickedOnScrollbar = document.documentElement.clientWidth <= event.clientX;
+    if (!clickedOnScrollbar &&
+      !navSearchMain.contains(event.target) &&
+      !navSearchResDiv0.contains(event.target) &&
+      !navSearchTriggerBtn.contains(event.target)) {
       // The click occurred outside of both elements
       closeSearchResults();
     }
@@ -614,20 +555,20 @@ function activateSearchBox() {
   function handleBackButtonClick(event) {
     closeSearchResults();
   }
-  searchbtnback.addEventListener("click", handleBackButtonClick);
+  navSearchBtnBack.addEventListener("click", handleBackButtonClick);
 
 }
 
-searchinputit.addEventListener("mousedown", function() {
+navSearchInputTxt.addEventListener("mousedown", function() {
   activateSearchBox();
 });
 
-searchbtnenter.addEventListener("click", function() {
+navSearchBtnEnter.addEventListener("click", function() {
   console.log("search button click")
 });
 
-searchtriggerbtn.addEventListener('click', function() {
-  if (searchtriggerbtn.getAttribute('aria-expanded') === 'false') {
+navSearchTriggerBtn.addEventListener('click', function() {
+  if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
     activateSearchBox();
   } else {
     hideSearchControl();
@@ -636,17 +577,17 @@ searchtriggerbtn.addEventListener('click', function() {
 
 // Change the display based on windows width
 function setSearchBoxDisplayPerScreenWidth() {
-  if (window.matchMedia('(min-width: ' + screenwidth_lg + 'px)').matches) {
-    searchboxmain.style.display = "block";
+  if (window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
+    navSearchMain.style.display = "block";
   } else {
-    if (searchboxmain.style.display == "block" &&
-      searchresctn0.style.display == "none") {
-      searchboxmain.style.display = "none";
+    if (navSearchMain.style.display == "block" &&
+      navSearchResDiv0.style.display == "none") {
+      navSearchMain.style.display = "none";
     }
   }
 }
-searchboxmain.style.display = "none";
-searchresctn0.style.display = "none";
+navSearchMain.style.display = "none";
+navSearchResDiv0.style.display = "none";
 setSearchBoxDisplayPerScreenWidth()
 
 window.addEventListener('resize', function() {
@@ -657,52 +598,47 @@ window.addEventListener('resize', function() {
 /////////////////////////////////////////////////////////////////////////////////
 //  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
-var websocketnavsearch; // Declare a global variable for the WebSocket object
+var navSearchWebsocket; // Declare a global variable for the WebSocket object
 
-function createWebSocketNavsearch() {
+function createNavSearchWebsocket() {
   const currentHttpProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-  websocketnavsearch = new WebSocket(
+  navSearchWebsocket = new WebSocket(
     currentHttpProtocol +
     window.location.host + '/' +
     pageLanguage + '/ws/search/'
   );
-  // Handle WebSocket connection open event
-  websocketnavsearch.onopen = function(event) {
-    console.log('WebSocket connection established.');
+  navSearchWebsocket.onopen = function(event) {
+    console.log('Connection established.');
   };
 
-  // Handle WebSocket message received event
-  websocketnavsearch.onmessage = function(event) {
+  navSearchWebsocket.onmessage = function(event) {
     const message = event.data;
-    handleWebSocketSearchResults(message);
+    showWebSocketSearchResults(message);
   };
 
-  // Handle WebSocket connection close event
-  websocketnavsearch.onclose = function(event) {
-    console.log('WebSocket connection closed.');
+  navSearchWebsocket.onclose = function(event) {
+    console.log('Connection closed.');
   };
 
-  websocketnavsearch.onerror = function(event) {
-    // Handle the error event
-    console.log("WebSocket error: " + event.message);
+  navSearchWebsocket.onerror = function(event) {
+    console.log("Connection error: " + event.message);
   };
 }
 
-searchinputit.addEventListener("focus", function(event) {
-  if (!websocketnavsearch) {
-    createWebSocketNavsearch();
+navSearchInputTxt.addEventListener("focus", function(event) {
+  if (!navSearchWebsocket) {
+    createNavSearchWebsocket();
   }
 });
 
 // Send a WebSocket message to the Django consumer
 function sendWebSocketMessage() {
-  startTimerNavsearch = performance.now();
+  navSearchStartTimer = performance.now();
   // Send the input text as a WebSocket message
-  websocketnavsearch.send(searchinputit.value);
+  navSearchWebsocket.send(navSearchInputTxt.value);
 }
 
-// Handle WebSocket message search results received from the Django consumer
-function handleWebSocketSearchResults(message) {
+function showWebSocketSearchResults(message) {
   var jsonArray = JSON.parse(message);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {
@@ -713,11 +649,11 @@ function handleWebSocketSearchResults(message) {
     // Append the list item to the list
     ul.appendChild(li);
   }
-  searchresctn0.innerHTML = "";
-  searchresctn0.appendChild(ul);
+  navSearchResDiv0.innerHTML = "";
+  navSearchResDiv0.appendChild(ul);
 
-  let timeDiff = performance.now() - startTimerNavsearch;
-  console.log(`${timeDiff} milliseconds to execute.`);
+  let timeDiff = performance.now() - navSearchStartTimer;
+  console.log(`${timeDiff} ms.`);
 }
 
 

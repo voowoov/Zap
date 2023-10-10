@@ -30,7 +30,7 @@
     <th scope="col" style="width:120px">{% trans "Received" %}</th>
   </tr>
   {% for i in page %}
-  <tr class="table_row_link" data-href="{% url 'accounts:account_message' i.id %}"
+  <tr class="entireTableRowIsLink" data-href="{% url 'accounts:account_message' i.id %}"
     {% if not i.read %}style="font-weight:bold" {%endif%}>
     <td scope="col">{{i.sender}}</td>
     <td scope="col">{{i.subject}}</td>

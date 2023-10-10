@@ -40,14 +40,5 @@ function detectColorScheme() {
     // Sets in <html> tag, activates CSS variables for dark color theme
     document.documentElement.setAttribute("color_theme", "dark");
   }
-  // All logos color theme
-  let Logo1Light = document.getElementsByName("Logo1Light");
-  let Logo1Dark = document.getElementsByName("Logo1Dark");
-  for (let i = 0; i < Logo1Light.length; i++) {
-    Logo1Light[i].hidden = true;
-  }
-  for (let i = 0; i < Logo1Dark.length; i++) {
-    Logo1Dark[i].hidden = false;
-  }
 }
 detectColorScheme();

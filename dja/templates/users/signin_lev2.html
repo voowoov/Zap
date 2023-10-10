@@ -9,10 +9,10 @@
   <section id="login_section" class="login_section">
     <div class="container-fluid">
       <div class="row text_color text-start">
-        <img class="p-0" src="{% static '/images/Logo1Light.png' %}" height="30px" style="width: auto;" alt="Logo"
-          name="Logo1Light">
-        <img class="p-0" src="{% static '/images/Logo1Dark.png' %}" height="30px" style="width: auto;" alt="Logo"
-          name="Logo1Dark" hidden>
+        <img class="p-0 Logo1Light" src="{% static '/images/Logo1Light.png' %}" height="30px" style="width: auto;"
+          alt="Logo">
+        <img class="p-0 Logo1Dark" src="{% static '/images/Logo1Dark.png' %}" height="30px"
+          style="width: auto; display:none;" alt="Logo">
         <div class="fs-4 mt-1 p-0 pb-3">{% trans "Enter your Zap account password to access this page." %}
         </div>
         <div class="fs-4 mt-1 p-0 pb-3">{{ form.email.value }}

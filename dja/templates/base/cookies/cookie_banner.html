@@ -1,6 +1,6 @@
 {% load i18n %}
 {% get_current_language as CURRENT_LANGUAGE %}
-<div class="container-fluid p-0" id="target_div_cookieBanner">
+<div class="container-fluid p-0" id="cookiesBannerDiv">
   <div class="text_color cookie_banner p-3">
     <div class="row">
       <div class="h5">{% trans "Your privacy" %}</div>
@@ -19,7 +19,7 @@
           <a href="#">{% trans "Cookie Policy" %}</a>.
         </div>
         <div class="">
-          <button type="button" class="btn btn-primary mt-2 me-2" style="width: 160px" id="target_btn_acceptAllCookies"
+          <button type="button" class="btn btn-primary mt-2 me-2" style="width: 160px" id="cookiesAcceptAllBtn"
             data-bs-toggle="" data-bs-target="#">{% trans "Accept all cookies" %}</button>
           {% comment %}
           <!-- Button trigger modal --> {% endcomment %}

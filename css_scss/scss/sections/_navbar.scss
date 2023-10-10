@@ -294,7 +294,7 @@ $halfheight: calc($heightseachbox / 2);
 $searchbuttoncolor: #555;
 $searchinputcolor: #222222;
 $searchborderselectcolor: #5900ff;
-.searchboxctn0 {
+.navSearchBoxDiv0 {
   display: flex;
   align-items: center;
   width: 100%;
@@ -315,7 +315,7 @@ $searchborderselectcolor: #5900ff;
   }
 }
 
-.searchboxctn1 {
+.navSearchBoxDiv1 {
   @include flexCenter;
   position: relative;
   width: 100%;
@@ -328,7 +328,7 @@ $searchborderselectcolor: #5900ff;
   }
 }
 
-.searchboxctn2 {
+.navSearchBoxDiv2 {
   height: 100%;
   width: 100%;
   background-color: var(--color-searchinput);
@@ -338,7 +338,7 @@ $searchborderselectcolor: #5900ff;
   border: 1px solid var(--color-searchbutton);
 }
 
-.searchinputit {
+.navSearchInputTxt {
   width: 100%;
   height: 100%;
   margin-left: 16px;
@@ -352,7 +352,7 @@ $searchborderselectcolor: #5900ff;
   }
 }
 
-.searchbtnenter {
+.navSearchBtnEnter {
   @include flexCenter;
   min-width: 52px;
   height: 100%;
@@ -360,7 +360,7 @@ $searchborderselectcolor: #5900ff;
   border-radius: 0 $halfheight $halfheight 0;
 }
 
-.searchiconloupe {
+.navSearchIconLoupe {
   pointer-events: none;
   display: none;
   position: absolute;
@@ -370,7 +370,7 @@ $searchborderselectcolor: #5900ff;
   left: 14px;
 }
 
-.searchbtnx {
+.navSearchBtnClearX {
   display: none; // flex;
   align-items: center;
   justify-content: center;
@@ -381,7 +381,7 @@ $searchborderselectcolor: #5900ff;
   right: 50px;
 }
 
-.searchbtnback {
+.navSearchBtnBack {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,7 +389,7 @@ $searchborderselectcolor: #5900ff;
   margin-right: 10px;
 }
 
-.searchbtnround {
+.navSearchBtnRound {
   min-width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -401,7 +401,7 @@ $searchborderselectcolor: #5900ff;
 ////////////////////////////////////////////////////////////////////////////////////////
 //      search containers 
 ////////////////////////////////////////////////////////////////////////////////////////
-.searchboxmain {
+.navSearchMain {
   position: fixed;
   z-index: 2;
   width: 100%;
@@ -417,7 +417,7 @@ $searchborderselectcolor: #5900ff;
   }
 }
 
-.searchresctn0 {
+.navSearchResDiv0 {
   position: static;
   width: 100%;
   background-color: var(--color-nav-bg);
