@@ -13,9 +13,7 @@ class DebounceConsumer(WebsocketConsumer):
         pass
 
     def receive(self, text_data):
-        debounce_interval = 1  # Initial debounce interval in seconds
-        # Debounce the message using Django Channels' built-in debounce method
-        if text_data == "":
-            text_data = "-"
+        # if text_data == "":
+        #     text_data = "-"
 
         self.send(typesense_search_documents(text_data))

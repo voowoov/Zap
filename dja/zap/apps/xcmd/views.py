@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, translate_url
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from zap.apps.search.models import Movie
 from zap.apps.search.typesense import (
     typesense_add_single_document,
     typesense_create_a_collection,
@@ -66,7 +67,10 @@ class Cmd(StaffLoginRequiredMixin, View):
             email = request.POST.get("email").lower()
             self.message = make_link_create_user(email)
         if "submit_form_3" in request.POST:
+            #  loaddata is an internal django command
             self.message = call_command("loaddata", "movies.json")
+        if "submit_form_3a" in request.POST:
+            Movie.objects.all().delete()
         if "submit_form_4" in request.POST:
             self.message = typesense_delete_a_collection()
         if "submit_form_5a" in request.POST:

@@ -1,314 +1,391 @@
-[
-    {
-        "model":  "search.movies",
-        "id":  "1",
-        "fields": { "language":  "ko",
-        "title":  "20th Century Girl",
-        "release_date":  "2022-10-06",
-        "vote":  "8.7"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "2",
-        "fields": { "language":  "en",
-        "title":  "The Godfather",
-        "release_date":  "1972-03-14",
-        "vote":  "8.7"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "3",
-        "fields": { "language":  "en",
-        "title":  "The Shawshank Redemption",
-        "release_date":  "1994-09-23",
-        "vote":  "8.7"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "4",
-        "fields": { "language":  "en",
-        "title":  "The Godfather Part II",
-        "release_date":  "1974-12-20",
-        "vote":  "8.6"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "5",
-        "fields": { "language":  "es",
-        "title":  "Impossible Things",
-        "release_date":  "2021-06-17",
-        "vote":  "8.6"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "6",
-        "fields": { "language":  "hi",
-        "title":  "Dilwale Dulhania Le Jayenge",
-        "release_date":  "1995-10-19",
-        "vote":  "8.6"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "7",
-        "fields": { "language":  "en",
-        "title":  "Schindler\u0027s List",
-        "release_date":  "1993-12-15",
-        "vote":  "8.6"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "8",
-        "fields": { "language":  "zh",
-        "title":  "The Legend of Hei",
-        "release_date":  "2019-08-27",
-        "vote":  "8.6"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "9",
-        "fields": { "language":  "ja",
-        "title":  "Dou kyu sei � Classmates",
-        "release_date":  "2016-02-20",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "10",
-        "fields": { "language":  "ja",
-        "title":  "Spirited Away",
-        "release_date":  "2001-07-20",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "11",
-        "fields": { "language":  "en",
-        "title":  "12 Angry Men",
-        "release_date":  "1957-04-10",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "12",
-        "fields": { "language":  "ja",
-        "title":  "Your Name.",
-        "release_date":  "2016-08-26",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "13",
-        "fields": { "language":  "ko",
-        "title":  "Parasite",
-        "release_date":  "2019-05-30",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "14",
-        "fields": { "language":  "en",
-        "title":  "The Green Mile",
-        "release_date":  "1999-12-10",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "15",
-        "fields": { "language":  "en",
-        "title":  "The Dark Knight",
-        "release_date":  "2008-07-14",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "16",
-        "fields": { "language":  "en",
-        "title":  "Gabriel\u0027s Inferno: Part II",
-        "release_date":  "2020-07-31",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "17",
-        "fields": { "language":  "en",
-        "title":  "Gabriel\u0027s Inferno",
-        "release_date":  "2020-05-29",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "18",
-        "fields": { "language":  "en",
-        "title":  "Pulp Fiction",
-        "release_date":  "1994-09-10",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "19",
-        "fields": { "language":  "it",
-        "title":  "The Good, the Bad and the Ugly",
-        "release_date":  "1966-12-23",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "20",
-        "fields": { "language":  "ko",
-        "title":  "Burn the Stage: The Movie",
-        "release_date":  "2018-11-15",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "21",
-        "fields": { "language":  "en",
-        "title":  "Forrest Gump",
-        "release_date":  "1994-06-23",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "22",
-        "fields": { "language":  "en",
-        "title":  "The Lord of the Rings: The Return of the King",
-        "release_date":  "2003-12-01",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "23",
-        "fields": { "language":  "en",
-        "title":  "Gabriel\u0027s Inferno: Part III",
-        "release_date":  "2020-11-19",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "24",
-        "fields": { "language":  "en",
-        "title":  "GoodFellas",
-        "release_date":  "1990-09-12",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "25",
-        "fields": { "language":  "it",
-        "title":  "Cinema Paradiso",
-        "release_date":  "1988-11-17",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "26",
-        "fields": { "language":  "it",
-        "title":  "Life Is Beautiful",
-        "release_date":  "1997-12-20",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "27",
-        "fields": { "language":  "ja",
-        "title":  "Seven Samurai",
-        "release_date":  "1954-04-26",
-        "vote":  "8.5"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "28",
-        "fields": { "language":  "ja",
-        "title":  "Harakiri",
-        "release_date":  "1962-09-15",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "29",
-        "fields": { "language":  "ja",
-        "title":  "Grave of the Fireflies",
-        "release_date":  "1988-04-16",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "30",
-        "fields": { "language":  "en",
-        "title":  "Psycho",
-        "release_date":  "1960-06-22",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "31",
-        "fields": { "language":  "en",
-        "title":  "Once Upon a Time in America",
-        "release_date":  "1984-05-23",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "32",
-        "fields": { "language":  "ko",
-        "title":  "Hope",
-        "release_date":  "2013-10-02",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "33",
-        "fields": { "language":  "en",
-        "title":  "Fight Club",
-        "release_date":  "1999-10-15",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "34",
-        "fields": { "language":  "en",
-        "title":  "One Flew Over the Cuckoo\u0027s Nest",
-        "release_date":  "1975-11-19",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "35",
-        "fields": { "language":  "en",
-        "title":  "Primal: Tales of Savagery",
-        "release_date":  "2019-11-21",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "36",
-        "fields": { "language":  "pt",
-        "title":  "A Dog\u0027s Will",
-        "release_date":  "2000-09-15",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "37",
-        "fields": { "language":  "pt",
-        "title":  "City of God",
-        "release_date":  "2002-02-05",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "38",
-        "fields": { "language":  "ja",
-        "title":  "Hotarubi no Mori e",
-        "release_date":  "2011-09-17",
-        "vote":  "8.4"
-    }},
-    {
-        "model":  "search.movies",
-        "id":  "39",
-        "fields": { "language":  "en",
-        "title":  "Spider-Man: Into the Spider-Verse",
-        "release_date":  "2018-12-06",
-        "vote":  "8.4"
-    }}
+[{
+    "model": "search.movie",
+    "pk": "1",
+    "fields": {
+      "language": "ko",
+      "title": "20th Century Girl",
+      "release_date": "2022-10-06",
+      "vote": "8.7"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "2",
+    "fields": {
+      "language": "en",
+      "title": "The Godfather",
+      "release_date": "1972-03-14",
+      "vote": "8.7"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "3",
+    "fields": {
+      "language": "en",
+      "title": "The Shawshank Redemption",
+      "release_date": "1994-09-23",
+      "vote": "8.7"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "4",
+    "fields": {
+      "language": "en",
+      "title": "The Godfather Part II",
+      "release_date": "1974-12-20",
+      "vote": "8.6"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "5",
+    "fields": {
+      "language": "es",
+      "title": "Impossible Things",
+      "release_date": "2021-06-17",
+      "vote": "8.6"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "6",
+    "fields": {
+      "language": "hi",
+      "title": "Dilwale Dulhania Le Jayenge",
+      "release_date": "1995-10-19",
+      "vote": "8.6"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "7",
+    "fields": {
+      "language": "en",
+      "title": "Schindler\u0027s List",
+      "release_date": "1993-12-15",
+      "vote": "8.6"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "8",
+    "fields": {
+      "language": "zh",
+      "title": "The Legend of Hei",
+      "release_date": "2019-08-27",
+      "vote": "8.6"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "9",
+    "fields": {
+      "language": "ja",
+      "title": "Dou kyu sei � Classmates",
+      "release_date": "2016-02-20",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "10",
+    "fields": {
+      "language": "ja",
+      "title": "Spirited Away",
+      "release_date": "2001-07-20",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "11",
+    "fields": {
+      "language": "en",
+      "title": "12 Angry Men",
+      "release_date": "1957-04-10",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "12",
+    "fields": {
+      "language": "ja",
+      "title": "Your Name.",
+      "release_date": "2016-08-26",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "13",
+    "fields": {
+      "language": "ko",
+      "title": "Parasite",
+      "release_date": "2019-05-30",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "14",
+    "fields": {
+      "language": "en",
+      "title": "The Green Mile",
+      "release_date": "1999-12-10",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "15",
+    "fields": {
+      "language": "en",
+      "title": "The Dark Knight",
+      "release_date": "2008-07-14",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "16",
+    "fields": {
+      "language": "en",
+      "title": "Gabriel\u0027s Inferno: Part II",
+      "release_date": "2020-07-31",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "17",
+    "fields": {
+      "language": "en",
+      "title": "Gabriel\u0027s Inferno",
+      "release_date": "2020-05-29",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "18",
+    "fields": {
+      "language": "en",
+      "title": "Pulp Fiction",
+      "release_date": "1994-09-10",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "19",
+    "fields": {
+      "language": "it",
+      "title": "The Good, the Bad and the Ugly",
+      "release_date": "1966-12-23",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "20",
+    "fields": {
+      "language": "ko",
+      "title": "Burn the Stage: The Movie",
+      "release_date": "2018-11-15",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "21",
+    "fields": {
+      "language": "en",
+      "title": "Forrest Gump",
+      "release_date": "1994-06-23",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "22",
+    "fields": {
+      "language": "en",
+      "title": "The Lord of the Rings: The Return of the King",
+      "release_date": "2003-12-01",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "23",
+    "fields": {
+      "language": "en",
+      "title": "Gabriel\u0027s Inferno: Part III",
+      "release_date": "2020-11-19",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "24",
+    "fields": {
+      "language": "en",
+      "title": "GoodFellas",
+      "release_date": "1990-09-12",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "25",
+    "fields": {
+      "language": "it",
+      "title": "Cinema Paradiso",
+      "release_date": "1988-11-17",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "26",
+    "fields": {
+      "language": "it",
+      "title": "Life Is Beautiful",
+      "release_date": "1997-12-20",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "27",
+    "fields": {
+      "language": "ja",
+      "title": "Seven Samurai",
+      "release_date": "1954-04-26",
+      "vote": "8.5"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "28",
+    "fields": {
+      "language": "ja",
+      "title": "Harakiri",
+      "release_date": "1962-09-15",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "29",
+    "fields": {
+      "language": "ja",
+      "title": "Grave of the Fireflies",
+      "release_date": "1988-04-16",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "30",
+    "fields": {
+      "language": "en",
+      "title": "Psycho",
+      "release_date": "1960-06-22",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "31",
+    "fields": {
+      "language": "en",
+      "title": "Once Upon a Time in America",
+      "release_date": "1984-05-23",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "32",
+    "fields": {
+      "language": "ko",
+      "title": "Hope",
+      "release_date": "2013-10-02",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "33",
+    "fields": {
+      "language": "en",
+      "title": "Fight Club",
+      "release_date": "1999-10-15",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "34",
+    "fields": {
+      "language": "en",
+      "title": "One Flew Over the Cuckoo\u0027s Nest",
+      "release_date": "1975-11-19",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "35",
+    "fields": {
+      "language": "en",
+      "title": "Primal: Tales of Savagery",
+      "release_date": "2019-11-21",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "36",
+    "fields": {
+      "language": "pt",
+      "title": "A Dog\u0027s Will",
+      "release_date": "2000-09-15",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "37",
+    "fields": {
+      "language": "pt",
+      "title": "City of God",
+      "release_date": "2002-02-05",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "38",
+    "fields": {
+      "language": "ja",
+      "title": "Hotarubi no Mori e",
+      "release_date": "2011-09-17",
+      "vote": "8.4"
+    }
+  },
+  {
+    "model": "search.movie",
+    "pk": "39",
+    "fields": {
+      "language": "en",
+      "title": "Spider-Man: Into the Spider-Verse",
+      "release_date": "2018-12-06",
+      "vote": "8.4"
+    }
+  }
 ]

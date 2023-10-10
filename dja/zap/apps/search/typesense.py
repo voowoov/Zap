@@ -3,7 +3,7 @@ import os
 
 from django.db.models import F
 from dotenv import load_dotenv
-from zap.apps.search.models import Movies
+from zap.apps.search.models import Movie
 
 import typesense
 
@@ -59,7 +59,7 @@ def typesense_import_documents():
         }
     )
     # Get all movies and annotate them with a new field movieid
-    products = Movies.objects.all()  # .annotate(movieid=F("id"))
+    products = Movie.objects.all()  # .annotate(movieid=F("id"))
     # Open a file in write mode
     with open("products.jsonl", "w") as f:
         # Iterate over the queryset of dictionaries

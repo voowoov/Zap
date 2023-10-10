@@ -127,10 +127,10 @@ $screenwidth_xxl: 1400px;
     height: 2px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-nav-hover);
+    background-color: var(--color-navlinkbarswipe-thumb);
   }
   &::-webkit-scrollbar-track {
-    background-color: #afafaf;
+    background-color: var(--color-navlinkbarswipe-track);
   }
   @media (min-width: $screenwidth_lg) and (max-width: calc($screenwidth_xl - 0.1px)) {
     width: 480px;

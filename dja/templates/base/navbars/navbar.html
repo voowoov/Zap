@@ -5,8 +5,8 @@
       <div class="p-0 m-0 d-flex align-items-center flex-nowrap">
         <!-- Menu -->
         <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus ps-2 ps-xl-3" type="button" id="navddMainMenu"
-            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+          <div class="btn_nav btn_nav__side_menus ps-2 ps-xl-3" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="outside" aria-expanded="false">
             <div class="d-flex flex-column justify-content-center align-items-center">
               <svg width="23" height="13">
                 <use href="{% static '/images/icons/menu-double.svg' %}#img"></use>
@@ -14,7 +14,7 @@
               <div class="fnavmenu">MENU</div>
             </div>
           </div>
-          <ul class="dropdown-menu scrollable-menu" aria-labelledby="navddMainMenu">
+          <ul class="dropdown-menu scrollable-menu">
             <li class="px-0" style="padding-bottom: 0.8rem;">
               <!-- Accordion -->
               <div class="accordion" id="accordionExample">
@@ -97,30 +97,20 @@
         <!--   Links      -->
         <div class="me-3 d-none d-sm-block navlinkbarparent">
           <div class="navlinkbarswipe" id="navbarSwipeMenu">
-            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false" href="{% url 'base:home' %}">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" draggable="false"
-              href="{% url 'users:create_account_info' %}">{% trans "Quotes" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'monitor:staff_monitor' %}"
+              draggable="false">{% trans "Monitor" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'xcmd:cmd' %}" draggable="false">{% trans "Cmd" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'chat:init_chat' %}" draggable="false">{% trans "Chat" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
+              draggable="false">{% trans "Articles" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'legal:terms_of_service' %}"
+              draggable="false">{% trans "Legal" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}" draggable="false">{% trans "Test" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Explore" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Services" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Quotes" %}</a>
           </div>
-        </div>
-
-        <!--    Search      -->
+        </div> <!-- Search -->
         <div class="d-block d-lg-none ms-auto">
           <div class="btn_nav btn_nav__search" type="button" aria-expanded="false">
             <svg class="" width="25" height="25">
@@ -177,8 +167,8 @@
 
         <!-- Login      -->
         <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus pe-3 pe-xl-4" type="button" id="ddnavMenuLogin"
-            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+          <div class="btn_nav btn_nav__side_menus pe-3 pe-xl-4" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="outside" aria-expanded="false">
             <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
               {% if request.user.is_authenticated and request.user.avatar %}
               <img src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar" draggable="false">
@@ -189,8 +179,7 @@
               {% endif %}
             </div>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end text-center dropdown-menu__login scrollable_menu"
-            aria-labelledby="ddnavMenuLogin">
+          <ul class="dropdown-menu dropdown-menu-end text-center dropdown-menu__login scrollable_menu">
             {% if request.user.is_authenticated %}
             <li>
               <h6 class="dropdown-header">{% if request.user.first_name %}{% trans "Welcome" %}

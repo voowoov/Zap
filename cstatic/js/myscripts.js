@@ -296,10 +296,10 @@ function startChat(button) {
     };
   }
   try {
-    anonymous_chat_client_name = document.querySelector('#anonymous_chat_client_name').value;
-    anonymous_chat_client_desc = document.querySelector('#anonymous_chat_client_desc').value;
+    anonymous_chat_client_name = document.getElementById('anonymous_chat_client_name').value;
+    anonymous_chat_client_desc = document.getElementById('anonymous_chat_client_desc').value;
   } catch {}
-  chat_subject = document.querySelector('#chat_subject').value;
+  chat_subject = document.getElementById('chat_subject').value;
   csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
   let formData = new FormData();
   formData.append("csrfmiddlewaretoken", csrf_token);
@@ -329,9 +329,7 @@ function startChat(button) {
         })
     };
   };
-
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //    navbar swipe link string with touch, mouse wheel or drag
@@ -405,7 +403,7 @@ navSearchMain.innerHTML = `
       <div class="navSearchBoxDiv1">
         <div class=" navSearchBoxDiv2">
           <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}"
-            oninput="sendWebSocketMessage()" />
+            oninput="sendWebsocketMessage()" />
         </div>
         <div class="navSearchBtnEnter" type="button">
           <svg width="18" height="18">
@@ -609,11 +607,13 @@ function createNavSearchWebsocket() {
   );
   navSearchWebsocket.onopen = function(event) {
     console.log('Connection established.');
+    sendWebsocketMessage();
+    k
   };
 
   navSearchWebsocket.onmessage = function(event) {
     const message = event.data;
-    showWebSocketSearchResults(message);
+    showWebsocketSearchResults(message);
   };
 
   navSearchWebsocket.onclose = function(event) {
@@ -632,13 +632,13 @@ navSearchInputTxt.addEventListener("focus", function(event) {
 });
 
 // Send a WebSocket message to the Django consumer
-function sendWebSocketMessage() {
+function sendWebsocketMessage() {
   navSearchStartTimer = performance.now();
   // Send the input text as a WebSocket message
   navSearchWebsocket.send(navSearchInputTxt.value);
 }
 
-function showWebSocketSearchResults(message) {
+function showWebsocketSearchResults(message) {
   var jsonArray = JSON.parse(message);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {
