@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 from channels.generic.websocket import WebsocketConsumer
 
@@ -15,5 +16,4 @@ class DebounceConsumer(WebsocketConsumer):
     def receive(self, text_data):
         # if text_data == "":
         #     text_data = "-"
-
         self.send(typesense_search_documents(text_data))

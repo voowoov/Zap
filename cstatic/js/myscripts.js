@@ -402,8 +402,7 @@ navSearchMain.innerHTML = `
       </div>
       <div class="navSearchBoxDiv1">
         <div class=" navSearchBoxDiv2">
-          <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}"
-            oninput="sendWebsocketMessage()" />
+          <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}"/>
         </div>
         <div class="navSearchBtnEnter" type="button">
           <svg width="18" height="18">
@@ -474,9 +473,6 @@ function activateSearchBox() {
   if (navSearchInputTxt.value !== "") {
     navSearchBtnClearX.style.display = "flex";
   }
-  if (window.getComputedStyle(navSearchResDiv0).display === 'none') {
-    showSearchResultsCtn();
-  }
 
   function closeSearchResults() {
     document.removeEventListener('input', handleInputTextChange);
@@ -498,6 +494,7 @@ function activateSearchBox() {
       // Hide navSearchBtnClearX if the input field is empty
       navSearchBtnClearX.style.display = "none";
     }
+    sendWSnavSearchMessage()
   }
   navSearchInputTxt.addEventListener('input', handleInputTextChange);
 
@@ -514,6 +511,7 @@ function activateSearchBox() {
     navSearchInputTxt.focus();
     navSearchInputTxt.dispatchEvent(new MouseEvent('mousedown'));
     navSearchBtnClearX.style.display = "none";
+    sendWSnavSearchMessage()
   }
   navSearchBtnClearX.addEventListener('mouseup', handleClickOnXbutton);
 
@@ -555,6 +553,7 @@ function activateSearchBox() {
   }
   navSearchBtnBack.addEventListener("click", handleBackButtonClick);
 
+  sendWSnavSearchMessage()
 }
 
 navSearchInputTxt.addEventListener("mousedown", function() {
@@ -594,51 +593,86 @@ window.addEventListener('resize', function() {
 
 
 /////////////////////////////////////////////////////////////////////////////////
+//    Shared worker websocket
+/////////////////////////////////////////////////////////////////////////////////
+// ws://127.0.0.1/en/ws/search/
+
+const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+  window.location.host + '/' +
+  pageLanguage + '/ws/search/';
+
+let worker;
+let socket;
+let useSharedWorker = !!window.SharedWorker;
+
+if (useSharedWorker) {
+  worker = new SharedWorker('/static/js/sharedWorker.js');
+
+  worker.port.onmessage = function(e) {
+    handleEvent(e.data);
+  };
+
+  worker.port.start();
+
+  worker.port.postMessage({ command: 'connect', url: websocketUrl });
+} else {
+  socket = new WebSocket(websocketUrl);
+
+  // define what do do with Websocket received events here
+  socket.onopen = function() {
+    handleEvent({ type: 'open' });
+  };
+
+  socket.onmessage = function(e) {
+    handleEvent({ type: 'message', data: e.data });
+  };
+
+  socket.onerror = function() {
+    handleEvent({ type: 'error' });
+  };
+
+  socket.onclose = function() {
+    handleEvent({ type: 'close' });
+  };
+}
+
+function send(message) {
+  if (useSharedWorker) {
+    worker.port.postMessage({ command: 'send', message: message });
+  } else if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(message);
+  }
+}
+
+function handleEvent(event) {
+  switch (event.type) {
+    case 'open':
+      console.log('WebSocket is open');
+      break;
+    case 'message':
+      // console.log('Received message:', event.data);
+      showWSNavSearchResults(event.data);
+      break;
+    case 'error':
+      console.log('WebSocket encountered an error');
+      break;
+    case 'close':
+      console.log('WebSocket is closed');
+      break;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 //  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
-var navSearchWebsocket; // Declare a global variable for the WebSocket object
 
-function createNavSearchWebsocket() {
-  const currentHttpProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-  navSearchWebsocket = new WebSocket(
-    currentHttpProtocol +
-    window.location.host + '/' +
-    pageLanguage + '/ws/search/'
-  );
-  navSearchWebsocket.onopen = function(event) {
-    console.log('Connection established.');
-    sendWebsocketMessage();
-    k
-  };
-
-  navSearchWebsocket.onmessage = function(event) {
-    const message = event.data;
-    showWebsocketSearchResults(message);
-  };
-
-  navSearchWebsocket.onclose = function(event) {
-    console.log('Connection closed.');
-  };
-
-  navSearchWebsocket.onerror = function(event) {
-    console.log("Connection error: " + event.message);
-  };
-}
-
-navSearchInputTxt.addEventListener("focus", function(event) {
-  if (!navSearchWebsocket) {
-    createNavSearchWebsocket();
-  }
-});
-
-// Send a WebSocket message to the Django consumer
-function sendWebsocketMessage() {
+function sendWSnavSearchMessage() {
   navSearchStartTimer = performance.now();
   // Send the input text as a WebSocket message
-  navSearchWebsocket.send(navSearchInputTxt.value);
+  send(navSearchInputTxt.value);
 }
 
-function showWebsocketSearchResults(message) {
+function showWSNavSearchResults(message) {
   var jsonArray = JSON.parse(message);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {
@@ -655,6 +689,7 @@ function showWebsocketSearchResults(message) {
   let timeDiff = performance.now() - navSearchStartTimer;
   console.log(`${timeDiff} ms.`);
 }
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -676,6 +711,25 @@ function showWebsocketSearchResults(message) {
 //     }
 //   }
 // });
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
 // 

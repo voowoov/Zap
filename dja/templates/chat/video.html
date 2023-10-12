@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load l10n %} {% load tz %} {% load static %}
+{% block title %}{% trans "Test" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////
+                                    Tests  
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<main class="d-flex flex-fill">
+  <section class="home_section text_color">
+
+    <button id="playButton">Play</button>
+    <button id="stopButton">Stop</button>
+    <audio id="audioPlayer" src="{% static 'sounds/Sonnerie.mp3' %}"></audio>
+
+    <script>
+      var audioPlayer = document.getElementById('audioPlayer');
+      var playButton = document.getElementById('playButton');
+      var stopButton = document.getElementById('stopButton');
+      var playCount = 0;
+      var timeoutId;
+
+      playButton.addEventListener('click', function () {
+        playAudioFile();
+        audioPlayer.currentTime = 0; // reset audio player to start
+        playCount = 0; // reset play count
+      });
+
+      stopButton.addEventListener('click', function () {
+        clearTimeout(timeoutId);
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0; // reset audio player to start
+        playCount = 0; // reset play count
+      });
+
+      function playAudioFile() {
+        if (playCount < 3) {
+          audioPlayer.play();
+          playCount++;
+          audioPlayer.onended = function () {
+            timeoutId = setTimeout(playAudioFile, 3000); // delay of 2 seconds
+          };
+        }
+      }
+    </script>
+  </section>
+</main>
+
+<script>
+</script>
+
+
+{% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
+{% include 'base/footers/footer_small.html' %}
+
+
+
+{% endblock %}
