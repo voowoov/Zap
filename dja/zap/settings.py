@@ -52,17 +52,16 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     # "django_hosts",
     ############### My apps ###############
-    "zap.apps.users",
     "zap.apps.accounts",
     "zap.apps.articles",
     "zap.apps.base",
-    "zap.apps.legal",
-    "zap.apps.priv_files",
-    "zap.apps.monitor",
-    "zap.apps.xcmd",
-    # "zap.apps.inventory",
-    "zap.apps.search",
     "zap.apps.chat",
+    # "zap.apps.inventory",
+    "zap.apps.legal",
+    "zap.apps.monitor",
+    "zap.apps.priv_files",
+    "zap.apps.users",
+    "zap.apps.xcmd",
     ############# Django apps ##############
     "django.contrib.admin",
     "django.contrib.auth",
@@ -295,8 +294,8 @@ CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 ###### django-maintenance-mode middleware ######
-MAINTENANCE_MODE_TEMPLATE = "installed/maintenance-503.html"
-MAINTENANCE_MODE_STATE_FILE_PATH = "zap/apps/installed/maintenance_mode_state.txt"
+MAINTENANCE_MODE_TEMPLATE = "base/maintenance-503.html"
+MAINTENANCE_MODE_STATE_FILE_PATH = "zap/apps/base/maintenance_mode_state.txt"
 
 ###### DEBUG toolbar ######
 DEBUG_TOOLBAR_PANELS = [

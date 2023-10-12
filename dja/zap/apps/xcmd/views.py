@@ -6,8 +6,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, translate_url
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from zap.apps.search.models import Movie
-from zap.apps.search.typesense import (
+from zap.apps.base.models import Movie
+from zap.apps.xcmd.typesense import (
     typesense_add_single_document,
     typesense_create_a_collection,
     typesense_delete_a_collection,

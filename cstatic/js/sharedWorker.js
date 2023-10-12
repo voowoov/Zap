@@ -1,13 +1,27 @@
 let wsocket;
+let ports = [];
 
 self.onconnect = function(e) {
   let port = e.ports[0];
 
+  ports.push(port);
+  console.log('New port connected:', ports.length, 'ports now connected');
+
   port.onmessage = function(e) {
-    if (e.data.command === 'connect') {
-      connect(e.data.url);
-    } else if (e.data.command === 'send') {
-      send(e.data.message);
+      if (e.data.command === 'connect') {
+        connect(e.data.url);
+      } else if (e.data.command === 'send') {
+        send(e.data.message);
+      } else if (e.data.command === 'disconnect') {
+        disconnect(port);
+      }
+    }
+    // for when closing a tab, the port of that tab gets removed from the list
+  function disconnect(port) {
+    let index = ports.indexOf(port);
+    if (index !== -1) {
+      ports.splice(index, 1);
+      console.log('Port disconnected. Total ports:', ports.length);
     }
   }
 
@@ -15,19 +29,19 @@ self.onconnect = function(e) {
     wsocket = new WebSocket(url);
 
     wsocket.onopen = function() {
-      port.postMessage({ type: 'open' });
+      broadcast({ type: 'open' });
     };
 
     wsocket.onmessage = function(e) {
-      port.postMessage({ type: 'message', data: e.data });
+      broadcast({ type: 'message', data: e.data });
     };
 
     wsocket.onerror = function() {
-      port.postMessage({ type: 'error' });
+      broadcast({ type: 'error' });
     };
 
     wsocket.onclose = function() {
-      port.postMessage({ type: 'close' });
+      broadcast({ type: 'close' });
     };
   }
 
@@ -35,5 +49,11 @@ self.onconnect = function(e) {
     if (wsocket && wsocket.readyState === WebSocket.OPEN) {
       wsocket.send(message);
     }
+  }
+
+  function broadcast(message) {
+    ports.forEach(function(port) {
+      port.postMessage(message);
+    });
   }
 }

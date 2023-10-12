@@ -595,73 +595,112 @@ window.addEventListener('resize', function() {
 /////////////////////////////////////////////////////////////////////////////////
 //    Shared worker websocket
 /////////////////////////////////////////////////////////////////////////////////
-// ws://127.0.0.1/en/ws/search/
+//////////////////////////////////
+//  message is "ABCCCCC..."
+//    where A : wsTabId
+//      ascii character from 33 to 126
+//    where B : message type
+//      s : nav search
+//      c : nav chat
+//      m : nav monitor
+//    where C : message content
+//
+
+// get the next wsTabId in storage, single character
+var wsTabId = localStorage.getItem('wsTabId');
+if (wsTabId !== null) {
+  nextTabId = wsTabId.charCodeAt(0) + 1;
+  //   33; // '!' to  126; // '~'
+  if (nextTabId > 126) {
+    nextTabId = 33;
+  }
+  localStorage.setItem('wsTabId', String.fromCharCode(nextTabId));
+} else {
+  wsTabId = String.fromCharCode(33);
+  localStorage.setItem('wsTabId', wsTabId);
+}
+
 
 const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
   window.location.host + '/' +
-  pageLanguage + '/ws/search/';
-
-let worker;
-let socket;
+  pageLanguage + '/ws/debo/';
+let wsworker;
+let gsocket;
 let useSharedWorker = !!window.SharedWorker;
 
 if (useSharedWorker) {
-  worker = new SharedWorker('/static/js/sharedWorker.js');
+  wsworker = new SharedWorker('/static/js/sharedWorker.js');
 
-  worker.port.onmessage = function(e) {
+  wsworker.port.onmessage = function(e) {
     handleEvent(e.data);
   };
 
-  worker.port.start();
+  wsworker.port.start();
 
-  worker.port.postMessage({ command: 'connect', url: websocketUrl });
+  wsworker.port.postMessage({ command: 'connect', url: websocketUrl });
 } else {
-  socket = new WebSocket(websocketUrl);
+  gsocket = new WebSocket(websocketUrl);
 
-  // define what do do with Websocket received events here
-  socket.onopen = function() {
+  gsocket.onopen = function() {
     handleEvent({ type: 'open' });
   };
 
-  socket.onmessage = function(e) {
+  gsocket.onmessage = function(e) {
     handleEvent({ type: 'message', data: e.data });
   };
 
-  socket.onerror = function() {
+  gsocket.onerror = function() {
     handleEvent({ type: 'error' });
   };
 
-  socket.onclose = function() {
+  gsocket.onclose = function() {
     handleEvent({ type: 'close' });
   };
 }
 
-function send(message) {
+function wsSend(message) {
   if (useSharedWorker) {
-    worker.port.postMessage({ command: 'send', message: message });
-  } else if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(message);
+    wsworker.port.postMessage({ command: 'send', message: message });
+  } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
+    gsocket.send(message);
   }
 }
 
 function handleEvent(event) {
   switch (event.type) {
-    case 'open':
-      console.log('WebSocket is open');
-      break;
     case 'message':
       // console.log('Received message:', event.data);
-      showWSNavSearchResults(event.data);
+      if (event.data.length >= 2) {
+        // this message is destine to this Tab
+        if (event.data[0] == wsTabId) {
+          switch (event.data[1]) {
+            case 's':
+              showWSNavSearchResults(event.data.substring(2));
+              break;
+            default:
+              console.log("unknown ws message header")
+              break;
+          }
+        }
+      }
       break;
-    case 'error':
-      console.log('WebSocket encountered an error');
+    case 'open':
+      console.log('WebSocket is open');
       break;
     case 'close':
       console.log('WebSocket is closed');
       break;
+    case 'error':
+      console.log('WebSocket encountered an error');
+      break;
   }
 }
 
+window.addEventListener('beforeunload', function() {
+  if (useSharedWorker) {
+    wsworker.port.postMessage({ command: 'disconnect' });
+  }
+});
 /////////////////////////////////////////////////////////////////////////////////
 //  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
@@ -669,7 +708,7 @@ function handleEvent(event) {
 function sendWSnavSearchMessage() {
   navSearchStartTimer = performance.now();
   // Send the input text as a WebSocket message
-  send(navSearchInputTxt.value);
+  wsSend(wsTabId + 's' + navSearchInputTxt.value);
 }
 
 function showWSNavSearchResults(message) {
@@ -692,6 +731,23 @@ function showWSNavSearchResults(message) {
 
 
 
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+// 
+/////////////////////////////////////////////////////////////////////////////////
+
 /////////////////////////////////////////////////////////////////////////////////
 //  close open bs dropdown menus with escape key
 /////////////////////////////////////////////////////////////////////////////////
@@ -712,24 +768,6 @@ function showWSNavSearchResults(message) {
 //   }
 // });
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
 // 

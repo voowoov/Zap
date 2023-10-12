@@ -10,9 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "zap.settings")
 # is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
-import zap.apps.chat.routing
-import zap.apps.monitor.routing
-import zap.apps.search.routing
+import zap.apps.xcmd.routing
 
 application = ProtocolTypeRouter(
     {
@@ -20,9 +18,8 @@ application = ProtocolTypeRouter(
         "websocket": AllowedHostsOriginValidator(
             AuthMiddlewareStack(
                 URLRouter(
-                    zap.apps.chat.routing.websocket_urlpatterns
-                    + zap.apps.monitor.routing.websocket_urlpatterns
-                    + zap.apps.search.routing.websocket_urlpatterns
+                    zap.apps.xcmd.routing.websocket_urlpatterns
+                    # + zap.apps.monitor.routing.websocket_urlpatterns
                 )
             )
         ),
