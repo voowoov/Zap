@@ -20,6 +20,7 @@ class Command(BaseCommand):
         subprocess.call("cd /usr/src/app/", shell=True)
         subprocess.call('find . -path "*/migrations/0*.py" -delete', shell=True)
         subprocess.call('find . -path "*/__pycache__/*.pyc" -delete', shell=True)
+        subprocess.call(["rm", "-f", "db.sqlite3"])
 
         # initiate migrations
         call_command("makemigrations")

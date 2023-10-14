@@ -27,9 +27,8 @@
 <script>
   const currentLanguage = JSON.parse(document.getElementById('current-language').textContent);
 
-  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
   const monitorSocket = new WebSocket(
-    protocol +
+    (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
     window.location.host + '/' +
     currentLanguage + '/ws/monitor/'
   );

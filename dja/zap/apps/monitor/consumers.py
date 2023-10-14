@@ -17,10 +17,11 @@ class MonitorConsumer(WebsocketConsumer):
         # self.room_group_name = "chat_%s" % self.room_name
         self.room_group_name = "monitor_group"
         if self.scope["user"].is_authenticated:
-
             #### Join room group
-            async_to_sync(self.channel_layer.group_add)(self.room_group_name, self.channel_name)
-            print("connected")
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_group_name, self.channel_name
+            )
+            print("connnected")
 
             self.accept()
             self.send(json.dumps({"message": "connected"}))
@@ -31,7 +32,9 @@ class MonitorConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         #### Leave room group
         print("disconnected")
-        async_to_sync(self.channel_layer.group_discard)(self.room_group_name, self.channel_name)
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
 
     #### Receive message from WebSocket
     def receive(self, text_data):

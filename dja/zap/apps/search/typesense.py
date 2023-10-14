@@ -3,7 +3,7 @@ import os
 
 from django.db.models import F
 from dotenv import load_dotenv
-from zap.apps.base.models import Movie
+from zap.apps.search.models import Movie
 
 import typesense
 

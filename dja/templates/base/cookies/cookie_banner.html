@@ -1,5 +1,7 @@
 {% load i18n %}
 {% get_current_language as CURRENT_LANGUAGE %}
+{% include 'base/cookies/cookie_opt_modal.html' %}
+
 <div class="container-fluid p-0" id="cookiesBannerDiv">
   <div class="text_color cookie_banner p-3">
     <div class="row">
@@ -16,7 +18,7 @@
           By clicking “Accept all cookies”, you agree Zap can store cookies on your device and disclose information in
           accordance with our
           {% endif %}
-          <a href="#">{% trans "Cookie Policy" %}</a>.
+          <a href="{% url 'legal:cookie_policy' %}">{% trans "Cookie Policy" %}</a>.
         </div>
         <div class="">
           <button type="button" class="btn btn-primary mt-2 me-2" style="width: 160px" id="cookiesAcceptAllBtn"
@@ -31,6 +33,3 @@
   </div>
 </div>
 </div>
-
-<!-- Modal Cookie settings -->
-{% include 'base/cookies/cookie_opt_modal.html' %}

@@ -139,12 +139,12 @@
         <li><a href="#">{% trans "About" %}</a></li>
         <li><a href="#">{% trans "Press" %}</a></li>
         <li><a href="#">{% trans "Work Here" %}</a></li>
-        <li><a href="#">{% trans "Legal" %}</a></li>
-        <li><a href="#">{% trans "Privacy Policy" %}</a></li>
-        <li><a href="#">{% trans "Terms of Service" %}</a></li>
         <li><a href="#">{% trans "Contact Us" %}</a></li>
+        <li><a href="{% url 'legal:terms_of_service' %}">{% trans "Legal" %}</a></li>
+        <li><a href="{% url 'legal:privacy_policy' %}">{% trans "Privacy Policy" %}</a></li>
+        <li><a href="{% url 'legal:terms_of_service' %}">{% trans "Terms of Service" %}</a></li>
+        <li><a href="{% url 'legal:cookie_policy' %}">{% trans "Cookie Policy" %}</a></li>
         <li><a href="{% url 'base:cookie_opt' %}">{% trans "Cookie Settings" %}</a></li>
-        <li><a href="{% url 'base:cookie_opt' %}">{% trans "Cookie Policy" %}</a></li>
       </ul>
     </div>
     <div class="col-12 col-sm-6 col-lg-2 mb-4 mx-auto">

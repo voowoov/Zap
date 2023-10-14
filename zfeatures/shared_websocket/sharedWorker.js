@@ -12,12 +12,19 @@ self.onconnect = function(e) {
         connect(e.data.url);
       } else if (e.data.command === 'send') {
         send(e.data.message);
-      } else if (e.data.command === 'disconnect') {
-        disconnect(port);
+      } else if (e.data.command === 'reconnect') {
+        wsocket.close();
+        wsocket = null;
+        connect(e.data.url);
+      } else if (e.data.command === 'removePort') {
+        setTimeout(function() {
+          removePort(port);
+        }, 3000);
+        a = 1;
       }
     }
     // for when closing a tab, the port of that tab gets removed from the list
-  function disconnect(port) {
+  function removePort(port) {
     let index = ports.indexOf(port);
     if (index !== -1) {
       ports.splice(index, 1);

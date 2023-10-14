@@ -29,12 +29,13 @@
           category headings to find out more and manage your preferences. Please note, blocking
           some types of cookies may impact your experience of the site and the services we are able to offer.
           {% endif %}
+          <a href="{% url 'legal:cookie_policy' %}">{% trans "Cookie Policy" %}</a>.
         </div>
         <div class="p-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
           <div>
             <a class="btn p-0 d-flex justify-content-start align-items-center" data-bs-toggle="collapse"
               href="#collapseCookieInfo1" role="button" aria-expanded="false" aria-controls="collapseCookieInfo1">
-              <span class="me-2">{% trans "Strictly Necessary" %}S</span>
+              <span class="me-2">{% trans "Strictly Necessary" %}</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-question-circle-fill mt-1" viewBox="0 0 16 16">
                 <path
@@ -103,7 +104,7 @@
             cookies we will not be able to use your data in this way.
             {% endif %}
           </div>
-          <a href="#">{% trans "Cookie details" %}</a>
+          <a href="{% url 'legal:cookie_policy' %}#cookieDetails">{% trans "Cookie details" %}</a>.
         </div>
         <div class="p-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
           <div>

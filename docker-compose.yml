@@ -24,8 +24,8 @@ services:
       - redis ### for channel_layer
     depends_on:
       - redis
-      - pgdb
-  ## Nginx in browser, dont put :8000, just 127.0.0.1
+      # - pgdb
+      ## Nginx in browser, dont put :8000, just 127.0.0.1
   proxy:
     build: ./docker/proxy_dev/
     restart: always
@@ -44,22 +44,21 @@ services:
     # port 6379
     restart: always
     image: redis:alpine
+    # pgdb:
+    #   image: postgres # port 5432
+    #   restart: always
+    #   volumes:
+    #     - ./pgdb/pgdb:/var/lib/postgresql/data
+    #   environment:
+    #     - POSTGRES_DB=${POSTGRESQL_NAME}
+    #     - POSTGRES_USER=${POSTGRESQL_USER}
+    #     - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
 
-  pgdb:
-    image: postgres # port 5432
-    restart: always
-    volumes:
-      - ./pgdb/pgdb:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=${POSTGRESQL_NAME}
-      - POSTGRES_USER=${POSTGRESQL_USER}
-      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
-
-  typesense:
-    image: typesense/typesense:0.26.0.rc19 # port 8108
-    volumes:
-      - ./typesense:/data
-    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
+    # typesense:
+    #   image: typesense/typesense:0.26.0.rc19 # port 8108
+    #   volumes:
+    #     - ./typesense:/data
+    #   command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
     #
     # celery:
     #   restart: always
@@ -85,44 +84,44 @@ services:
     #     - ./dja/:/usr/src/app
 
     ### Flower is to monitor all celery tasks (Async et Celery-beat). Go to 127.0.0.1:8888
-  flower:
-    image: mher/flower # port 8888
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - FLOWER_PORT=8888
-      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
-      - FLOWER_URL_PREFIX=/flower54321
+    # flower:
+    #   image: mher/flower # port 8888
+    #   environment:
+    #     - CELERY_BROKER_URL=redis://redis:6379/0
+    #     - FLOWER_PORT=8888
+    #     - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH}
+    #     - FLOWER_URL_PREFIX=/flower54321
 
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    user: root #<- this one on Windows
-    volumes:
-      - ./pgdb/pgadmin:/var/lib/pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_LISTEN_PORT: 5050
+    # pgadmin:
+    #   image: dpage/pgadmin4
+    #   restart: always
+    #   user: root #<- this one on Windows
+    #   volumes:
+    #     - ./pgdb/pgadmin:/var/lib/pgadmin
+    #   environment:
+    #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+    #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    #     PGADMIN_LISTEN_PORT: 5050
 
-  ## Go to 127.0.0.1:8200, Add Backup.. for source select MyComputer/source
-  duplicati:
-    # image: linuxserver/duplicati:latest # port 8200
-    image: duplicati/duplicati # port 8200
-    environment:
-      ### put PUID and PGID at 0 during restore, but 1000 during normal runing
-      - PUID=1000
-      - PGID=1000
-      #   - PUID=0  # for backups change from 1000 to 0
-      #   - PGID=0  # for backups change from 1000 to 0
-      - TZ=Canada/Eastern
-    #   - CLI_ARGS= #optional
-    volumes:
-      - ./duplicati/:/config
-      - ./duplicati_backups/:/backups
-      - ./pgdb/pgdb:/source/pgdb
-      - ./media:/source/media
-      - ./priv_files:/source/priv_files
-    restart: unless-stopped
+    ## Go to 127.0.0.1:8200, Add Backup.. for source select MyComputer/source
+    # duplicati:
+    #   # image: linuxserver/duplicati:latest # port 8200
+    #   image: duplicati/duplicati # port 8200
+    #   environment:
+    #     ### put PUID and PGID at 0 during restore, but 1000 during normal runing
+    #     - PUID=1000
+    #     - PGID=1000
+    #     #   - PUID=0  # for backups change from 1000 to 0
+    #     #   - PGID=0  # for backups change from 1000 to 0
+    #     - TZ=Canada/Eastern
+    #   #   - CLI_ARGS= #optional
+    #   volumes:
+    #     - ./duplicati/:/config
+    #     - ./duplicati_backups/:/backups
+    #     - ./pgdb/pgdb:/source/pgdb
+    #     - ./media:/source/media
+    #     - ./priv_files:/source/priv_files
+    #   restart: unless-stopped
     #
     ### for tests.py with selenium and chrome:
     # selenium:

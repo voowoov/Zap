@@ -449,6 +449,7 @@ function showSearchControl() {
   if (window.innerWidth < 620) {
     document.body.style.overflowY = 'hidden';
   }
+  openNavSearchSocket();
 }
 
 function hideSearchControl() {
@@ -505,11 +506,8 @@ function activateSearchBox() {
   navSearchBtnClearX.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
 
   function handleClickOnXbutton(event) {
-    // Empty the input element
     navSearchInputTxt.value = "";
-    // Set the focus on the input element
     navSearchInputTxt.focus();
-    navSearchInputTxt.dispatchEvent(new MouseEvent('mousedown'));
     navSearchBtnClearX.style.display = "none";
     sendWSnavSearchMessage()
   }
@@ -552,8 +550,6 @@ function activateSearchBox() {
     closeSearchResults();
   }
   navSearchBtnBack.addEventListener("click", handleBackButtonClick);
-
-  sendWSnavSearchMessage()
 }
 
 navSearchInputTxt.addEventListener("mousedown", function() {
@@ -593,125 +589,32 @@ window.addEventListener('resize', function() {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//    Shared worker websocket
-/////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////
-//  message is "ABCCCCC..."
-//    where A : wsTabId
-//      ascii character from 33 to 126
-//    where B : message type
-//      s : nav search
-//      c : nav chat
-//      m : nav monitor
-//    where C : message content
-//
-
-// get the next wsTabId in storage, single character
-var wsTabId = localStorage.getItem('wsTabId');
-if (wsTabId !== null) {
-  nextTabId = wsTabId.charCodeAt(0) + 1;
-  //   33; // '!' to  126; // '~'
-  if (nextTabId > 126) {
-    nextTabId = 33;
-  }
-  localStorage.setItem('wsTabId', String.fromCharCode(nextTabId));
-} else {
-  wsTabId = String.fromCharCode(33);
-  localStorage.setItem('wsTabId', wsTabId);
-}
-
-
-const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-  window.location.host + '/' +
-  pageLanguage + '/ws/debo/';
-let wsworker;
-let gsocket;
-let useSharedWorker = !!window.SharedWorker;
-
-if (useSharedWorker) {
-  wsworker = new SharedWorker('/static/js/sharedWorker.js');
-
-  wsworker.port.onmessage = function(e) {
-    handleEvent(e.data);
-  };
-
-  wsworker.port.start();
-
-  wsworker.port.postMessage({ command: 'connect', url: websocketUrl });
-} else {
-  gsocket = new WebSocket(websocketUrl);
-
-  gsocket.onopen = function() {
-    handleEvent({ type: 'open' });
-  };
-
-  gsocket.onmessage = function(e) {
-    handleEvent({ type: 'message', data: e.data });
-  };
-
-  gsocket.onerror = function() {
-    handleEvent({ type: 'error' });
-  };
-
-  gsocket.onclose = function() {
-    handleEvent({ type: 'close' });
-  };
-}
-
-function wsSend(message) {
-  if (useSharedWorker) {
-    wsworker.port.postMessage({ command: 'send', message: message });
-  } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
-    gsocket.send(message);
-  }
-}
-
-function handleEvent(event) {
-  switch (event.type) {
-    case 'message':
-      // console.log('Received message:', event.data);
-      if (event.data.length >= 2) {
-        // this message is destine to this Tab
-        if (event.data[0] == wsTabId) {
-          switch (event.data[1]) {
-            case 's':
-              showWSNavSearchResults(event.data.substring(2));
-              break;
-            default:
-              console.log("unknown ws message header")
-              break;
-          }
-        }
-      }
-      break;
-    case 'open':
-      console.log('WebSocket is open');
-      break;
-    case 'close':
-      console.log('WebSocket is closed');
-      break;
-    case 'error':
-      console.log('WebSocket encountered an error');
-      break;
-  }
-}
-
-window.addEventListener('beforeunload', function() {
-  if (useSharedWorker) {
-    wsworker.port.postMessage({ command: 'disconnect' });
-  }
-});
-/////////////////////////////////////////////////////////////////////////////////
 //  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
+
+let nsws;
+
+function openNavSearchSocket() {
+  if (nsws == null) {
+    nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+      window.location.host + '/' +
+      pageLanguage + '/ws/search/');
+    nsws.onopen = function(e) {
+      sendWSnavSearchMessage();
+    }
+    nsws.onmessage = function(e) {
+      handleWebSocketMessage(e.data);
+    };
+  }
+}
 
 function sendWSnavSearchMessage() {
   navSearchStartTimer = performance.now();
   // Send the input text as a WebSocket message
-  wsSend(wsTabId + 's' + navSearchInputTxt.value);
+  nsws.send(navSearchInputTxt.value);
 }
 
-function showWSNavSearchResults(message) {
+function handleWebSocketMessage(message) {
   var jsonArray = JSON.parse(message);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {
@@ -730,11 +633,11 @@ function showWSNavSearchResults(message) {
 }
 
 
-
-
 /////////////////////////////////////////////////////////////////////////////////
 // 
 /////////////////////////////////////////////////////////////////////////////////
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // 

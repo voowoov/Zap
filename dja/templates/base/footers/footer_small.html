@@ -6,8 +6,10 @@
       <div class="row text-center">
         <div class="col-12">
           <div class="footer-small__copyright">
-            &COPY; 2022 zap Corp. {% trans "All Rights Reserved." %} <a href="#">{% trans "User Agreement" %}</a>,
-            <a href="#">{% trans "Privacy" %}</a> {% trans "and" %} <a href="#">{% trans "Cookies" %}</a>.
+            &COPY; 2022 zap Corp. {% trans "All Rights Reserved." %}
+            <a href="{% url 'legal:terms_of_service' %}">{% trans "User Agreement" %}</a>,
+            <a href="{% url 'legal:privacy_policy' %}">{% trans "Privacy" %}</a> {% trans "and" %}
+            <a href="{% url 'base:cookie_opt' %}">{% trans "Cookie" %}</a>.
           </div>
         </div>
       </div>

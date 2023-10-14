@@ -6,8 +6,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, translate_url
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from zap.apps.base.models import Movie
-from zap.apps.xcmd.typesense import (
+from zap.apps.search.models import Movie
+from zap.apps.search.typesense import (
     typesense_add_single_document,
     typesense_create_a_collection,
     typesense_delete_a_collection,
@@ -15,6 +15,8 @@ from zap.apps.xcmd.typesense import (
     typesense_test_count_and_retrieve_documents,
 )
 from zap.apps.users.tasks import send_email_account_creation_link_task
+
+from .consumers import close_consumer_by_the_first_consumer
 
 UserModel = get_user_model()
 
@@ -81,7 +83,6 @@ class Cmd(StaffLoginRequiredMixin, View):
             self.message = typesense_test_count_and_retrieve_documents()
         if "submit_form_7" in request.POST:
             self.message = typesense_add_single_document()
-
         messages.add_message(request, messages.INFO, self.message)
 
         self.form_1 = EmailAddressForm(initial=self.initial_dict)

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "zap.apps.legal",
     "zap.apps.monitor",
     "zap.apps.priv_files",
+    "zap.apps.search",
     "zap.apps.users",
     "zap.apps.xcmd",
     ############# Django apps ##############
@@ -167,27 +168,27 @@ STATIC_ROOT_DEV = TOP_DIR / "cstatic"  # see urls.py
 
 ###### Database #######
 ### sqlite3
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#         "TEST": {
-#             "NAME": BASE_DIR / "db_test.sqlite3",
-#         },
-#     }
-# }
-### Postgres database. Celery fonctionne avec Postgres seulement quand Django run sur Docker
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("POSTGRESQL_NAME"),
-        "USER": os.getenv("POSTGRESQL_USER"),
-        "PASSWORD": os.getenv("POSTGRESQL_PASSWORD"),
-        "HOST": "pgdb",  # Use the Docker service name here
-        # "HOST": "localhost",  # use when django runs outside of docker
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        "TEST": {
+            "NAME": BASE_DIR / "db_test.sqlite3",
+        },
     }
 }
+### Postgres database. Celery fonctionne avec Postgres seulement quand Django run sur Docker
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": os.getenv("POSTGRESQL_NAME"),
+#         "USER": os.getenv("POSTGRESQL_USER"),
+#         "PASSWORD": os.getenv("POSTGRESQL_PASSWORD"),
+#         "HOST": "pgdb",  # Use the Docker service name here
+#         # "HOST": "localhost",  # use when django runs outside of docker
+#         "PORT": "5432",
+#     }
+# }
 ### Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
