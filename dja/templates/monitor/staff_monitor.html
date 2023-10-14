@@ -2,7 +2,6 @@
 {% load i18n %} {% load static %}
 {% block title %}{% trans "Monitor" %}{% endblock %}
 {% block desc %}{% trans "" %}{% endblock %}
-{% get_current_language as CURRENT_LANGUAGE %}
 {% block content %}
 
 <main class="d-flex flex-fill">
@@ -19,23 +18,24 @@
         <textarea id="command-log" cols="100" rows="5"></textarea><br>
         <input id="command-input" type="text" size="100"><br>
         <input id="command-submit" type="button" value="Send command">
-        {{ CURRENT_LANGUAGE|json_script:"current-language" }}
       </div>
     </div>
   </section>
 </main>
 <script>
-  const currentLanguage = JSON.parse(document.getElementById('current-language').textContent);
+  const pageLanguage = document.documentElement.lang;
+  const commandLog = document.querySelector('#command-log');
+  const commandInput = document.querySelector('#command-input');
+  const commandSubmit = document.querySelector('#command-submit');
+  const monitorSwitch1 = document.querySelector('#monitorSwitch1');
 
   const monitorSocket = new WebSocket(
     (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
     window.location.host + '/' +
-    currentLanguage + '/ws/monitor/'
-  );
+    pageLanguage + '/ws/monitor/');
 
   monitorSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    commandLog = document.querySelector('#command-log');
     switch (data.message) {
       case "add_chat_session":
         commandLog.value += ("add chat" + data.arg1 + '\n');
@@ -53,15 +53,14 @@
     console.error('Monitor socket closed unexpectedly');
   };
 
-  document.querySelector('#command-input').focus();
-  document.querySelector('#command-input').onkeyup = function (e) {
+  commandInput.focus();
+  commandInput.onkeyup = function (e) {
     if (e.keyCode === 13) { // enter, return
-      document.querySelector('#command-submit').click();
+      commandSubmit.click();
     }
   };
 
-  document.querySelector('#command-submit').onclick = function (e) {
-    const commandInput = document.querySelector('#command-input');
+  commandSubmit.onclick = function (e) {
     const command = commandInput.value;
     monitorSocket.send(JSON.stringify({
       'command': command
@@ -75,7 +74,6 @@
     }));
   }, false);
 
-  monitorSwitch1 = document.querySelector('#monitorSwitch1');
   monitorSwitch1.onclick = function (e) {
     if (monitorSwitch1.checked) {
       monitorSocket.send(JSON.stringify({

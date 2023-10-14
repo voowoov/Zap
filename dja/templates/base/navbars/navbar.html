@@ -71,7 +71,7 @@
           <div class="navlinkbarswipe" id="navbarSwipeMenu">
             <a class="btn_nav btn_nav__link" href="{% url 'monitor:staff_monitor' %}"
               draggable="false">{% trans "Monitor" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'xcmd:cmd' %}" draggable="false">{% trans "Cmd" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'xsys:cmd' %}" draggable="false">{% trans "Cmd" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'chat:chat' %}" draggable="false">{% trans "Chat" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
               draggable="false">{% trans "Articles" %}</a>
@@ -177,9 +177,9 @@
             </li>
             <li>
               <div class="d-flex justify-content-center flex-nowrap">
-                <a href="{% url 'xcmd:set_webpage_preference' 'lang' "fr" %}"
+                <a href="{% url 'xsys:set_webpage_preference' 'lang' "fr" %}"
                   class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "fr" %}disabled{% endif %} me-2">Français</a>
-                <a href="{% url 'xcmd:set_webpage_preference' 'lang' "en" %}"
+                <a href="{% url 'xsys:set_webpage_preference' 'lang' "en" %}"
                   class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "en" %}disabled{% endif %}">English</a>
               </div>
             </li>
@@ -188,19 +188,19 @@
             </li>
             <li>
               <div class="d-flex justify-content-center flex-nowrap">
-                <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'light' %}"
+                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'light' %}"
                   class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemelight">
                   <svg width="16" height="16">
                     <use href="{% static '/images/icons/sun.svg' %}#img"></use>
                   </svg>
                 </a>
-                <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'dark' %}"
+                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'dark' %}"
                   class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemedark">
                   <svg width="16" height="16">
                     <use href="{% static '/images/icons/sunset.svg' %}#img"></use>
                   </svg>
                 </a>
-                <a href="{% url 'xcmd:set_webpage_preference' 'theme' 'Auto' %}"
+                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'Auto' %}"
                   class="btn btn-primary btn-sm btn_ddnavthemecenter" id="jsddnavthemeauto">
                   <svg width="16" height="16">
                     <use href="{% static '/images/icons/pc-display-horizontal.svg' %}#img"></use>

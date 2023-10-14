@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     "zap.apps.priv_files",
     "zap.apps.search",
     "zap.apps.users",
-    "zap.apps.xcmd",
+    "zap.apps.xsys",
     ############# Django apps ##############
     "django.contrib.admin",
     "django.contrib.auth",
@@ -88,8 +88,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "tz_detect.middleware.TimezoneMiddleware",
-    "zap.apps.xcmd.middleware.TimezoneMiddleware",
-    "zap.apps.xcmd.middleware.CookieSettingsMiddleware",
+    "zap.apps.xsys.middleware.TimezoneMiddleware",
+    "zap.apps.xsys.middleware.CookieSettingsMiddleware",
     # "django_hosts.middleware.HostsResponseMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",  # adds request.site.domain
     "django_htmx.middleware.HtmxMiddleware",
@@ -106,8 +106,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "zap.apps.xcmd.context_processors.cookie_pref",
-                "zap.apps.xcmd.context_processors.chat_staff",
+                "zap.apps.xsys.context_processors.cookie_pref",
+                "zap.apps.xsys.context_processors.chat_staff",
             ],
             "libraries": {
                 "my_filters": "zap.apps.templatetags.my_filters",

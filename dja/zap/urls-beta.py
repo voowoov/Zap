@@ -16,10 +16,25 @@ sitemaps = {
 # from zap.apps.search.views import SearchProductInventory
 urlpatterns = [
     path("tz_detect/", include("tz_detect.urls")),
-    path("robots.txt", TemplateView.as_view(template_name="base/robots.txt", content_type="text/plain")),
+    path(
+        "robots.txt",
+        TemplateView.as_view(
+            template_name="base/robots.txt", content_type="text/plain"
+        ),
+    ),
     # path('__debug__/', include('debug_toolbar.urls')),
-    path("sitemap.xml", views.index, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.index"),
-    path("sitemap-<section>.xml", views.sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
+    path(
+        "sitemap.xml",
+        views.index,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.index",
+    ),
+    path(
+        "sitemap-<section>.xml",
+        views.sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
 ]
 urlpatterns += i18n_patterns(
     path(_("chat/"), include("zap.apps.chat.urls")),
@@ -31,7 +46,7 @@ urlpatterns += i18n_patterns(
     # path("", include("zap.apps.legal.urls")),
     path("", include("zap.apps.search.urls")),
     path("", include("zap.apps.priv_files.urls")),
-    path("", include("zap.apps.xcmd.urls")),
+    path("", include("zap.apps.xsys.urls")),
     path("admin/", admin.site.urls),
     # path("account/", include("django.contrib.auth.urls")),
 )

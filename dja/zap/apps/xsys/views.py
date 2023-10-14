@@ -94,4 +94,4 @@ class Cmd(StaffLoginRequiredMixin, View):
             "form_1": self.form_1,
             "form_2": self.form_2,
         }
-        return render(request, "xcmd/xcmd.html", ctx)
+        return render(request, "xsys/xsys.html", ctx)
