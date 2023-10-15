@@ -8,7 +8,9 @@ class ListStaffChat:
         staff_data = []
         try:
             user = User.objects.get(id=user_id)
-            avatar = user.avatar.url if user.avatar else static("/images/icons/avatar.svg")
+            avatar = (
+                user.avatar.url if user.avatar else static("/images/icons/avatar.svg")
+            )
             social_name = user.social_name if user.social_name else ""
             social_desc = user.social_desc if user.social_desc else ""
             staff_data = [user_id, avatar, social_name, social_desc]
@@ -43,3 +45,15 @@ class ListStaffChat:
 
     def get_single_staff(self, index):
         return cache.get("chat_staff_list", [])[index]
+
+
+def enable_staff_chat(userid):
+    list_staff_chat = ListStaffChat()
+    list_staff_chat.add_staff(userid)
+    return "enabled staff chat"
+
+
+def disable_staff_chat(userid):
+    list_staff_chat = ListStaffChat()
+    list_staff_chat.del_staff(userid)
+    return "disabled staff chat"

@@ -81,3 +81,12 @@ class StaffLoginRequiredMixin(AccessMixin):
         if request.user.is_authenticated and request.user.is_staff:
             return super().dispatch(request, *args, **kwargs)
         return self.handle_no_permission()
+
+
+class SuperuserLoginRequiredMixin(AccessMixin):
+    """Verify that the current user is authenticated."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        return self.handle_no_permission()

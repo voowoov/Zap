@@ -69,14 +69,14 @@
         <!--   Links      -->
         <div class="me-3 d-none d-sm-block navlinkbarparent">
           <div class="navlinkbarswipe" id="navbarSwipeMenu">
-            <a class="btn_nav btn_nav__link" href="{% url 'monitor:staff_monitor' %}"
+            <a class="btn_nav btn_nav__link" href="{% url 'monitor:monitor' %}"
               draggable="false">{% trans "Monitor" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'xsys:cmd' %}" draggable="false">{% trans "Cmd" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'chat:chat' %}" draggable="false">{% trans "Chat" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'chat:lobby_chat' %}"
+              draggable="false">{% trans "Chat lobby" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'chat:staff_chat' %}"
+              draggable="false">{% trans "Staff Chat" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
               draggable="false">{% trans "Articles" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'legal:terms_of_service' %}"
-              draggable="false">{% trans "Legal" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}" draggable="false">{% trans "Test" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Explore" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Services" %}</a>
@@ -130,7 +130,7 @@
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
             {% if request.user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'chat:chat' %}">{% trans "Chat lobby" %}</a>
+            <li><a class="dropdown-item" href="{% url 'chat:lobby_chat' %}">{% trans "Chat lobby" %}</a>
             </li>
             {% else %}
             <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>

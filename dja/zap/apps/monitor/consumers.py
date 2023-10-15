@@ -1,91 +1,51 @@
-# ### synchronious
-import json
-from random import randint
-from time import sleep
-
+import zap.apps.chat.objects as chat
+import zap.apps.search.typesense as ts
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
-from django.core.cache import cache
-from django.utils.translation import get_language
-from zap.apps.chat.objects import ListStaffChat
 
 
 class MonitorConsumer(WebsocketConsumer):
     def connect(self):
-        #### self.scope is like request
-        # self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        # self.room_group_name = "chat_%s" % self.room_name
-        self.room_group_name = "monitor_group"
-        if self.scope["user"].is_authenticated:
-            #### Join room group
-            async_to_sync(self.channel_layer.group_add)(
-                self.room_group_name, self.channel_name
-            )
-            print("connnected")
-
+        if self.scope["user"].is_superuser:
             self.accept()
-            self.send(json.dumps({"message": "connected"}))
+            self.send("connected")
         else:
             self.close()
         # Clients.objects.create(channel_name=self.channel_name)
 
     def disconnect(self, close_code):
-        #### Leave room group
-        print("disconnected")
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name, self.channel_name
-        )
+        pass
 
     #### Receive message from WebSocket
     def receive(self, text_data):
-        list_staff_chat = ListStaffChat()
-
-        command = json.loads(text_data)["command"]
-        match command:
-            case "enable_staff_chat":
-                list_staff_chat.add_staff(self.scope["user"].id)
-                self.send(json.dumps({"message": "enabled staff chat"}))
-            case "disable_staff_chat":
-                list_staff_chat.del_staff(self.scope["user"].id)
-                self.send(json.dumps({"message": "disabled staff chat"}))
-            case _:
-                self.send(json.dumps({"message": command + " : unknown command"}))
-                pass
-        print("received")
-
-    def send_message_to_frontend(self, event):
-        message = event["message"]
-        arg1 = event["arg1"]
-        self.send(text_data=json.dumps({"message": message, "arg1": arg1}))
-
-
-# class ChatConsumer(AsyncWebsocketConsumer):
-# async def connect(self):
-#     self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-#     self.room_group_name = "chat_%s" % self.room_name
-
-#     # Join room group
-#     await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-
-#     await self.accept()
-
-# async def disconnect(self, close_code):
-#     # Leave room group
-#     await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-# # Receive message from WebSocket
-# async def receive(self, text_data):
-#     text_data_json = json.loads(text_data)
-#     message = text_data_json["message"]
-
-#     # Send message to room group
-#     await self.channel_layer.group_send(
-#         self.room_group_name, {"type": "chat_message", "message": message}
-#     )
-
-# # Receive message from room group
-# async def chat_message(self, event):
-#     message = event["message"]
-
-#     # Send message to WebSocket
-#     await self.send(text_data=json.dumps({"message": message}))
+        try:
+            if text_data:
+                # command_name and command_arg are split by the first space occuring
+                result = text_data.split(maxsplit=1)
+                command_name = result[0]
+                command_arg = result[1] if len(result) > 1 else ""
+                match command_name:
+                    case "enable_staff_chat":
+                        self.send(chat.enable_staff_chat(self.scope["user"].id))
+                    case "disable_staff_chat":
+                        self.send(chat.disable_staff_chat(self.scope["user"].id))
+                    case "movies_fixture_to_db":
+                        self.send(ts.movies_fixture_to_db())
+                    case "delete_all_movies_from_db":
+                        self.send(ts.delete_all_movies_from_db())
+                    case "typesense_delete_a_collection":
+                        self.send(ts.typesense_delete_a_collection())
+                    case "typesense_create_a_collection":
+                        self.send(ts.typesense_create_a_collection())
+                    case "typesense_import_documents":
+                        self.send(ts.typesense_import_documents())
+                    case "typesense_test_count_documents":
+                        self.send(ts.typesense_test_count_documents())
+                    case "typesense_add_single_document":
+                        self.send(ts.typesense_add_single_document())
+                    case _:
+                        self.send("unknown command")
+            else:
+                self.send("unknown command")
+        except Exception as e:
+            print(e)

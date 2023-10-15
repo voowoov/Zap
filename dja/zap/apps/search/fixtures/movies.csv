@@ -1,4 +1,4 @@
-model,id,language,title,release_date,vote
+model,pk,language,title,release_date,vote
 search.movie,1,ko,20th Century Girl,2022-10-06,8.7
 search.movie,2,en,The Godfather,1972-03-14,8.7
 search.movie,3,en,The Shawshank Redemption,1994-09-23,8.7

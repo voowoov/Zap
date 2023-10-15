@@ -14,7 +14,7 @@ from .models import ChatSession
 list_staff_chat = ListStaffChat()
 
 
-class ChatLobby(View):
+class LobbyChat(View):
     def get(self, request):
         return self.this_render(request)
 
@@ -27,11 +27,27 @@ class ChatLobby(View):
             ctx = {
                 "room_name": "roomNameAasdf",
             }
-            return render(request, "chat/lobby.html", ctx)
+            return render(request, "chat/lobby_chat.html", ctx)
         except:
             return redirect("base:home")
 
-    # from channels.layers import get_channel_layer
+
+class StaffChat(View):
+    def get(self, request):
+        return self.this_render(request)
+
+    def post(self, request):
+        return self.this_render(request)
+
+    def this_render(self, request):
+        user = request.user
+        try:
+            ctx = {
+                "room_name": "roomNameAasdf",
+            }
+            return render(request, "chat/staff_chat.html", ctx)
+        except:
+            return redirect("base:home")
 
 
 @ensure_csrf_cookie

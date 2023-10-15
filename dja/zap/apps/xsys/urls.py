@@ -11,5 +11,4 @@ urlpatterns = [
         views.set_webpage_preference,
         name="set_webpage_preference",
     ),
-    path("cmd/", views.Cmd.as_view(), name="cmd"),
 ]

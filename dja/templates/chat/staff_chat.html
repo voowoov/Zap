@@ -1,0 +1,113 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load static %}
+{% block title %}{% trans "Monitor" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+  <section class="full_section text_color">
+    <div class="h-100 container-fluid">
+      <div class="h-100 d-flex gap-2">
+        <div class="d-flex flex-column" style="width:250px;">
+          <div class="d-flex flex-column" type="button" style="background:gray; border: 2px solid blue">
+            <div class="d-flex">
+              <div class="">
+                Name
+              </div>
+              <div class="">
+                Online
+              </div>
+            </div>
+            <div class="">
+              name title
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
+          <textarea class="command-log" id="command-log"></textarea>
+          <textarea class="command-input" id="command-input" type="text" rows="2"></textarea>
+          <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
+        </div>
+        <div class="d-flex flex-column align-items-start" style="width:250px;">
+          Files
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const commandLog = document.querySelector('#command-log');
+  const commandInput = document.querySelector('#command-input');
+  const commandSubmit = document.querySelector('#command-submit');
+
+  const monitorSocket = new WebSocket(
+    (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+    window.location.host + '/' +
+    document.documentElement.lang + '/ws/monitor/');
+
+  monitorSocket.onmessage = function (e) {
+    addLogRes(e.data)
+  };
+
+  monitorSocket.onclose = function (e) {
+    console.error('Monitor socket closed unexpectedly');
+  };
+
+  commandInput.onkeydown = function (e) {
+    if (e.key === "Enter") { // enter, return
+      event.preventDefault();
+      commandSubmit.click();
+    }
+  };
+
+  commandSubmit.onclick = function (e) {
+    sendCommand(commandInput.value);
+    commandInput.value = '';
+  };
+
+  function addLogRes(log) {
+    commandLog.value += ('return: ' + log + '\n');
+    commandLog.scrollTop = commandLog.scrollHeight;
+  }
+
+  function addComlog(log) {
+    commandLog.value += ('cmd: ' + log + '\n');
+    commandLog.scrollTop = commandLog.scrollHeight;
+  }
+
+  function sendCommand(command) {
+    if (command.length > 0) {
+      monitorSocket.send(command);
+      addComlog(command)
+    }
+  }
+
+  commandInput.focus();
+</script>
+<style>
+  .command-log {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+
+  .command-input {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+
+  .command-submit {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+</style>
+
+{% endblock %}

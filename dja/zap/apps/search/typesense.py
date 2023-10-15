@@ -1,5 +1,8 @@
 import json
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 from django.db.models import F
 from dotenv import load_dotenv
@@ -8,7 +11,6 @@ from zap.apps.search.models import Movie
 import typesense
 
 load_dotenv()
-
 
 client = typesense.Client(
     {
@@ -78,18 +80,7 @@ def typesense_import_documents():
     return "Typesense imported documents into collection"
 
 
-def typesense_add_single_document():
-    new_product = {
-        "title": "New Product",
-        "language": "en",
-        "release_date": "2023-01-01",
-        "vote": 9.9,
-    }
-    client.collections["products"].documents.create(new_product)
-    return "Added single"
-
-
-def typesense_test_count_and_retrieve_documents():
+def typesense_test_count_documents():
     collections = client.collections["products"].retrieve()
     # keep this print
     print("number of documents : " + str(collections["num_documents"]))
@@ -101,6 +92,17 @@ def typesense_test_count_and_retrieve_documents():
     # keep this print
     print(documents)
     return "retrieved documents"
+
+
+def typesense_add_single_document():
+    new_product = {
+        "title": "New Product",
+        "language": "en",
+        "release_date": "2023-01-01",
+        "vote": 9.9,
+    }
+    client.collections["products"].documents.create(new_product)
+    return "Added single"
 
 
 def typesense_delete_a_collection():
@@ -127,5 +129,22 @@ def typesense_search_documents(query: str):
         # A JSON string representation of the data
         json_data = json.dumps(data, indent=1)
         return json_data
-    except:
-        pass
+    except Exception as e:
+        logger.warning("Typesense_search_documents  " + e)
+
+
+###########################################################################################
+##          Django database operations
+###########################################################################################
+from django.core.management import call_command
+
+
+def movies_fixture_to_db():
+    call_command("loaddata", "movies.json")
+    return "Added movies to db"
+
+
+def delete_all_movies_from_db():
+    Movie.objects.all().delete()
+    # print("deleteddd")
+    return "Deleted all movies from db"

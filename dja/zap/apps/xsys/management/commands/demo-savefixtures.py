@@ -9,5 +9,5 @@ class Command(BaseCommand):
             "dumpdata",
             "articles.Article",
             indent=4,
-            stdout=open("zap/apps/xsys/fixtures/article.json", "w"),
+            stdout=open("zap/apps/articles/fixtures/articles.json", "w"),
         )
