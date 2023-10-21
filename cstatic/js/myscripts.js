@@ -402,7 +402,7 @@ navSearchMain.innerHTML = `
       </div>
       <div class="navSearchBoxDiv1">
         <div class=" navSearchBoxDiv2">
-          <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}"/>
+          <input class="navSearchInputTxt" type="text" placeholder="${navSearchPlaceHolder}" maxlength="50"/>
         </div>
         <div class="navSearchBtnEnter" type="button">
           <svg width="18" height="18">
@@ -475,15 +475,16 @@ function activateSearchBox() {
     navSearchBtnClearX.style.display = "flex";
   }
 
-  function closeSearchResults() {
-    document.removeEventListener('input', handleInputTextChange);
-    document.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
-    document.removeEventListener('mouseup', handleClickOnXbutton);
-    document.removeEventListener('mousedown', handlePreventLeavingInput);
-    document.removeEventListener('wheel', handleScrollingFromMainCtn);
+  function deactivateSearchBox() {
+    navSearchInputTxt.removeEventListener('input', handleInputTextChange);
+    navSearchBtnClearX.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
+    navSearchBtnClearX.removeEventListener('mouseup', handleClickOnXbutton);
+    navSearchMain.removeEventListener('mousedown', handlePreventLeavingInput);
+    navSearchMain.removeEventListener('wheel', handleScrollingFromMainCtn);
     document.removeEventListener('mousedown', handleClickedOutside);
     document.removeEventListener('keydown', handleEscapeKeydown);
-    document.removeEventListener('click', handleBackButtonClick);
+    navSearchBtnBack.removeEventListener('click', handleBackButtonClick);
+    navSearchTriggerBtn.removeEventListener('click', handleSearchTriggerBtnClick);
     hideSearchControl();
   }
 
@@ -534,22 +535,30 @@ function activateSearchBox() {
       !navSearchResDiv0.contains(event.target) &&
       !navSearchTriggerBtn.contains(event.target)) {
       // The click occurred outside of both elements
-      closeSearchResults();
+      deactivateSearchBox();
     }
   }
   document.addEventListener('mousedown', handleClickedOutside);
 
   function handleEscapeKeydown(event) {
     if (event.key === 'Escape') {
-      closeSearchResults();
+      deactivateSearchBox();
     }
   }
   document.addEventListener('keydown', handleEscapeKeydown);
 
   function handleBackButtonClick(event) {
-    closeSearchResults();
+    deactivateSearchBox();
   }
   navSearchBtnBack.addEventListener("click", handleBackButtonClick);
+
+  function handleSearchTriggerBtnClick(event) {
+    if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'true') {
+      deactivateSearchBox();
+    }
+  }
+  navSearchTriggerBtn.addEventListener("click", handleSearchTriggerBtnClick);
+
 }
 
 navSearchInputTxt.addEventListener("mousedown", function() {
@@ -563,8 +572,6 @@ navSearchBtnEnter.addEventListener("click", function() {
 navSearchTriggerBtn.addEventListener('click', function() {
   if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
     activateSearchBox();
-  } else {
-    hideSearchControl();
   }
 });
 
@@ -592,10 +599,10 @@ window.addEventListener('resize', function() {
 //  Nav Search websocket
 /////////////////////////////////////////////////////////////////////////////////
 
-let nsws;
+var nsws;
 
 function openNavSearchSocket() {
-  if (nsws == null) {
+  if (typeof nsws === 'undefined') {
     nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
       window.location.host + '/' +
       pageLanguage + '/ws/search/');
@@ -603,8 +610,11 @@ function openNavSearchSocket() {
       sendWSnavSearchMessage();
     }
     nsws.onmessage = function(e) {
-      handleWebSocketMessage(e.data);
+      showWSnavSearchResults(e.data);
     };
+    window.addEventListener('beforeunload', function(event) {
+      nsws.close();
+    });
   }
 }
 
@@ -614,7 +624,7 @@ function sendWSnavSearchMessage() {
   nsws.send(navSearchInputTxt.value);
 }
 
-function handleWebSocketMessage(message) {
+function showWSnavSearchResults(message) {
   var jsonArray = JSON.parse(message);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {

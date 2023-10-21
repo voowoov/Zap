@@ -37,7 +37,7 @@ class DebounceConsumer(AsyncWebsocketConsumer):
 
 # Close the first consumer from the set of connected consumers
 def close_consumer_by_the_first_consumer():
-    next(iter(DebounceConsumer.connected_consumers)).close()
+    next(iter(SearchConsumer.connected_consumers)).close()
 
 
 # Close the first consumer from the set of connected consumers

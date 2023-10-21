@@ -16,8 +16,9 @@ services:
       - ./priv_files:/usr/src/priv_files
       - ./cstatic:/usr/src/cstatic # dev runserver django directly
       - ./static_collect:/usr/src/static_collect # func collectstatic only
-    # expose:
-    #   - 8001
+      - ./websocket/protocol.py:/usr/local/lib/python3.10/site-packages/autobahn/websocket/protocol.py
+      # expose:
+      #   - 8001
     ports:
       - 8000:8000
     links:
