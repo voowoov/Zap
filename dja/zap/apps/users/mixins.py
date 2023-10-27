@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.shortcuts import resolve_url
+from django.http import HttpResponse
 
 ######### Lev2 - password required again after a maximum timeout; different login screen #########
 
@@ -54,6 +55,9 @@ class Lev2LoginRequiredMixin(Lev2AccessMixin):
             return self.handle_no_permission_lev2()
         return super().dispatch(request, *args, **kwargs)
 
+    def handle_no_permission(self):
+        return HttpResponse("You have been denied")
+
 
 class SessionLev2Timestamp:
     def make_ts(self):
@@ -82,6 +86,9 @@ class StaffLoginRequiredMixin(AccessMixin):
             return super().dispatch(request, *args, **kwargs)
         return self.handle_no_permission()
 
+    def handle_no_permission(self):
+        return HttpResponse("You have been denied")
+
 
 class SuperuserLoginRequiredMixin(AccessMixin):
     """Verify that the current user is authenticated."""
@@ -90,3 +97,6 @@ class SuperuserLoginRequiredMixin(AccessMixin):
         if request.user.is_authenticated and request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
         return self.handle_no_permission()
+
+    def handle_no_permission(self):
+        return HttpResponse("You have been denied")

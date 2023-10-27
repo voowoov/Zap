@@ -17,6 +17,7 @@ services:
       - ./cstatic:/usr/src/cstatic # dev runserver django directly
       - ./static_collect:/usr/src/static_collect # func collectstatic only
       - ./websocket/protocol.py:/usr/local/lib/python3.10/site-packages/autobahn/websocket/protocol.py
+      - ./tmp_files:/usr/src/tmp_files
       # expose:
       #   - 8001
     ports:

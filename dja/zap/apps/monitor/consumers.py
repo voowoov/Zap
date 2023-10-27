@@ -19,7 +19,6 @@ class MonitorConsumer(WebsocketConsumer):
             self.send("connected")
         else:
             self.close()
-        # Clients.objects.create(channel_name=self.channel_name)
 
     def disconnect(self, close_code):
         pass

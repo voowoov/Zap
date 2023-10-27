@@ -57,7 +57,7 @@ def typesense_import_documents():
                 }
             ],
             "api_key": os.getenv("TYPESENSE_API_KEY"),
-            "connection_timeout_seconds": 60,
+            "connection_timeout_seconds": 1,
         }
     )
     # Get all movies and annotate them with a new field movieid
@@ -130,7 +130,9 @@ def typesense_search_documents(query: str):
         json_data = json.dumps(data, indent=1)
         return json_data
     except Exception as e:
-        logger.warning("Typesense_search_documents  " + e)
+        print("asdasdf")
+        print(e)
+        logger.warning(e)
 
 
 ###########################################################################################

@@ -71,10 +71,10 @@
           <div class="navlinkbarswipe" id="navbarSwipeMenu">
             <a class="btn_nav btn_nav__link" href="{% url 'monitor:monitor' %}"
               draggable="false">{% trans "Monitor" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'chat:lobby_chat' %}"
+            <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_lobby' %}"
               draggable="false">{% trans "Chat lobby" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'chat:staff_chat' %}"
-              draggable="false">{% trans "Staff Chat" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_staff' %}"
+              draggable="false">{% trans "Chat Staff" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
               draggable="false">{% trans "Articles" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}" draggable="false">{% trans "Test" %}</a>
@@ -130,7 +130,7 @@
           </div>
           <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
             {% if request.user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'chat:lobby_chat' %}">{% trans "Chat lobby" %}</a>
+            <li><a class="dropdown-item" href="{% url 'chat:chat_lobby' %}">{% trans "Chat lobby" %}</a>
             </li>
             {% else %}
             <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>

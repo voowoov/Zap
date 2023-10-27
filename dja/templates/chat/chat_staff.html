@@ -1,0 +1,185 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load static %}
+{% block title %}{% trans "Lobby" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+  <section class="full_section text_color">
+    <div class="h-100 container-fluid">
+      <div class="h-100 d-flex gap-2">
+        <div class="d-flex flex-column" style="width:250px;">
+          <div class="d-flex flex-column userSelectBtn" type="button" data-userChatId="fe2qef"
+            onclick="userSelectFunction(event)" style="background:gray; border: 2px solid blue">
+            <div class="d-flex">
+              <div class="">
+                Name
+              </div>
+              <div class="">
+                Online
+              </div>
+            </div>
+            <div class="">
+              name title
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
+          <textarea class="chat-log" id="chat-log"></textarea>
+          <textarea class="chat-input" id="chat-input" type="text" rows="2"></textarea>
+          <button class="chat-submit" id="chat-submit">{% trans "Send chat" %}</button>
+        </div>
+        <div class="d-flex flex-column align-items-start" style="width:250px;">
+          Files
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function userSelectFunction(event) {
+    var ois = event.target;
+    console.log(ois)
+    var userChatId = ois.getAttribute('data-userChatId');
+    console.log(userChatId);
+  }
+
+  const wsLobbyURL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+    window.location.host + '/' +
+    document.documentElement.lang + '/ws/lobby/';
+
+  const lobbySocket = new WebSocket(wsLobbyURL);
+
+  lobbySocket.onmessage = function (e) {};
+
+  lobbySocket.onclose = function (e) {
+    console.error('Lobby socket closed unexpectedly');
+  };
+
+  lobbySocket.onerror = function (event) {
+    console.error('Lobby socket error');
+  };
+
+
+  const chatLog = document.querySelector('#chat-log');
+  const chatInput = document.querySelector('#chat-input');
+  const chatSubmit = document.querySelector('#chat-submit');
+
+  const wsChatURL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+    window.location.host + '/' +
+    document.documentElement.lang + '/ws/chat/';
+
+  const chatSocket = new WebSocket(wsChatURL);
+
+  chatSocket.onmessage = function (e) {
+    addLogRes(e.data)
+  };
+
+  chatSocket.onclose = function (e) {
+    console.error('Monitor socket closed unexpectedly');
+  };
+
+  chatSocket.onerror = function (event) {
+    if (event.code === 1009) {
+      alert("The message received was too large.");
+    }
+  };
+
+  chatInput.onkeydown = function (e) {
+    if (e.key === "Enter") { // enter, return
+      event.preventDefault();
+      chatSubmit.click();
+    }
+  };
+
+  chatSubmit.onclick = function (e) {
+    sendChat(chatInput.value);
+    chatInput.value = '';
+  };
+
+  function addLogRes(log) {
+    chatLog.value += ('return: ' + log + '\n');
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  function addComlog(log) {
+    chatLog.value += ('cmd: ' + log + '\n');
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  function sendChat(chat) {
+    if (chat.length > 0) {
+      chatSocket.send(chat);
+      addComlog(chat);
+    }
+  }
+
+  window.addEventListener('beforeunload', function (event) {
+    lobbySocket.close();
+    chatSocket.close();
+  });
+</script>
+
+
+
+<style>
+  .chat-log {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+
+  .chat-input {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+
+  .chat-submit {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
+
+
+  #myProgress {
+    width: 100%;
+  }
+
+  #uploaded_files {
+    margin-top: 25px;
+    display: flex;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  .file-icon i {
+    font-size: 60px;
+    color: rgb(0, 0, 0);
+  }
+
+  .file-details {
+    margin-top: -2px;
+    padding-left: 10px;
+    width: 100%;
+  }
+
+  .file-details p {
+    margin-bottom: -7px;
+  }
+
+  small {
+    margin-top: 0;
+    color: black;
+  }
+</style>
+
+{% endblock %}

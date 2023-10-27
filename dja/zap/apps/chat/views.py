@@ -14,7 +14,7 @@ from .models import ChatSession
 list_staff_chat = ListStaffChat()
 
 
-class LobbyChat(View):
+class ChatLobby(View):
     def get(self, request):
         return self.this_render(request)
 
@@ -27,12 +27,12 @@ class LobbyChat(View):
             ctx = {
                 "room_name": "roomNameAasdf",
             }
-            return render(request, "chat/lobby_chat.html", ctx)
+            return render(request, "chat/chat_lobby.html", ctx)
         except:
             return redirect("base:home")
 
 
-class StaffChat(View):
+class ChatStaff(View):
     def get(self, request):
         return self.this_render(request)
 
@@ -45,97 +45,28 @@ class StaffChat(View):
             ctx = {
                 "room_name": "roomNameAasdf",
             }
-            return render(request, "chat/staff_chat.html", ctx)
+            return render(request, "chat/chat_staff.html", ctx)
         except:
             return redirect("base:home")
 
 
-@ensure_csrf_cookie
-def init_chat(request):
-    if request.method == "POST":
+class ChatVideo(View):
+    def get(self, request):
+        return self.this_render(request)
+
+    def post(self, request):
+        return self.this_render(request)
+
+    def this_render(self, request):
+        user = request.user
         try:
-            is_authenticated = request.user.is_authenticated
-
-            return JsonResponse(
-                {
-                    "chat_staff_list": cache.get("chat_staff_list", []),
-                    "is_authenticated": is_authenticated,
-                },
-                safe=False,
-            )
-        except Exception as e:
-            print(e)
+            ctx = {
+            }
+            return render(request, "chat/chat_video.html", ctx)
+        except:
+            return redirect("base:home")
 
 
-def save_chat(request):
-    if request.method == "POST":
-        try:
-            form = ChatSessionInitForm(request.POST)
-            if form.is_valid():
-                chat_host_id = form.cleaned_data["chat_host_id"]
-                anonymous_chat_client_name = form.cleaned_data[
-                    "anonymous_chat_client_name"
-                ]
-                anonymous_chat_client_desc = form.cleaned_data[
-                    "anonymous_chat_client_desc"
-                ]
-                chat_subject = form.cleaned_data["chat_subject"]
-                client_user = request.user
-                if request.user.is_authenticated:
-                    try:
-                        chat_session = ChatSession.objects.get(
-                            chat_host_id=chat_host_id, client_user=client_user
-                        )
-                        chat_session.chat_subject = chat_subject
-                        chat_session.save()
-                    except:
-                        chat_session = ChatSession.objects.create(
-                            chat_host_id=chat_host_id,
-                            client_user=client_user,
-                            chat_subject=chat_subject,
-                        )
-                else:
-                    anonymous_id = request.session.get("anonymous_id", "")
-                    if anonymous_id:
-                        pass
-                    else:
-                        anonymous_id = get_random_string(8)
-                        request.session["anonymous_id"] = anonymous_id
-                    try:
-                        chat_session = ChatSession.objects.get(
-                            chat_host_id=chat_host_id, anonymous_id=anonymous_id
-                        )
-                        chat_session.anonymous_chat_client_name = (
-                            anonymous_chat_client_name
-                        )
-                        chat_session.anonymous_chat_client_desc = (
-                            anonymous_chat_client_desc
-                        )
-                        chat_session.chat_subject = chat_subject
-                        chat_session.save()
-                    except:
-                        chat_session = ChatSession.objects.create(
-                            chat_host_id=chat_host_id,
-                            anonymous_id=anonymous_id,
-                            anonymous_chat_client_name=anonymous_chat_client_name,
-                            anonymous_chat_client_desc=anonymous_chat_client_desc,
-                            chat_subject=chat_subject,
-                        )
-                return JsonResponse(
-                    {
-                        "result": "success",
-                        "chat_session_id": chat_session.id,
-                    },
-                    safe=False,
-                )
-        except Exception as e:
-            print(e)
-    return JsonResponse(
-        {
-            "result": "failed",
-        },
-        safe=False,
-    )
 
 
 # def room_chat(request, chat_session_id):

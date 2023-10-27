@@ -449,7 +449,8 @@ function showSearchControl() {
   if (window.innerWidth < 620) {
     document.body.style.overflowY = 'hidden';
   }
-  openNavSearchSocket();
+  openSharedSocket();
+  sendWSnavSearchMessage();
 }
 
 function hideSearchControl() {
@@ -466,8 +467,10 @@ function hideSearchControl() {
   document.body.style.overflowY = 'auto';
 }
 
-function activateSearchBox() {
+var activatedSearchResults = false;
 
+function activateSearchBox() {
+  activatedSearchResults = true;
   showSearchControl();
 
   // Unhide navSearchBtnClearX if there is text inside the input field
@@ -476,6 +479,7 @@ function activateSearchBox() {
   }
 
   function deactivateSearchBox() {
+    activatedSearchResults = false;
     navSearchInputTxt.removeEventListener('input', handleInputTextChange);
     navSearchBtnClearX.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
     navSearchBtnClearX.removeEventListener('mouseup', handleClickOnXbutton);
@@ -562,7 +566,9 @@ function activateSearchBox() {
 }
 
 navSearchInputTxt.addEventListener("mousedown", function() {
-  activateSearchBox();
+  if (!activatedSearchResults) {
+    activateSearchBox();
+  }
 });
 
 navSearchBtnEnter.addEventListener("click", function() {
@@ -571,7 +577,9 @@ navSearchBtnEnter.addEventListener("click", function() {
 
 navSearchTriggerBtn.addEventListener('click', function() {
   if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
-    activateSearchBox();
+    if (!activatedSearchResults) {
+      activateSearchBox();
+    }
   }
 });
 
@@ -595,34 +603,175 @@ window.addEventListener('resize', function() {
 });
 
 
+
+
 /////////////////////////////////////////////////////////////////////////////////
-//  Nav Search websocket
+//    Shared worker websocket
 /////////////////////////////////////////////////////////////////////////////////
 
-var nsws;
+// get the next wsTabId in storage, single character
+var wsTabId = localStorage.getItem('wsTabId');
+if (wsTabId !== null) {
+  nextTabId = wsTabId.charCodeAt(0) + 1;
+  //   33; // '!' to  126; // '~'
+  if (nextTabId > 126) {
+    nextTabId = 33;
+  }
+  localStorage.setItem('wsTabId', String.fromCharCode(nextTabId));
+} else {
+  wsTabId = String.fromCharCode(33);
+  localStorage.setItem('wsTabId', wsTabId);
+}
 
-function openNavSearchSocket() {
-  if (typeof nsws === 'undefined') {
-    nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-      window.location.host + '/' +
-      pageLanguage + '/ws/search/');
-    nsws.onopen = function(e) {
-      sendWSnavSearchMessage();
+const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+  window.location.host + '/wsi/';
+let wsworker;
+let gsocket;
+let useSharedWorker = !!window.SharedWorker; // is supported
+
+function openSharedSocket() {
+  if (typeof wsworker === 'undefined') {
+    if (useSharedWorker) {
+      wsworker = new SharedWorker('/static/js/sharedWorker.js');
+
+      wsworker.port.onmessage = function(e) {
+        handleWsEvent(e.data);
+      };
+
+      wsworker.port.start();
+
+      wsworker.port.postMessage({
+        command: 'connect',
+        url: websocketUrl
+      });
+    } else {
+      initiateWebsocketFallback();
     }
-    nsws.onmessage = function(e) {
-      showWSnavSearchResults(e.data);
-    };
-    window.addEventListener('beforeunload', function(event) {
-      nsws.close();
+    window.addEventListener('beforeunload', function() {
+      if (useSharedWorker) {
+        wsworker.port.postMessage({
+          command: 'removePort'
+        });
+      } else {
+        gsocket.close()
+      }
     });
   }
 }
 
-function sendWSnavSearchMessage() {
-  navSearchStartTimer = performance.now();
-  // Send the input text as a WebSocket message
-  nsws.send(navSearchInputTxt.value);
+function initiateWebsocketFallback() {
+  gsocket = new WebSocket(websocketUrl);
+
+  gsocket.onopen = function() {
+    handleWsEvent({
+      type: 'open'
+    });
+  };
+
+  gsocket.onmessage = function(e) {
+    handleWsEvent({
+      type: 'message',
+      data: e.data
+    });
+  };
+
+  gsocket.onerror = function() {
+    handleWsEvent({
+      type: 'error'
+    });
+  };
+
+  gsocket.onclose = function() {
+    handleWsEvent({
+      type: 'close'
+    });
+  };
 }
+
+function wsSend(message) {
+  if (useSharedWorker) {
+    wsworker.port.postMessage({
+      command: 'send',
+      message: message
+    });
+  } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
+    gsocket.send(message);
+  }
+}
+
+function wsReconnect() {
+  if (useSharedWorker) {
+    wsworker.port.postMessage({
+      command: 'reconnect',
+      url: websocketUrl
+    });
+  } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
+    gsocket.close();
+    gsocket = null;
+    initiateWebsocketFallback();
+  }
+}
+
+function handleWsEvent(event) {
+  switch (event.type) {
+    case 'message':
+      console.log('Received message:', event.data);
+      if (event.data.length > 1) {
+        switch (event.data[0]) {
+          case 's':
+            if (event.data[1] == wsTabId) {
+              navSearchStartTimer = performance.now();
+              showWSnavSearchResults(event.data.substring(2));
+              break;
+            }
+        }
+      }
+      break;
+    case 'open':
+      console.log('WebSocket is open');
+      if (document.activeElement === navSearchInputTxt) {
+        sendWSnavSearchMessage();
+      }
+      break;
+    case 'close':
+      console.log('WebSocket is closed');
+      break;
+    case 'error':
+      console.log('WebSocket encountered an error');
+      break;
+    default:
+
+  }
+}
+
+// /////////////////////////////////////////////////////////////////////////////////
+// //  Nav Search websocket
+// /////////////////////////////////////////////////////////////////////////////////
+
+// var nsws;
+
+// function openSharedSocket() {
+//     if (typeof nsws === 'undefined') {
+//         nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+//             window.location.host + '/' +
+//             pageLanguage + '/ws/search/');
+//         nsws.onopen = function(e) {
+//             sendWSnavSearchMessage();
+//         }
+//         nsws.onmessage = function(e) {
+//             showWSnavSearchResults(e.data);
+//         };
+//         window.addEventListener('beforeunload', function(event) {
+//             nsws.close();
+//         });
+//     }
+// }
+
+// function sendWSnavSearchMessage() {
+//     navSearchStartTimer = performance.now();
+//     // Send the input text as a WebSocket message
+//     nsws.send(navSearchInputTxt.value);
+// }
 
 function showWSnavSearchResults(message) {
   var jsonArray = JSON.parse(message);
@@ -642,23 +791,46 @@ function showWSnavSearchResults(message) {
   console.log(`${timeDiff} ms.`);
 }
 
+function sendWSnavSearchMessage_() {
+  navSearchStartTimer = performance.now();
+  wsSend('s' + wsTabId + navSearchInputTxt.value);
+}
+
+
+function debounce(func, delay) {
+  let lastCallTime = 0;
+  let timeoutId;
+
+  return function() {
+    const context = this;
+    const args = arguments;
+    const now = Date.now();
+
+    clearTimeout(timeoutId);
+
+    if (now - lastCallTime < delay) {
+      timeoutId = setTimeout(() => {
+        lastCallTime = Date.now();
+        func.apply(context, args);
+      }, delay - (now - lastCallTime));
+    } else {
+      lastCallTime = now;
+      func.apply(context, args);
+    }
+  }
+}
+const sendWSnavSearchMessage = debounce(sendWSnavSearchMessage_, 600);
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
-/////////////////////////////////////////////////////////////////////////////////
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-// 
+//
 /////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//
 /////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//
 /////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -683,5 +855,5 @@ function showWSnavSearchResults(message) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-// 
+//
 /////////////////////////////////////////////////////////////////////////////////

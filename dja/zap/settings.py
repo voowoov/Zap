@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "zap.apps.priv_files",
     "zap.apps.search",
     "zap.apps.users",
+    "zap.apps.wsi",
     "zap.apps.xsys",
     ############# Django apps ##############
     "django.contrib.admin",
