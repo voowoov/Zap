@@ -7,5 +7,4 @@ app_name = "monitor"
 
 urlpatterns = [
     path(_("monitor625453245/"), views.StaffMonitor.as_view(), name="monitor"),
-    path("upload/", views.StaffMonitor.as_view(), name="upload_file"),
 ]

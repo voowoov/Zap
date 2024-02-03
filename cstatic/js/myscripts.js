@@ -724,6 +724,11 @@ function handleWsEvent(event) {
               showWSnavSearchResults(event.data.substring(2));
               break;
             }
+          case 'f':
+            if (event.data.slice(1) == 'continue') {
+              sendWSsendFilePartialUpload();
+              break;
+            }
         }
       }
       break;
@@ -747,31 +752,6 @@ function handleWsEvent(event) {
 // /////////////////////////////////////////////////////////////////////////////////
 // //  Nav Search websocket
 // /////////////////////////////////////////////////////////////////////////////////
-
-// var nsws;
-
-// function openSharedSocket() {
-//     if (typeof nsws === 'undefined') {
-//         nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-//             window.location.host + '/' +
-//             pageLanguage + '/ws/search/');
-//         nsws.onopen = function(e) {
-//             sendWSnavSearchMessage();
-//         }
-//         nsws.onmessage = function(e) {
-//             showWSnavSearchResults(e.data);
-//         };
-//         window.addEventListener('beforeunload', function(event) {
-//             nsws.close();
-//         });
-//     }
-// }
-
-// function sendWSnavSearchMessage() {
-//     navSearchStartTimer = performance.now();
-//     // Send the input text as a WebSocket message
-//     nsws.send(navSearchInputTxt.value);
-// }
 
 function showWSnavSearchResults(message) {
   var jsonArray = JSON.parse(message);
@@ -819,12 +799,105 @@ function debounce(func, delay) {
     }
   }
 }
-const sendWSnavSearchMessage = debounce(sendWSnavSearchMessage_, 600);
+const sendWSnavSearchMessage = debounce(sendWSnavSearchMessage_, 400);
 
 /////////////////////////////////////////////////////////////////////////////////
-//
+//  File uploads
 /////////////////////////////////////////////////////////////////////////////////
+openSharedSocket();
 
+const fileStatusBar = document.getElementById('fileUploadStatus')
+const fileChunkSize = 1990; // Size of chunks
+const fileMaxNbChunks = 100;
+const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
+let filePortionStep = 0;
+let filePortionsArray = [];
+
+function sendWSinitiateFileUpload() {
+  var x = document.getElementById("fileUploadInput");
+  if ('files' in x) {
+    if (x.files.length == 1) {
+      var file = x.files[0];
+      if (is_valid_filename(file.name)) {
+        filePortionStep = 0
+        filePortionsArray = dividePortionsArray(file.size, filePartialSize);
+        fileStatusBar.innerHTML = '0 %';
+        wsSend('f' + wsTabId + JSON.stringify({ file_name: file.name, file_size: file.size }));
+      } else {
+        alert("invalid file name")
+      }
+    }
+  }
+}
+
+function sendWSsendFilePartialUpload() {
+  const file = document.getElementById('fileUploadInput').files[0]; // Get file from file input
+  var chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
+  var chunkId = 0; // Start with the first chunk
+  function readNextChunk() {
+    if (chunkId < chunksNb) {
+      var start = filePortionsArray[filePortionStep][0] + chunkId * fileChunkSize;
+      var end = Math.min(start + fileChunkSize, filePortionsArray[filePortionStep][1]);
+      var blob = file.slice(start, end); // Create a blob representing the chunk
+      var reader = new FileReader();
+      reader.onloadend = function(evt) {
+        if (evt.target.readyState == FileReader.DONE) { // When the chunk is read
+          // make the byte array with [Chunk id (4 bytes int) + File byte array (rest of the bytes)]
+          var buffer = new ArrayBuffer(4),
+            view = new DataView(buffer);
+          view.setInt32(0, chunkId, true);
+          var resultByteLength = evt.target.result.byteLength,
+            arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
+          arrayBuffer.set(new Uint8Array(view.buffer));
+          arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
+          wsSend(arrayBuffer);
+          chunkId++;
+          readNextChunk(); // Read the next chunk recursively
+        }
+      };
+      reader.readAsArrayBuffer(blob);
+    }
+  }
+  readNextChunk(); // Start reading recursively
+  filePortionStep++;
+  fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
+}
+
+function is_valid_filename(filename) {
+  // Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot
+  // Check if extension is alphanumeric
+  let filenameRegex = /^\w[\w-]*\.\w+$/;
+  if (!filenameRegex.test(filename)) {
+    return false;
+  }
+  if (filename.length > 50) {
+    return false;
+  }
+  // Check if extension is present and not too long
+  let extension = filename.split('.').pop();
+  if (!extension || extension.length < 3 || extension.length > 5) {
+    return false;
+  }
+  return true;
+}
+
+// sets a 2d Array with start position, end position and length for each portion of the file
+// ex 10 and 3 will output  [[0, 2, 3], [3, 5, 3], [6, 8, 3], [9, 9, 1]]
+function dividePortionsArray(fullSize, partialSize) {
+  var quotient = Math.floor(fullSize / partialSize);
+  var remainder = fullSize % partialSize;
+  var start = 0;
+  var portions = [];
+  for (var i = 0; i < quotient; i++) {
+    var end = start + partialSize;
+    portions.push([start, end - 1, partialSize]);
+    start = end;
+  }
+  if (remainder != 0) {
+    portions.push([start, start + remainder - 1, remainder]);
+  }
+  return portions;
+}
 /////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////

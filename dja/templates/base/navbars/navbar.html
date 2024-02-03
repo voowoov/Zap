@@ -1,216 +1,226 @@
 {% load i18n %} {% load static %}
 <header>
-  <nav class="p-0 m-0 container-fluid fixed-top mset_nav ddnav">
-    <div class="p-0 m-0 row">
-      <div class="p-0 m-0 d-flex align-items-center flex-nowrap">
-        <!-- Menu -->
-        <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus ps-2 ps-xl-3" type="button" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside" aria-expanded="false">
-            <div class="d-flex flex-column justify-content-center align-items-center">
-              <svg width="23" height="13">
-                <use href="{% static '/images/icons/menu-double.svg' %}#img"></use>
-              </svg>
-              <div class="fnavmenu">MENU</div>
-            </div>
-          </div>
-          <ul class="dropdown-menu scrollable-menu">
-            <li class="px-0" style="padding-bottom: 0.8rem;">
-              <!-- Accordion -->
-              <div class="accordion" id="accordionExample">
-                <!-- Sidebar ... Item 1 ... -->
-                <div class="accordion-item">
-                  <div class="accordion-header" id="heading1">
-                    <button class="navbtn_accordion" type="button" onclick="window.location.href='#'">
-                      <span>{% trans "Something else here" %}</span>
-                    </button>
-                  </div>
-                </div>
-                <!-- Sidebar ... Item 2 ... -->
-                <div class="accordion-item ddtogled">
-                  <div class="accordion-header">
-                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                      <span>{% trans "Something else" %}</span>
-                    </button>
-                  </div>
-                  <div id="collapse2" class="accordion-collapse collapse" data-bs-parent=" #accordionExample">
-                    <div class="accordion-body">
-                      <div class="d-flex">
-                        <div class="acorlev2preblock"></div>
-                        <button class="navbtn_accordion navbtn_accordion__sub" type="button"
-                          onclick="window.location.href='#'">
-                          <span>{% trans "Something else here" %}</span>
-                        </button>
-                      </div>
-                      <div class="d-flex">
-                        <div class="acorlev2preblock"></div>
-                        <button class="navbtn_accordion navbtn_accordion__sub" type="button"
-                          onclick="window.location.href='#'">
-                          <span>{% trans "Something else here" %}</span>
-                        </button>
-                      </div>
+    <nav class="p-0 m-0 container-fluid fixed-top mset_nav ddnav">
+        <div class="p-0 m-0 row">
+            <div class="p-0 m-0 d-flex align-items-center flex-nowrap">
+                <!-- Menu -->
+                <div class="dropdown">
+                    <div class="btn_nav btn_nav__side_menus ps-2 ps-xl-3" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <svg width="23" height="13">
+                                <use href="{% static '/images/icons/menu-double.svg' %}#img"></use>
+                            </svg>
+                            <div class="fnavmenu">MENU</div>
+                        </div>
                     </div>
-                  </div>
+                    <ul class="dropdown-menu scrollable-menu">
+                        <li class="px-0" style="padding-bottom: 0.8rem;">
+                            <!-- Accordion -->
+                            <div class="accordion" id="accordionExample">
+                                <!-- Sidebar ... Item 1 ... -->
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="heading1">
+                                        <button class="navbtn_accordion" type="button"
+                                            onclick="window.location.href='#'">
+                                            <span>{% trans "Something else here" %}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Sidebar ... Item 2 ... -->
+                                <div class="accordion-item ddtogled">
+                                    <div class="accordion-header">
+                                        <button class=" accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false"
+                                            aria-controls="collapse2">
+                                            <span>{% trans "Something else" %}</span>
+                                        </button>
+                                    </div>
+                                    <div id="collapse2" class="accordion-collapse collapse"
+                                        data-bs-parent=" #accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="d-flex">
+                                                <div class="acorlev2preblock"></div>
+                                                <button class="navbtn_accordion navbtn_accordion__sub" type="button"
+                                                    onclick="window.location.href='#'">
+                                                    <span>{% trans "Something else here" %}</span>
+                                                </button>
+                                            </div>
+                                            <div class="d-flex">
+                                                <div class="acorlev2preblock"></div>
+                                                <button class="navbtn_accordion navbtn_accordion__sub" type="button"
+                                                    onclick="window.location.href='#'">
+                                                    <span>{% trans "Something else here" %}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <!-- Logo      -->
-        <a class="flex-shrink-0 btn_nav btn_nav__logo" href='{% url 'admin:index' %}' title="Home" , alt="zap">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 16 16">
-            <path style="fill:var(--color-logo1-1)"
-              d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z" />
-            <path style="fill:var(--color-logo1-2)"
-              d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1l6 3.577zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z" />
-          </svg>
-        </a>
-        <!--   Links      -->
-        <div class="me-3 d-none d-sm-block navlinkbarparent">
-          <div class="navlinkbarswipe" id="navbarSwipeMenu">
-            <a class="btn_nav btn_nav__link" href="{% url 'monitor:monitor' %}"
-              draggable="false">{% trans "Monitor" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_lobby' %}"
-              draggable="false">{% trans "Chat lobby" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_staff' %}"
-              draggable="false">{% trans "Chat Staff" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
-              draggable="false">{% trans "Articles" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}" draggable="false">{% trans "Test" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Explore" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Services" %}</a>
-            <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Quotes" %}</a>
-          </div>
-        </div> <!-- Search -->
-        <div class="d-block d-lg-none ms-auto">
-          <div class="btn_nav btn_nav__search" type="button" aria-expanded="false">
-            <svg class="" width="25" height="25">
-              <use href="{% static '/images/icons/search.svg' %}#img"></use>
-            </svg>
-          </div>
-        </div>
-        <div class="flex-grow-0 flex-lg-grow-1 flex-xl-grow-0 ms-lg-auto me-lg-3">
-          <div class="navSearchMain"></div>
-        </div>
-
-        <!--   calendrier      -->
-        <div class="dropdown-center">
-          <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-            aria-expanded="false">
-            <div class="d-flex flex-column justify-content-end align-items-center">
-              <svg class="" width="20" height="20">
-                <use href="{% static '/images/icons/calendar3.svg' %}#img"></use>
-              </svg>
-              <div class="d-none d-xxl-block fnavcom">{% trans "Scheduling" %}</div>
-            </div>
-          </div>
-          <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
-            {% if request.user.is_authenticated %}
-            <li>
-              {% comment %} <a class="dropdown-item"
-                href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a> {% endcomment %}
-            </li>
-            {% else %}
-            <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
-
-            {% endif %}
-          </ul>
-        </div>
-        <!--   communication      -->
-        <div class="dropdown-center">
-          <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-            aria-expanded="false">
-            <div class="d-flex flex-column justify-content-end align-items-center">
-              <svg class="" width="20" height="20">
-                <use href="{% static '/images/icons/chat.svg' %}#img"></use>
-              </svg>
-              <div class="d-none d-xxl-block fnavcom">{% trans "Messaging" %}</div>
-            </div>
-          </div>
-          <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
-            {% if request.user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'chat:chat_lobby' %}">{% trans "Chat lobby" %}</a>
-            </li>
-            {% else %}
-            <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
-
-            {% endif %}
-          </ul>
-        </div>
-
-        <!-- Login      -->
-        <div class="dropdown">
-          <div class="btn_nav btn_nav__side_menus pe-3 pe-xl-4" type="button" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside" aria-expanded="false">
-            <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
-              {% if request.user.is_authenticated and request.user.avatar %}
-              <img src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar" draggable="false">
-              {% else %}
-              <svg class="" width="30" height="30">
-                <use href="{% static '/images/icons/avatar.svg' %}#img"></use>
-              </svg>
-              {% endif %}
-            </div>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end text-center dropdown-menu__login scrollable_menu">
-            {% if request.user.is_authenticated %}
-            <li>
-              <h6 class="dropdown-header">{% if request.user.first_name %}{% trans "Welcome" %}
-                {{request.user.first_name}}{% else %}{{request.user.email}}{% endif %}</h6>
-            </li>
-            <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
-            </li>
-            <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Sign out" %}</a></li>
-            {% else %}
-            <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
-            <li><a class="dropdown-item"
-                href="{% url 'users:create_account_info' %}">{% trans "Create an account" %}</a>
-            </li>
-            {% endif %}
-            <!-- Settings -->
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li>
-              <h6 class="dropdown-header">{% trans "Language" %}</h6>
-            </li>
-            <li>
-              <div class="d-flex justify-content-center flex-nowrap">
-                <a href="{% url 'xsys:set_webpage_preference' 'lang' "fr" %}"
-                  class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "fr" %}disabled{% endif %} me-2">Français</a>
-                <a href="{% url 'xsys:set_webpage_preference' 'lang' "en" %}"
-                  class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "en" %}disabled{% endif %}">English</a>
-              </div>
-            </li>
-            <li>
-              <h6 class="dropdown-header">{% trans "Theme" %}</h6>
-            </li>
-            <li>
-              <div class="d-flex justify-content-center flex-nowrap">
-                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'light' %}"
-                  class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemelight">
-                  <svg width="16" height="16">
-                    <use href="{% static '/images/icons/sun.svg' %}#img"></use>
-                  </svg>
+                <!-- Logo      -->
+                <a class="flex-shrink-0 btn_nav btn_nav__logo" href='{% url 'admin:index' %}' title="Home" , alt="zap">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" viewBox="0 0 16 16">
+                        <path style="fill:var(--color-logo1-1)"
+                            d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z" />
+                        <path style="fill:var(--color-logo1-2)"
+                            d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1l6 3.577zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z" />
+                    </svg>
                 </a>
-                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'dark' %}"
-                  class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemedark">
-                  <svg width="16" height="16">
-                    <use href="{% static '/images/icons/sunset.svg' %}#img"></use>
-                  </svg>
-                </a>
-                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'Auto' %}"
-                  class="btn btn-primary btn-sm btn_ddnavthemecenter" id="jsddnavthemeauto">
-                  <svg width="16" height="16">
-                    <use href="{% static '/images/icons/pc-display-horizontal.svg' %}#img"></use>
-                  </svg>
-                </a>
-              </div>
-            </li>
-          </ul>
+                <!--   Links      -->
+                <div class="me-3 d-none d-sm-block navlinkbarparent">
+                    <div class="navlinkbarswipe" id="navbarSwipeMenu">
+                        <a class="btn_nav btn_nav__link" href="{% url 'monitor:monitor' %}"
+                            draggable="false">{% trans "Monitor" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_lobby' %}"
+                            draggable="false">{% trans "Chat&nbsp;lobb" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_staff' %}"
+                            draggable="false">{% trans "Chat&nbsp;Staff" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
+                            draggable="false">{% trans "Articles" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}"
+                            draggable="false">{% trans "Test" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}"
+                            draggable="false">{% trans "Explore" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}"
+                            draggable="false">{% trans "Services" %}</a>
+                        <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}"
+                            draggable="false">{% trans "Quotes" %}</a>
+                    </div>
+                </div> <!-- Search -->
+                <div class="d-block d-lg-none ms-auto">
+                    <div class="btn_nav btn_nav__search" type="button" aria-expanded="false">
+                        <svg class="" width="25" height="25">
+                            <use href="{% static '/images/icons/search.svg' %}#img"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-grow-0 flex-lg-grow-1 flex-xl-grow-0 ms-lg-auto me-lg-3">
+                    <div class="navSearchMain"></div>
+                </div>
+
+                <!--   calendrier      -->
+                <div class="dropdown-center">
+                    <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <div class="d-flex flex-column justify-content-end align-items-center">
+                            <svg class="" width="20" height="20">
+                                <use href="{% static '/images/icons/calendar3.svg' %}#img"></use>
+                            </svg>
+                            <div class="d-none d-xxl-block fnavcom">{% trans "Scheduling" %}</div>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
+                        {% if request.user.is_authenticated %}
+                        <li>
+                            {% comment %} <a class="dropdown-item"
+                                href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
+                            {% endcomment %}
+                        </li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
+
+                        {% endif %}
+                    </ul>
+                </div>
+                <!--   communication      -->
+                <div class="dropdown-center">
+                    <div class="btn_nav btn_nav__com" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <div class="d-flex flex-column justify-content-end align-items-center">
+                            <svg class="" width="20" height="20">
+                                <use href="{% static '/images/icons/chat.svg' %}#img"></use>
+                            </svg>
+                            <div class="d-none d-xxl-block fnavcom">{% trans "Messaging" %}</div>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu text-center dropdown-menu__com scrollable_menu">
+                        {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'chat:chat_lobby' %}">{% trans "Chat lobby" %}</a>
+                        </li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
+
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Login      -->
+                <div class="dropdown">
+                    <div class="btn_nav btn_nav__side_menus pe-3 pe-xl-4" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" aria-expanded="false">
+                        <div class="nav_avatar {% if request.user.is_authenticated %}nav_avatar__active{% endif %}">
+                            {% if request.user.is_authenticated and request.user.avatar %}
+                            <img src="{{ request.user.avatar.url }}" width="30px" height="30px" alt="Avatar"
+                                draggable="false">
+                            {% else %}
+                            <svg class="" width="30" height="30">
+                                <use href="{% static '/images/icons/avatar.svg' %}#img"></use>
+                            </svg>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end text-center dropdown-menu__login scrollable_menu">
+                        {% if request.user.is_authenticated %}
+                        <li>
+                            <h6 class="dropdown-header">{% if request.user.first_name %}{% trans "Welcome" %}
+                                {{request.user.first_name}}{% else %}{{request.user.email}}{% endif %}</h6>
+                        </li>
+                        <li><a class="dropdown-item"
+                                href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Sign out" %}</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
+                        <li><a class="dropdown-item"
+                                href="{% url 'users:create_account_info' %}">{% trans "Create an account" %}</a>
+                        </li>
+                        {% endif %}
+                        <!-- Settings -->
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <h6 class="dropdown-header">{% trans "Language" %}</h6>
+                        </li>
+                        <li>
+                            <div class="d-flex justify-content-center flex-nowrap">
+                                <a href="{% url 'xsys:set_webpage_preference' 'lang' "fr" %}"
+                                    class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "fr" %}disabled{% endif %} me-2">Français</a>
+                                <a href="{% url 'xsys:set_webpage_preference' 'lang' "en" %}"
+                                    class="btn btn-primary btn-sm {% if CURRENT_LANGUAGE == "en" %}disabled{% endif %}">English</a>
+                            </div>
+                        </li>
+                        <li>
+                            <h6 class="dropdown-header">{% trans "Theme" %}</h6>
+                        </li>
+                        <li>
+                            <div class="d-flex justify-content-center flex-nowrap">
+                                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'light' %}"
+                                    class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemelight">
+                                    <svg width="16" height="16">
+                                        <use href="{% static '/images/icons/sun.svg' %}#img"></use>
+                                    </svg>
+                                </a>
+                                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'dark' %}"
+                                    class="btn btn-primary btn-sm me-2 btn_ddnavthemecenter" id="jsddnavthemedark">
+                                    <svg width="16" height="16">
+                                        <use href="{% static '/images/icons/sunset.svg' %}#img"></use>
+                                    </svg>
+                                </a>
+                                <a href="{% url 'xsys:set_webpage_preference' 'theme' 'Auto' %}"
+                                    class="btn btn-primary btn-sm btn_ddnavthemecenter" id="jsddnavthemeauto">
+                                    <svg width="16" height="16">
+                                        <use href="{% static '/images/icons/pc-display-horizontal.svg' %}#img"></use>
+                                    </svg>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </nav>
+    </nav>
 </header>

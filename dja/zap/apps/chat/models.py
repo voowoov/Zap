@@ -55,11 +55,6 @@ class ChatSession(models.Model):
         return time
 
 
-class ChatFileSend(models.Model):
-    session = models.ForeignKey(ChatSession, on_delete=models.CASCADE)
-    file = models.FileField(upload_to=uploadPathFunction)
-
-
 # class ChatParticipant(models.Model):
 #     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE)
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)

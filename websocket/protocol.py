@@ -1,5 +1,5 @@
 ###############################################################################
-#
+# self.maxFramePayloadSize = 
 # The MIT License (MIT)
 #
 # Copyright (c) typedef int GmbH
@@ -3705,8 +3705,8 @@ class WebSocketServerFactory(WebSocketFactory):
         self.requireMaskedClientFrames = True
         self.maskServerFrames = False
         self.applyMask = True
-        self.maxFramePayloadSize = 2001
-        self.maxMessagePayloadSize = 2001
+        self.maxFramePayloadSize = 10000
+        self.maxMessagePayloadSize = 10000
         self.autoFragmentSize = 0
         self.failByDrop = True
         self.echoCloseCodeReason = False
@@ -4608,8 +4608,8 @@ class WebSocketClientFactory(WebSocketFactory):
         self.acceptMaskedServerFrames = False
         self.maskClientFrames = True
         self.applyMask = True
-        self.maxFramePayloadSize = 2001
-        self.maxMessagePayloadSize = 2001
+        self.maxFramePayloadSize = 10000
+        self.maxMessagePayloadSize = 10000
         self.autoFragmentSize = 0
         self.failByDrop = True
         self.echoCloseCodeReason = False

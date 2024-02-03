@@ -338,8 +338,14 @@ TINYMCE_DEFAULT_CONFIG = {
     # "image_advtab": True,
     # "file_browser_callback": "myFileBrowser",
 }
+
+###### http Post requests #######
 # DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10000  # 10 kB
-
 # FILE_UPLOAD_MAX_MEMORY_SIZE is a Django setting that specifies the maximum size, in bytes, for files that will be uploaded into memory. Files larger than FILE_UPLOAD_MAX_MEMORY_SIZE will be streamed to disk 12.
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576  # 1 MB
+
+###### Custom Config websocket WSI #######
+WSI_MESSAGE_MAX_SIZE = 2000
+WSI_DEFAULT_MAX_FILE_SIZE = 1000000
+WSI_TMP_FILE_DIRECTORY = str(TOP_DIR) + "/tmp_files/"

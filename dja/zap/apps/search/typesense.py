@@ -113,6 +113,8 @@ def typesense_delete_a_collection():
 
 def typesense_search_documents(query: str):
     try:
+        if query == "":
+            query = "-"
         search_parameters = {
             "q": query,  # The search query
             "query_by": "title,language",  # The fields to search by
