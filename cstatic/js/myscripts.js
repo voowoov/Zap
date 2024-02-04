@@ -808,7 +808,7 @@ openSharedSocket();
 
 const fileStatusBar = document.getElementById('fileUploadStatus')
 const fileChunkSize = 1990; // Size of chunks
-const fileMaxNbChunks = 100;
+const fileMaxNbChunks = 5;
 const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
 let filePortionStep = 0;
 let filePortionsArray = [];
@@ -834,39 +834,45 @@ function sendWSsendFilePartialUpload() {
   const file = document.getElementById('fileUploadInput').files[0]; // Get file from file input
   var chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
   var chunkId = 0; // Start with the first chunk
+
   function readNextChunk() {
-    if (chunkId < chunksNb) {
-      var start = filePortionsArray[filePortionStep][0] + chunkId * fileChunkSize;
-      var end = Math.min(start + fileChunkSize, filePortionsArray[filePortionStep][1]);
-      var blob = file.slice(start, end); // Create a blob representing the chunk
-      var reader = new FileReader();
-      reader.onloadend = function(evt) {
-        if (evt.target.readyState == FileReader.DONE) { // When the chunk is read
-          // make the byte array with [Chunk id (4 bytes int) + File byte array (rest of the bytes)]
-          var buffer = new ArrayBuffer(4),
-            view = new DataView(buffer);
-          view.setInt32(0, chunkId, true);
-          var resultByteLength = evt.target.result.byteLength,
-            arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
-          arrayBuffer.set(new Uint8Array(view.buffer));
-          arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
-          wsSend(arrayBuffer);
-          chunkId++;
-          readNextChunk(); // Read the next chunk recursively
-        }
-      };
-      reader.readAsArrayBuffer(blob);
-    }
+    return new Promise((resolve, reject) => {
+      if (chunkId < chunksNb) {
+        var start = filePortionsArray[filePortionStep][0] + chunkId * fileChunkSize;
+        var end = Math.min(start + fileChunkSize, filePortionsArray[filePortionStep][1] + 1);
+        var blob = file.slice(start, end); // Create a blob representing the chunk
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+          if (evt.target.readyState == FileReader.DONE) { // When the chunk is read
+            // make the byte array with [Chunk id (4 bytes int) + File byte array (rest of the bytes)]
+            var buffer = new ArrayBuffer(4),
+              view = new DataView(buffer);
+            view.setInt32(0, chunkId, true);
+            var resultByteLength = evt.target.result.byteLength,
+              arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
+            arrayBuffer.set(new Uint8Array(view.buffer));
+            arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
+            wsSend(arrayBuffer);
+            chunkId++;
+            resolve(readNextChunk()); // Resolve the promise with the next recursive call
+          }
+        };
+        reader.readAsArrayBuffer(blob);
+      } else {
+        resolve(); // Resolve the promise when there are no more chunks to read
+      }
+    });
   }
-  readNextChunk(); // Start reading recursively
-  filePortionStep++;
-  fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
+  readNextChunk().then(() => {
+    filePortionStep++;
+    fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
+  });
 }
 
 function is_valid_filename(filename) {
   // Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot
   // Check if extension is alphanumeric
-  let filenameRegex = /^\w[\w-]*\.\w+$/;
+  let filenameRegex = /^\w[\w\s-]*\.\w+$/;
   if (!filenameRegex.test(filename)) {
     return false;
   }

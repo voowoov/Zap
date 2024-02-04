@@ -4,6 +4,7 @@
 /duplicati_backups
 /pgdb
 /typesense
+/tmp_files
 /static_collect
 
 # Environments

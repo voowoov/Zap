@@ -1,23 +1,34 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _
 import uuid
-from zap.apps.chat.models import ChatSession
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from zap.apps.chat.models import ChatSession
 
 
 def uploadPathFunction(instance, filename):
-    randomN = str(uuid.uuid4())
-    return "uploads/%s" % randomN + filename
+    randomN = str(uuid.uuid4())[:8]
+    return "uploads/%s" % randomN
 
 
 class FileUpload(models.Model):
-    content_type = models.ForeignKey(
+    owner_content_type = models.ForeignKey(
         ContentType, null=True, blank=True, on_delete=models.CASCADE
     )
-    object_id = models.PositiveIntegerField()
-    owner_object = GenericForeignKey("content_type", "object_id")
+    owner_object_id = models.PositiveIntegerField()
+    owner_object = GenericForeignKey("owner_content_type", "owner_object_id")
 
     file = models.FileField(upload_to=uploadPathFunction, null=True, blank=True)
-    file_name = models.CharField(unique=True, max_length=50)
-    tmp_name = models.CharField(unique=True, max_length=4)
+    file_name = models.CharField(max_length=50)
+
+    def delete(self, *args, **kwargs):  # makes delete the media file too
+        storage = self.file.storage
+        name = self.file.name
+        print(name)
+        if storage.exists(name):
+            print("deleting")
+            storage.delete(name)
+        else:
+            print("file dont exist")
+        super().delete(*args, **kwargs)
