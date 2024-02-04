@@ -9,7 +9,7 @@ from zap.apps.chat.models import ChatSession
 
 def uploadPathFunction(instance, filename):
     randomN = str(uuid.uuid4())[:8]
-    return "uploads/%s" % randomN
+    return "uploads/%s" % randomN + "." + filename.split(".")[-1]
 
 
 class FileUpload(models.Model):
@@ -25,10 +25,6 @@ class FileUpload(models.Model):
     def delete(self, *args, **kwargs):  # makes delete the media file too
         storage = self.file.storage
         name = self.file.name
-        print(name)
         if storage.exists(name):
-            print("deleting")
             storage.delete(name)
-        else:
-            print("file dont exist")
         super().delete(*args, **kwargs)

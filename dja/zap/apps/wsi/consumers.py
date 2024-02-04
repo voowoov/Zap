@@ -24,8 +24,8 @@ from django.utils.translation import get_language
 from .models import FileUpload
 
 path_directory = settings.WSI_TMP_FILE_DIRECTORY
-chunk_size = 1990
-max_nb_chunks = 5
+chunk_size = 1990  # the same must be in the js. Also see websocket message size that i limited protocol, i limited the message size
+max_nb_chunks = 100  # the same must be in the js.
 
 logger = logging.getLogger(__name__)
 
@@ -73,8 +73,8 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 if len(bytes_data) > 4 and hasattr(self, "file_portion_array"):
                     await self.receive_file_bytes(bytes_data)
                 else:
-                    logger.warning(
-                        "wsi file upload binary message is too short or is missing initial attribute"
+                    logger.error(
+                        "wsi file upload unexpected binary message is too short or is missing initial attribute"
                     )
                     await self.close()
             else:
@@ -124,10 +124,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
                             self.file_portion_array[self.file_portion_step] / chunk_size
                         )
                         self.chunk_bool_array = [False] * self.file_nb_chunks
-                        with open(
-                            path_directory + self.file_tmp_name + "full", "wb"
-                        ) as file:
-                            pass
+
                         await self.send("fcontinue")
             else:
                 await self.close()
@@ -140,7 +137,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
             # The first 4 bytes are your integer, the current chunk_id
             chunk_id = struct.unpack("<I", bytes_data[:4])[0]
             if self.chunk_bool_array[chunk_id]:
-                logger.warning("wsi file upload alert chunk id repeated")
+                logger.error("wsi file upload alert unexpected chunk id repeated")
                 await self.close()
             else:
                 self.chunk_bool_array[chunk_id] = True
@@ -167,7 +164,12 @@ class WsiConsumer(AsyncWebsocketConsumer):
                                 output_file.write(partial_file_data)
                     if self.file_portion_step == len(self.file_portion_array) - 1:
                         # make the final file
-                        output_file_path = path_directory + self.file_tmp_name + "full"
+                        output_file_path = (
+                            path_directory
+                            + self.file_tmp_name
+                            + "full."
+                            + self.file_name.split(".")[-1]
+                        )
                         with open(output_file_path, "wb") as output_file:
                             for x in range(len(self.file_portion_array)):
                                 partial_file_path = (
@@ -177,7 +179,9 @@ class WsiConsumer(AsyncWebsocketConsumer):
                                     partial_file_data = partial_file.read()
                                     output_file.write(partial_file_data)
                         if os.path.getsize(output_file_path) != self.file_size:
-                            print("alert inconsistent file size")
+                            logger.error(
+                                "wsi file upload unexpected alert inconsistent file size"
+                            )
                         else:
                             # send the final file a new FileUpload model object
                             with open(output_file_path, "rb") as output_file:
@@ -192,6 +196,8 @@ class WsiConsumer(AsyncWebsocketConsumer):
                             ):
                                 os.remove(filename)
                             logger.info("wsi file upload of {self.file_name} finished")
+                            # send received confirmation
+                            await self.send("freceived")
                     else:
                         self.file_portion_step += 1
                         self.file_nb_chunks = math.ceil(

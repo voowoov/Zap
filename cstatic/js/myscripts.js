@@ -725,9 +725,13 @@ function handleWsEvent(event) {
               break;
             }
           case 'f':
-            if (event.data.slice(1) == 'continue') {
-              sendWSsendFilePartialUpload();
-              break;
+            switch (event.data.slice(1)) {
+              case 'continue':
+                sendWSsendFilePartialUpload();
+                break;
+              case 'received':
+                receivedConfirmationUpload();
+                break;
             }
         }
       }
@@ -806,10 +810,11 @@ const sendWSnavSearchMessage = debounce(sendWSnavSearchMessage_, 400);
 /////////////////////////////////////////////////////////////////////////////////
 openSharedSocket();
 
-const fileStatusBar = document.getElementById('fileUploadStatus')
 const fileChunkSize = 1990; // Size of chunks
-const fileMaxNbChunks = 5;
+const fileMaxNbChunks = 100;
+
 const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
+const fileStatusBar = document.getElementById('fileUploadStatus')
 let filePortionStep = 0;
 let filePortionsArray = [];
 
@@ -867,6 +872,10 @@ function sendWSsendFilePartialUpload() {
     filePortionStep++;
     fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
   });
+}
+
+function receivedConfirmationUpload() {
+  fileStatusBar.innerHTML = '\u2713';
 }
 
 function is_valid_filename(filename) {
