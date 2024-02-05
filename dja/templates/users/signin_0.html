@@ -60,17 +60,32 @@
         btn-login__signin">{% trans "Sign in" %}</button>
         </div>
         <!-- Toggle div display, see javascript -->
-        <div class="row mt-4 text_color text-center toggleDisplayCtnWithBtn">
-          <div class="form-check d-flex justify-content-center">
-            <label class="form-check-label">
-              <input class="form-check-input me-2" type="checkbox" name="stay_signed_in"
-                {% if form.stay_signed_in.value %} checked {% endif %}>
-              {% trans "Stay&nbsp;" %}
-            </label>
-            <span class="link_1 toggleDisplayBtn" type="button">{% trans "signed in" %}</span>
+        <div class="row mt-4 text_color justify-content-center toggleDisplayCtnWithBtn">
+          <div class="col-auto">
+            <div class="row">
+              <div class="form-check d-flex col-12 justify-content-left">
+                <label class="form-check-label">
+                  <input class="form-check-input me-2" type="checkbox" name="remember_email"
+                    {% if form.remember_email.value %} checked {% endif %}>
+                  {% trans "Remember my email" %}
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-check d-flex col-12 justify-content-left">
+                <label class="form-check-label">
+                  <input class="form-check-input me-2" type="checkbox" name="stay_signed_in"
+                    {% if form.stay_signed_in.value %} checked {% endif %}>
+                  {% trans "Stay&nbsp;" %}
+                </label>
+                <span class="link_1 toggleDisplayBtn" type="button">{% trans "signed in" %}</span>
+              </div>
+            </div>
           </div>
-          <div>
-            {% trans "Uncheck if using a public device." %} <br>
+          <div class="">
+            <div class="row justify-content-center">
+              {% trans "Uncheck if using a public device." %} <br>
+            </div>
           </div>
           <div class="login-learn toggleDisplayCtn" style="display: none;">
             <div class="row">
@@ -85,11 +100,13 @@
               </span>
               <span class="col-10 text-start">
                 {% if CURRENT_LANGUAGE == "en" %}
-                With this box checked, you will be kept signed in on this device. However, accessing account information
+                With this box checked, you will be kept signed in on this device. However, accessing
+                account information
                 may require entering your password.
                 {% endif %}
                 {% if CURRENT_LANGUAGE == "fr" %}
-                With this box checked, you will be kept signed in on this device. However, accessing account information
+                With this box checked, you will be kept signed in on this device. However, accessing
+                account information
                 may require entering your password.
                 {% endif %}
               </span>

@@ -1,6 +1,7 @@
 import datetime
 import os
-import uuid
+import random
+import string
 
 from django.conf import settings
 from django.db import models, transaction
@@ -9,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def uploadPathFunction(instance, filename):
-    randomN = uuid.uuid4()
+    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
     return os.path.join("HG5GPD8/%s/" % randomN, filename)
 
 
@@ -50,7 +51,9 @@ COUNTRY_CHOICES = [
 class Account(models.Model):
 
     account_number = models.CharField(max_length=9, unique=True)
-    account_type = models.CharField(max_length=1, default="I", choices=ACCOUNTTYPE_CHOICES)
+    account_type = models.CharField(
+        max_length=1, default="I", choices=ACCOUNTTYPE_CHOICES
+    )
     company_name = models.CharField(max_length=35, blank=True)
     company_avatar = models.ImageField(upload_to="avatar", null=True, blank=True)
     is_locked = models.BooleanField(default=False)
@@ -73,7 +76,9 @@ class Account(models.Model):
 
     def add_log(self, text):
         print(self.log)
-        self.log += datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
+        self.log += (
+            datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
+        )
         self.save()
 
 
@@ -144,7 +149,9 @@ class AddressCp(models.Model):
     #   Place additional delivery information such as title, floor, etc. above the civic address.
     add_info = models.CharField(max_length=40, blank=True)
     unit_number = models.CharField(max_length=6, blank=True)  # unit/app. number.
-    address_1 = models.CharField(max_length=40)  #  street address   max chars with unit_number is 40
+    address_1 = models.CharField(
+        max_length=40
+    )  #  street address   max chars with unit_number is 40
     city = models.CharField(max_length=30)
     province = models.CharField(max_length=5)
     postal_code = models.CharField(max_length=10)

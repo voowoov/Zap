@@ -1,6 +1,7 @@
 import datetime
 import os
-import uuid
+import random
+import string
 import zoneinfo
 
 from django import forms
@@ -33,9 +34,9 @@ NAME_PREFIX_CHOICES = [
 ]
 
 
-def randomAvatarImagePathUUID(instance, filename):
-    randomN = str(uuid.uuid4()) + ".png"
-    return "avatars/%s" % randomN
+def uploadPathFunctionAvatar(instance, filename):
+    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
+    return "avatars/%s" % randomN + ".png"
     # return os.path.join("public/%s/" % randomN, filename)
 
 
@@ -70,7 +71,9 @@ class UserManager(BaseUserManager):
             create_account = False
         else:
             create_account = True
-        return self._create_user(email, password, account, create_account, **extra_fields)
+        return self._create_user(
+            email, password, account, create_account, **extra_fields
+        )
 
     def create_superuser(self, email=None, password=None, account=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
@@ -81,9 +84,13 @@ class UserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
-        return self._create_user(email, password, account, create_account=True, **extra_fields)
+        return self._create_user(
+            email, password, account, create_account=True, **extra_fields
+        )
 
-    def with_perm(self, perm, is_active=True, include_superusers=True, backend=None, obj=None):
+    def with_perm(
+        self, perm, is_active=True, include_superusers=True, backend=None, obj=None
+    ):
         if backend is None:
             backends = auth._get_backends(return_tuples=True)
             if len(backends) == 1:
@@ -94,7 +101,9 @@ class UserManager(BaseUserManager):
                     "therefore must provide the `backend` argument."
                 )
         elif not isinstance(backend, str):
-            raise TypeError("backend must be a dotted import path string (got %r)." % backend)
+            raise TypeError(
+                "backend must be a dotted import path string (got %r)." % backend
+            )
         else:
             backend = auth.load_backend(backend)
         if hasattr(backend, "with_perm"):
@@ -115,7 +124,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False,
         help_text=_("Designates whether the user have write permission to the account"),
     )
-    prefix_title = models.CharField(max_length=1, default="A", choices=NAME_PREFIX_CHOICES)
+    prefix_title = models.CharField(
+        max_length=1, default="A", choices=NAME_PREFIX_CHOICES
+    )
     first_name = models.CharField(max_length=20, blank=True)
     middle_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
@@ -123,10 +134,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=10, blank=True)
     phone_ext = models.CharField(max_length=4, blank=True)
     verified_phone_date = models.DateTimeField(blank=True, null=True)
-    avatar = models.ImageField(upload_to=randomAvatarImagePathUUID, null=True, blank=True)
+    avatar = models.ImageField(
+        upload_to=uploadPathFunctionAvatar, null=True, blank=True
+    )
     social_name = models.CharField(max_length=255, blank=True)
     social_desc = models.CharField(max_length=255, blank=True)
-    anonymous_id = models.CharField(max_length=8, blank=True)
     log = models.TextField(blank=True)
 
     ######### Original fields  #####################
@@ -143,7 +155,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(
         _("active"),
         default=True,
-        help_text=_("Designates whether this user should be treated as active and verified."),
+        help_text=_(
+            "Designates whether this user should be treated as active and verified."
+        ),
     )
     is_closed = models.BooleanField(
         _("account closed"),
@@ -152,7 +166,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     date_closed = models.DateTimeField(_("date closed"), blank=True, null=True)
-    time_zone = models.CharField(max_length=32, default="Auto", choices=TIMEZONE_CHOICES)
+    time_zone = models.CharField(
+        max_length=32, default="Auto", choices=TIMEZONE_CHOICES
+    )
 
     objects = UserManager()
 
@@ -185,5 +201,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def add_log(self, text):
         print(self.log)
-        self.log += datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
+        self.log += (
+            datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
+        )
         self.save()

@@ -2,7 +2,8 @@ import datetime
 import math
 import mimetypes
 import os
-import uuid
+import random
+import string
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -17,10 +18,8 @@ private_storage = FileSystemStorage(
 
 
 def uploadPathFunction(instance, filename):
-    # Get the extension of the original file
-    ext = filename.split(".")[-1]
-    # Generate a random filename using uuid and append the original extension
-    return os.path.join("uploads/", f"{uuid.uuid4()}.{ext}")
+    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
+    return "uploads/%s" % randomN + "." + filename.split(".")[-1]
 
 
 class PrivFile(models.Model):

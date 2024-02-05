@@ -812,6 +812,7 @@ openSharedSocket();
 
 const fileChunkSize = 1990; // Size of chunks
 const fileMaxNbChunks = 100;
+const fileMaxSize = 10000000;
 
 const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
 const fileStatusBar = document.getElementById('fileUploadStatus')
@@ -824,12 +825,15 @@ function sendWSinitiateFileUpload() {
     if (x.files.length == 1) {
       var file = x.files[0];
       if (is_valid_filename(file.name)) {
-        filePortionStep = 0
-        filePortionsArray = dividePortionsArray(file.size, filePartialSize);
-        fileStatusBar.innerHTML = '0 %';
-        wsSend('f' + wsTabId + JSON.stringify({ file_name: file.name, file_size: file.size }));
+        if (file.size < fileMaxSize) {
+          filePortionStep = 0
+          filePortionsArray = dividePortionsArray(file.size, filePartialSize);
+          wsSend('f' + wsTabId + JSON.stringify({ file_name: file.name, file_size: file.size }));
+        } else {
+          alert("The file is too large.")
+        }
       } else {
-        alert("invalid file name")
+        alert("Invalid file name.")
       }
     }
   }
@@ -839,6 +843,7 @@ function sendWSsendFilePartialUpload() {
   const file = document.getElementById('fileUploadInput').files[0]; // Get file from file input
   var chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
   var chunkId = 0; // Start with the first chunk
+  fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
 
   function readNextChunk() {
     return new Promise((resolve, reject) => {
@@ -870,7 +875,6 @@ function sendWSsendFilePartialUpload() {
   }
   readNextChunk().then(() => {
     filePortionStep++;
-    fileStatusBar.innerHTML = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
   });
 }
 

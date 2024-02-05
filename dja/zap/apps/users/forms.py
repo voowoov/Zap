@@ -38,10 +38,13 @@ class MyUserChangeForm(UserChangeForm):
 
 
 class SigninForm0(Form):
-    stay_signed_in = forms.BooleanField()
+    remember_email = forms.BooleanField(required=False)
+    stay_signed_in = forms.BooleanField(required=False)
     email = forms.EmailField(max_length=35)
     password = forms.CharField(
-        label=_("Password"), strip=False, widget=forms.PasswordInput(attrs={"autocomplete": "current-password"})
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
     )
 
 
@@ -57,7 +60,3 @@ class PasswordResetForm(ModelForm):
         model = UserModel
         fields = ["email"]
         widgets = {"email": forms.HiddenInput()}
-
-
-# class ResetPasswordForm(forms.form):
-#     stay_signed_in = models.BooleanField()

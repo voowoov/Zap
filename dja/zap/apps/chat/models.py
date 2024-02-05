@@ -1,6 +1,5 @@
 import datetime
 import os
-import uuid
 
 from dateutil import tz
 from django.conf import settings
@@ -11,17 +10,20 @@ from django.utils.translation import gettext_lazy as _
 from zap.apps.users.models import User
 
 
-def uploadPathFunction(instance, filename):
-    randomN = uuid.uuid4()
-    return "Projects/%s" % randomN + filename
-
-
 private_storage = FileSystemStorage(location=settings.PRIVATE_STORAGE_ROOT)
 
 
 class ChatSession(models.Model):
-    chat_host_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host_user")
-    client_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="client_user", blank=True, null=True)
+    chat_host_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="host_user"
+    )
+    client_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="client_user",
+        blank=True,
+        null=True,
+    )
     anonymous_id = models.CharField(max_length=8)
     anonymous_chat_client_name = models.CharField(max_length=255, blank=True, null=True)
     anonymous_chat_client_desc = models.CharField(max_length=255, blank=True, null=True)

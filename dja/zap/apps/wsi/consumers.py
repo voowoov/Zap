@@ -4,10 +4,11 @@ import json
 import logging
 import math
 import os
+import random
 import re
+import string
 import struct
 import time
-import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -21,11 +22,13 @@ from django.core.cache import cache
 from django.core.files import File
 from django.utils.translation import get_language
 
-from .models import FileUpload
+from .models import FileUploadFile
 
 path_directory = settings.WSI_TMP_FILE_DIRECTORY
-chunk_size = 1990  # the same must be in the js. Also see websocket message size that i limited protocol, i limited the message size
-max_nb_chunks = 100  # the same must be in the js.
+### the same must be in the js.
+chunk_size = 1990  # websocket message size is limited, see ws protocol overide
+max_nb_chunks = 100
+max_file_size = 100000000
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +84,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 await self.close()
         except Exception as e:
             await self.close()
-            logger.error("wsi receive : " + e)
+            logger.error(f"wsi message receiving: {e}")
 
     async def frequency_limiting(self, thenthseconds):
         num = self.channel_name_abr or (250 << 16) | (250 << 8) | 0
@@ -111,10 +114,12 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 file_name = data["file_name"]
                 file_size = data["file_size"]
                 if is_valid_filename(file_name):
-                    if file_size < settings.WSI_DEFAULT_MAX_FILE_SIZE:
+                    if file_size < max_file_size:
                         self.owner_object = owner_object
                         self.file_name = file_name
-                        self.file_tmp_name = str(uuid.uuid4())[:4]
+                        self.file_tmp_name = "".join(
+                            random.choices(string.ascii_letters + string.digits, k=4)
+                        )
                         self.file_size = file_size
                         self.file_portion_step = 0
                         self.file_portion_array = divide_portions_array(
@@ -130,7 +135,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 await self.close()
         except Exception as e:
             await self.close()
-            logger.error("wsi file upload demand : " + e)
+            logger.error(f"wsi file upload demand: {e}")
 
     async def receive_file_bytes(self, bytes_data):
         try:
@@ -185,7 +190,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
                         else:
                             # send the final file a new FileUpload model object
                             with open(output_file_path, "rb") as output_file:
-                                obj = await sync_to_async(FileUpload.objects.create)(
+                                obj = await sync_to_async(FileUploadFile.objects.create)(
                                     owner_object=self.owner_object,
                                     file=File(output_file),
                                     file_name=self.file_name,
@@ -206,9 +211,9 @@ class WsiConsumer(AsyncWebsocketConsumer):
                         self.chunk_bool_array = [False] * self.file_nb_chunks
                         await self.send("fcontinue")
 
-        except PermissionError as e:
+        except Exception as e:
             await self.close()
-            logger.error("wsi file upload receiving : " + e)
+            logger.error(f"wsi file upload receiving: {e}")
 
 
 def is_valid_filename(filename):

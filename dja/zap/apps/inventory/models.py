@@ -1,5 +1,6 @@
 import os
-import uuid
+import random
+import string
 from decimal import Decimal
 
 from django.core.validators import MinValueValidator
@@ -66,7 +67,7 @@ STATUS_CHOICES = [
 
 
 def uploadPathFunction(instance, filename):
-    randomN = uuid.uuid4()
+    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
     return os.path.join("HG5GPD8/%s/" % randomN, filename)
 
 
