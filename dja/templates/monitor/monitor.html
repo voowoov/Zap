@@ -5,215 +5,214 @@
 {% block content %}
 
 <main class="d-flex flex-fill">
-    <section class="full_section text_color">
-        <div class="h-100 container-fluid">
-            <div class="h-100 d-flex gap-2">
-                <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
-                    <textarea class="command-log" id="command-log"></textarea>
-                    <textarea class="command-input" id="command-input" type="text" rows="2"></textarea>
-                    <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
-                </div>
-
-                <div class="d-flex flex-column align-items-start" style="width:250px;">
-                    Send file tests
-                    <input type="file" id="fileUploadInput">
-                    <button onclick="sendWSinitiateFileUpload()">sendWSinitiateFileUpload</button>
-                    <div id="fileUploadStatus"></div>
-                    <button onclick="sendCommand('delete_upload_tmp_files')">delete_upload_tmp_files</button>
-                </div>
-
-                <div class="d-flex flex-column align-items-start" style="width:250px;">
-                    Typesense
-                    <button onclick="sendCommand('movies_fixture_to_db')">movies_fixture_to_db</button>
-                    <button onclick="sendCommand('delete_all_movies_from_db')">delete_all_movies_from_db</button> -
-                    <button
-                        onclick="sendCommand('typesense_delete_a_collection')">typesense_delete_a_collection</button>
-                    <button
-                        onclick="sendCommand('typesense_create_a_collection')">typesense_create_a_collection</button>
-                    <button onclick="sendCommand('typesense_import_documents')">typesense_import_documents</button>
-                    <button
-                        onclick="sendCommand('typesense_test_count_documents')">typesense_test_count_documents</button>
-                    <button
-                        onclick="sendCommand('typesense_add_single_document')">typesense_add_single_document</button>
-                    Websocket tests
-                    <label> Packet size<input type="text" value="1024" id="wstestsize" style="width:100px;"></label>
-                    <label> Repetitions<input type="text" value="5" id="wstestrepetitions" style="width:100px;"></label>
-                    <label> Delay ms<input type="text" value="500" id="wstestdelay" style="width:100px;"></label>
-                    <button onclick="sendPacketBurstJS()">sendPacketBurstJS</button>
-                    <button onclick="connectAndDisconnectJS()">connectAndDisconnectJS</button>
-                    <button onclick="sendCommand('close_connection_in_django')">close_connection_in_django</button>
-                    <button onclick="sendBinaryMessage()">sendBinaryMessage</button>
-
-                </div>
-            </div>
+  <section class="full_section text_color">
+    <div class="h-100 container-fluid">
+      <div class="h-100 d-flex gap-2">
+        <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
+          <textarea class="command-log" id="command-log"></textarea>
+          <textarea class="command-input" id="command-input" type="text" rows="2"></textarea>
+          <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
         </div>
-    </section>
+
+        <div class="d-flex flex-column align-items-start" style="width:250px;">
+          Send file tests
+          <input type="file" id="fileUploadInput">
+          <button onclick="sendWSinitiateFileUpload()">sendWSinitiateFileUpload</button>
+          <div id="fileUploadStatus"></div>
+          <button onclick="sendCommand('delete_upload_tmp_files')">delete_upload_tmp_files</button>
+          {% for file_upload_file in list_of_file_upload %}
+          <p>{{ file_upload_file.file_name }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="d-flex flex-column align-items-start" style="width:250px;">
+          Typesense
+          <button onclick="sendCommand('movies_fixture_to_db')">movies_fixture_to_db</button>
+          <button onclick="sendCommand('delete_all_movies_from_db')">delete_all_movies_from_db</button> -
+          <button onclick="sendCommand('typesense_delete_a_collection')">typesense_delete_a_collection</button>
+          <button onclick="sendCommand('typesense_create_a_collection')">typesense_create_a_collection</button>
+          <button onclick="sendCommand('typesense_import_documents')">typesense_import_documents</button>
+          <button onclick="sendCommand('typesense_test_count_documents')">typesense_test_count_documents</button>
+          <button onclick="sendCommand('typesense_add_single_document')">typesense_add_single_document</button>
+          Websocket tests
+          <label> Packet size<input type="text" value="1024" id="wstestsize" style="width:100px;"></label>
+          <label> Repetitions<input type="text" value="5" id="wstestrepetitions" style="width:100px;"></label>
+          <label> Delay ms<input type="text" value="500" id="wstestdelay" style="width:100px;"></label>
+          <button onclick="sendPacketBurstJS()">sendPacketBurstJS</button>
+          <button onclick="connectAndDisconnectJS()">connectAndDisconnectJS</button>
+          <button onclick="sendCommand('close_connection_in_django')">close_connection_in_django</button>
+          <button onclick="sendBinaryMessage()">sendBinaryMessage</button>
+
+        </div>
+      </div>
+    </div>
+  </section>
 
 </main>
 
 <script>
-    const commandLog = document.querySelector('#command-log');
-    const commandInput = document.querySelector('#command-input');
-    const commandSubmit = document.querySelector('#command-submit');
+  const commandLog = document.querySelector('#command-log');
+  const commandInput = document.querySelector('#command-input');
+  const commandSubmit = document.querySelector('#command-submit');
 
-    const webSocketURL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-        window.location.host + '/monitor/';
-    console.log(webSocketURL)
+  const webSocketURL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+    window.location.host + '/monitor/';
+  console.log(webSocketURL)
 
-    const monitorSocket = new WebSocket(webSocketURL);
+  const monitorSocket = new WebSocket(webSocketURL);
 
-    monitorSocket.onmessage = function (e) {
-        addLogRes(e.data)
-    };
+  monitorSocket.onmessage = function (e) {
+    addLogRes(e.data)
+  };
 
-    monitorSocket.onclose = function (e) {
-        console.error('Monitor socket closed unexpectedly');
-    };
+  monitorSocket.onclose = function (e) {
+    console.error('Monitor socket closed unexpectedly');
+  };
 
-    monitorSocket.onerror = function (event) {
-        if (event.code === 1009) {
-            alert("The message received was too large.");
-        }
-    };
-
-    commandInput.onkeydown = function (e) {
-        if (e.key === "Enter") { // enter, return
-            event.preventDefault();
-            commandSubmit.click();
-        }
-    };
-
-    commandSubmit.onclick = function (e) {
-        sendCommand(commandInput.value);
-        commandInput.value = '';
-    };
-
-    function addLogRes(log) {
-        commandLog.value += ('return: ' + log + '\n');
-        commandLog.scrollTop = commandLog.scrollHeight;
+  monitorSocket.onerror = function (event) {
+    if (event.code === 1009) {
+      alert("The message received was too large.");
     }
+  };
 
-    function addComlog(log) {
-        commandLog.value += ('cmd: ' + log + '\n');
-        commandLog.scrollTop = commandLog.scrollHeight;
+  commandInput.onkeydown = function (e) {
+    if (e.key === "Enter") { // enter, return
+      event.preventDefault();
+      commandSubmit.click();
     }
+  };
 
-    function sendCommand(command) {
-        if (command.length > 0) {
-            monitorSocket.send(command);
-            addComlog(command);
-        }
+  commandSubmit.onclick = function (e) {
+    sendCommand(commandInput.value);
+    commandInput.value = '';
+  };
+
+  function addLogRes(log) {
+    commandLog.value += ('return: ' + log + '\n');
+    commandLog.scrollTop = commandLog.scrollHeight;
+  }
+
+  function addComlog(log) {
+    commandLog.value += ('cmd: ' + log + '\n');
+    commandLog.scrollTop = commandLog.scrollHeight;
+  }
+
+  function sendCommand(command) {
+    if (command.length > 0) {
+      monitorSocket.send(command);
+      addComlog(command);
     }
+  }
 
-    function sendPacketBurstJS() {
-        packetSize = parseInt(document.getElementById("wstestsize").value);
-        repetitions = parseInt(document.getElementById("wstestrepetitions").value);
-        delay = parseInt(document.getElementById("wstestdelay").value);
-        const str1 = 'x'.repeat(packetSize);
-        console.log('sending ' + repetitions + ' packets of size ' + packetSize)
-        let x = 0;
-        const intervalId = setInterval(() => {
-            if (x === repetitions) {
-                clearInterval(intervalId);
-                return;
-            }
-            console.log(x);
-            monitorSocket.send(str1);
-            x++;
-        }, delay);
-    }
+  function sendPacketBurstJS() {
+    packetSize = parseInt(document.getElementById("wstestsize").value);
+    repetitions = parseInt(document.getElementById("wstestrepetitions").value);
+    delay = parseInt(document.getElementById("wstestdelay").value);
+    const str1 = 'x'.repeat(packetSize);
+    console.log('sending ' + repetitions + ' packets of size ' + packetSize)
+    let x = 0;
+    const intervalId = setInterval(() => {
+      if (x === repetitions) {
+        clearInterval(intervalId);
+        return;
+      }
+      console.log(x);
+      monitorSocket.send(str1);
+      x++;
+    }, delay);
+  }
 
-    function connectAndDisconnectJS() {
-        repetitions = parseInt(document.getElementById("wstestrepetitions").value);
-        delay = parseInt(document.getElementById("wstestdelay").value);
-        let count = 0;
-        const intervalId = setInterval(() => {
-            if (count % 2 === 0) {
-                // First command
-                console.log("Connect");
-                monitorSocket1 = new WebSocket(webSocketURL);
-            } else {
-                // Second command
-                console.log("Disconnect");
-                monitorSocket1.close();
-            }
-            count++;
-            if (count === 2 * repetitions) {
-                clearInterval(intervalId);
-            }
-        }, delay);
-    }
+  function connectAndDisconnectJS() {
+    repetitions = parseInt(document.getElementById("wstestrepetitions").value);
+    delay = parseInt(document.getElementById("wstestdelay").value);
+    let count = 0;
+    const intervalId = setInterval(() => {
+      if (count % 2 === 0) {
+        // First command
+        console.log("Connect");
+        monitorSocket1 = new WebSocket(webSocketURL);
+      } else {
+        // Second command
+        console.log("Disconnect");
+        monitorSocket1.close();
+      }
+      count++;
+      if (count === 2 * repetitions) {
+        clearInterval(intervalId);
+      }
+    }, delay);
+  }
 
-    function sendBinaryMessage() {
-        // Create some binary data.
-        var array = new Uint8Array([1, 2, 3, 4, 5]);
-        // Send the binary data.
-        monitorSocket.send(array.buffer);
-    }
+  function sendBinaryMessage() {
+    // Create some binary data.
+    var array = new Uint8Array([1, 2, 3, 4, 5]);
+    // Send the binary data.
+    monitorSocket.send(array.buffer);
+  }
 
-    window.addEventListener('beforeunload', function (event) {
-        monitorSocket.close();
-    });
+  window.addEventListener('beforeunload', function (event) {
+    monitorSocket.close();
+  });
 </script>
 
 
 
 <style>
-    .command-log {
-        width: 100%;
-        height: 100%;
-        resize: none;
-        background: var(--color-cmd-bg);
-        color: var(--color-text);
-    }
+  .command-log {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
 
-    .command-input {
-        width: 100%;
-        resize: none;
-        background: var(--color-cmd-bg);
-        color: var(--color-text);
-    }
+  .command-input {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
 
-    .command-submit {
-        width: 100%;
-        resize: none;
-        background: var(--color-cmd-bg);
-        color: var(--color-text);
-    }
+  .command-submit {
+    width: 100%;
+    resize: none;
+    background: var(--color-cmd-bg);
+    color: var(--color-text);
+  }
 
 
-    #myProgress {
-        width: 100%;
-    }
+  #myProgress {
+    width: 100%;
+  }
 
-    #uploaded_files {
-        margin-top: 25px;
-        display: flex;
-    }
+  #uploaded_files {
+    margin-top: 25px;
+    display: flex;
+  }
 
-    label {
-        font-weight: bold;
-    }
+  label {
+    font-weight: bold;
+  }
 
-    .file-icon i {
-        font-size: 60px;
-        color: rgb(0, 0, 0);
-    }
+  .file-icon i {
+    font-size: 60px;
+    color: rgb(0, 0, 0);
+  }
 
-    .file-details {
-        margin-top: -2px;
-        padding-left: 10px;
-        width: 100%;
-    }
+  .file-details {
+    margin-top: -2px;
+    padding-left: 10px;
+    width: 100%;
+  }
 
-    .file-details p {
-        margin-bottom: -7px;
-    }
+  .file-details p {
+    margin-bottom: -7px;
+  }
 
-    small {
-        margin-top: 0;
-        color: black;
-    }
+  small {
+    margin-top: 0;
+    color: black;
+  }
 </style>
 
 {% endblock %}

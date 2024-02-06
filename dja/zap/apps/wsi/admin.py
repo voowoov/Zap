@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 
 # Register your models here.
-from .models import FileUploadFile
+from .models import FileUploadFile, FileUploadUser
 
 
 def delete_selected(modeladmin, request, queryset):
@@ -23,4 +23,5 @@ class FileUploadFileAdmin(admin.ModelAdmin):
     actions = [delete_selected]  # by selection when in the list
 
 
+admin.site.register(FileUploadUser)
 admin.site.register(FileUploadFile, FileUploadFileAdmin)

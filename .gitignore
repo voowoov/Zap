@@ -6,7 +6,7 @@
 /typesense
 /tmp_files
 /static_collect
-
+/media/uploads
 # Environments
 venv/
 # .env
