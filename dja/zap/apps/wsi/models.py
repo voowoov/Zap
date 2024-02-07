@@ -1,13 +1,19 @@
 import random
 import string
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
 from django.db import models, transaction
 from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+private_storage = FileSystemStorage(
+    location=settings.PRIVATE_STORAGE_ROOT, base_url="/media_private"
+)
 
 
 def uploadPathFunction(instance, filename):
@@ -24,8 +30,6 @@ class FileUploadUser(models.Model):
 
     max_storage_size = models.PositiveIntegerField(default=0)
     remaining_storage = models.PositiveIntegerField(default=0)
-
-    expected_end_at = models.DateTimeField(default=timezone.now)
 
     def update(self):
         ### calculate the remaning_storage
@@ -58,7 +62,7 @@ class FileUploadUser(models.Model):
 
 class FileUploadFile(models.Model):
     file_upload_user = models.ForeignKey(FileUploadUser, on_delete=models.CASCADE)
-    file = models.FileField(upload_to=uploadPathFunction, null=True, blank=True)
+    file = models.FileField(upload_to=uploadPathFunction, storage=private_storage)
     file_name = models.CharField(max_length=50)
     file_size = models.PositiveIntegerField()
 

@@ -7,6 +7,15 @@ app_name = "priv_files"
 
 urlpatterns = [
     path("download/", views.DownloadFile.as_view(), name="download_file"),
-    path("see_image_html/", views.see_image_html, name="see_image_html"),
-    path("image_private/<slug:slug_image>", views.redirect_to_file, name="redirect_to_file"),
+    path("image_viewer/<slug:slug_image>", views.image_viewer, name="image_viewer"),
+    path(
+        "image_private/<slug:slug_image>",
+        views.image_private,
+        name="image_private",
+    ),
+    path(
+        "pdf_viewer/<slug:slug_pdf>",
+        views.pdf_viewer,
+        name="pdf_viewer",
+    ),
 ]

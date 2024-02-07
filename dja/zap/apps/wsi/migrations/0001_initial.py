@@ -11,29 +11,65 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
+        ("contenttypes", "0002_remove_content_type_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FileUploadUser',
+            name="FileUploadUser",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('owner_object_id', models.PositiveIntegerField()),
-                ('max_storage_size', models.PositiveIntegerField(default=0)),
-                ('remaining_storage', models.PositiveIntegerField(default=0)),
-                ('expected_end_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('owner_content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.contenttype')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("owner_object_id", models.PositiveIntegerField()),
+                ("max_storage_size", models.PositiveIntegerField(default=0)),
+                ("remaining_storage", models.PositiveIntegerField(default=0)),
+                (
+                    "owner_content_type",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.contenttype",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FileUploadFile',
+            name="FileUploadFile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(blank=True, null=True, upload_to=zap.apps.wsi.models.uploadPathFunction)),
-                ('file_name', models.CharField(max_length=50)),
-                ('file_size', models.PositiveIntegerField()),
-                ('file_upload_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='wsi.fileuploaduser')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to=zap.apps.wsi.models.uploadPathFunction,
+                    ),
+                ),
+                ("file_name", models.CharField(max_length=50)),
+                ("file_size", models.PositiveIntegerField()),
+                (
+                    "file_upload_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="wsi.fileuploaduser",
+                    ),
+                ),
             ],
         ),
     ]

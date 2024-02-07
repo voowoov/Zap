@@ -24,6 +24,7 @@ class DownloadFile(LoginRequiredMixin, View):
             del response["Accept-Ranges"]
             del response["Set-Cookie"]
             del response["Cache-Control"]
+            # response["Cache-Control"] = 'private, max-age=31536000'  # Cache for one year
             del response["Expires"]
 
         except Exception as e:
@@ -32,21 +33,30 @@ class DownloadFile(LoginRequiredMixin, View):
         return response
 
 
-def see_image_html(request):
+def image_viewer(request, slug_image):
     # if request.method == "POST":
     #     if some_var == 'the_correct_value':
     protected_uri = reverse(
-        "priv_files:redirect_to_file", kwargs={"slug_image": "someslug"}
+        "priv_files:image_private", kwargs={"slug_image": "slug_image"}
     )
+    file_name = "image name"
     return render(
         request,
-        "priv_files/show_priv_image.html",
-        {"some_var ": True, "protected_uri": protected_uri},
+        "priv_files/image_viewer.html",
+        {"protected_uri": protected_uri, "file_name": file_name},
     )
 
 
-def redirect_to_file(request, slug_image):
+def image_private(request, slug_image):
     # ... some logic to get the secret URL from the slug ...
     response = HttpResponse()
-    response["X-Accel-Redirect"] = "/media_private/Felis.png"
+    response["X-Accel-Redirect"] = "/media_private/felis.png"
+    return response
+
+
+def pdf_viewer(request, slug_pdf):
+    # ... some logic to get the secret URL from the slug ...
+    response = HttpResponse()
+    response["Content-Type"] = "application/pdf"
+    response["X-Accel-Redirect"] = "/media_private/photogrametry.pdf"
     return response

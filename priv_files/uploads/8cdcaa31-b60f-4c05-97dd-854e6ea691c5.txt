@@ -1,9 +1,0 @@
-realistic hand drawing of a side view of a wolf walking naturally. black and white The wolf has its head bowing with grace but its back stays straight horizontal. The four legs are spread wide apart from each other. One front leg is up and bent. The muscles of the wolf are big
-
-
-
-make a python function that reads a list of latitude and longitude coordinates or easting and northing in a csv file only one format is filled and the second is empty however the headers are always present transform the coordinates from decimal degrees to utm coordinates or from utm to decimal degrees depending on a parameter of the function  also add a zone parameter to the function use pandas and coordinates_input.csv as input and coordinates_results.csv for the results with four columns give me the full code and call the function with zone 19 also give me a csv input example
-
-
-corporate logo of the head of a wise wolf inspiring strength, integrity, winter, a river and energy structure, the logo has a flat bottom give enough detail and contrast to be eye pleasing but make sure to not use too small details
-

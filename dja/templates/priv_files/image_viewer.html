@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+  <title>{{ file_name }}</title>
+  <link rel="icon" href="{%  static 'images/favicon16-light.ico' %}" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="{%  static 'images/favicon16-dark.ico' %}" media="(prefers-color-scheme: dark)">
+</head>
+
+<body class="body">
+
+  <div class="image_viewer_canvas_container">
+    <canvas class="image_viewer_canvas" id="image_viewer_canvas"></canvas>
+  </div>
+
+  <script type="text/javascript">
+    var protectedUri = "{{ protected_uri }}";
+  </script>
+  <script src="{% static 'js/imagescripts.js' %}"></script>
+</body>
+
+</html>
+
+<style>
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .image_viewer_canvas_container {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+  }
+
+  .image_viewer_canvas {
+    width: 100%;
+    height: 100%;
+  }
+</style>

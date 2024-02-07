@@ -19,9 +19,11 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
+from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.translation import get_language
 
@@ -34,7 +36,7 @@ max_nb_chunks = 100
 max_file_size = 100000000
 
 ### other setting
-expected_duration_rate = 0.00000005  ### s/byte
+expected_duration_rate = 0.000005  ### s/byte
 
 logger = logging.getLogger(__name__)
 
@@ -91,9 +93,19 @@ class WsiConsumer(AsyncWebsocketConsumer):
                             #     "s" + tabId + ts.typesense_search_documents(message)
                             # )
                         case "f":
-                            await self.frequency_limiting(20)
-                            if self.file_upload_user:
-                                await self.file_upload_demand(message)
+                            match message[0]:
+                                case "u":
+                                    await self.frequency_limiting(20)
+                                    if self.file_upload_user:
+                                        await self.file_upload_list()
+                                case "s":
+                                    await self.frequency_limiting(20)
+                                    if self.file_upload_user:
+                                        await self.file_upload_demand(message[1:])
+                                case "c":
+                                    await self.frequency_limiting(20)
+                                    if self.file_upload_user:
+                                        await self.file_cancel_demand(message[1:])
                         case _:
                             pass
             elif bytes_data:
@@ -132,6 +144,28 @@ class WsiConsumer(AsyncWebsocketConsumer):
 
         print("score: ", score)
 
+    async def file_upload_list(self):
+        try:
+            data = await sync_to_async(list)(
+                FileUploadFile.objects.filter(
+                    file_upload_user=self.file_upload_user
+                ).values("file_name", "file")
+            )
+            data_json = json.dumps(data)
+            await self.send("f" + "u" + str(data_json))
+        except:
+            pass
+
+    async def file_cancel_demand(self, message):
+        try:
+            if len(self.file_portion_array) > 0:
+                self.file_portion_array = []
+                ### delete the tmp files
+                for filename in glob.glob(self.path_tmp_name + "*"):
+                    os.remove(filename)
+        except:
+            pass
+
     async def file_upload_demand(self, message):
         try:
             data = json.loads(message)
@@ -141,29 +175,19 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 is_valid = True
                 if not is_valid_filename(file_name):
                     is_valid = False
-                    await self.send("ferror_invalid_file_name")
+                    await self.send("fe" + "invalid file name")
                 if await sync_to_async(
                     FileUploadFile.objects.filter(
                         file_upload_user=self.file_upload_user, file_name=file_name
                     ).exists
                 )():
                     is_valid = False
-                    await self.send("ferror_file_already_exists")
+                    await self.send("fe" + "file already exists")
                 if file_size > self.file_upload_user.remaining_storage:
                     is_valid = False
-                    await self.send("ferror_insufficient_remaining_space")
-                if timezone.now() < self.file_upload_user.expected_end_at:
-                    is_valid = False
-                    await self.send("ferror_cooldown_duration_requred")
+                    await self.send("fe" + "insufficient remaining space")
                 if is_valid:
-                    self.file_upload_user.expected_end_at = timezone.now() + timedelta(
-                        seconds=file_size * expected_duration_rate
-                    )
-                    await sync_to_async(self.file_upload_user.save)()
                     self.file_name = file_name
-                    self.file_tmp_name = "".join(
-                        random.choices(string.ascii_letters + string.digits, k=1)
-                    )  ### only one random letter name to limit the number of possible tmp_files
                     self.file_size = file_size
                     self.file_portion_step = 0
                     self.file_portion_array = divide_portions_array(
@@ -173,7 +197,16 @@ class WsiConsumer(AsyncWebsocketConsumer):
                         self.file_portion_array[self.file_portion_step] / chunk_size
                     )
                     self.chunk_bool_array = [False] * self.file_nb_chunks
-                    await self.send("fcontinue")
+                    self.path_tmp_name = (
+                        path_directory + "u" + str(self.file_upload_user.id) + "u"
+                    )  ### only one random letter name to limit the number of possible tmp_files
+                    self.path_full = (
+                        self.path_tmp_name + "full." + self.file_name.split(".")[-1]
+                    )
+                    ### empty the full file
+                    with open(self.path_full, "wb") as file:
+                        pass
+                    await self.send("fa")
             else:
                 await self.close()
         except Exception as e:
@@ -191,41 +224,34 @@ class WsiConsumer(AsyncWebsocketConsumer):
                 await self.close()
             else:
                 self.chunk_bool_array[chunk_id] = True
-                path = path_directory + self.file_tmp_name + str(chunk_id)
+                path = self.path_tmp_name + str(chunk_id)
                 fileData = bytes_data[4:]
                 with open(path, "wb") as f:
                     f.write(fileData)
                 ### Check if all the chunks of this partial file are received
                 if all(self.chunk_bool_array):
-                    path_partial = path_directory + self.file_tmp_name + "out"
                     ### make a partial file
+                    path_partial = self.path_tmp_name + "out"
                     with open(path_partial, "wb") as output_file:
                         for x in range(self.file_nb_chunks):
-                            chunk_file_path = (
-                                path_directory + self.file_tmp_name + str(x)
-                            )
+                            chunk_file_path = self.path_tmp_name + str(x)
                             with open(chunk_file_path, "rb") as partial_file:
                                 partial_file_data = partial_file.read()
                                 output_file.write(partial_file_data)
                     ### add the partial file to the full file
-                    path_full = (
-                        path_directory
-                        + self.file_tmp_name
-                        + "full."
-                        + self.file_name.split(".")[-1]
-                    )
-                    with open(path_full, "ab") as output_file:
+                    with open(self.path_full, "ab") as output_file:
                         with open(path_partial, "rb") as partial_file:
                             partial_file_data = partial_file.read()
                             output_file.write(partial_file_data)
+                    ### the full file is complete
                     if self.file_portion_step == len(self.file_portion_array) - 1:
-                        if os.path.getsize(path_full) != self.file_size:
+                        if os.path.getsize(self.path_full) != self.file_size:
                             logger.error(
                                 "error: wsi file upload unexpected alert inconsistent file size"
                             )
                         else:
                             ### create a new file_upload_file model object with the full file
-                            with open(path_full, "rb") as output_file:
+                            with open(self.path_full, "rb") as output_file:
                                 file_upload_file = await sync_to_async(
                                     FileUploadFile.objects.create
                                 )(
@@ -234,24 +260,20 @@ class WsiConsumer(AsyncWebsocketConsumer):
                                     file_name=self.file_name,
                                     file_size=self.file_size,
                                 )
-                            ### tell file_upload_user that the upload is finished
-                            self.file_upload_user.expected_end_at = timezone.now()
-                            await sync_to_async(self.file_upload_user.save)()
                             ### delete the tmp files
-                            for filename in glob.glob(
-                                path_directory + self.file_tmp_name + "*"
-                            ):
+                            for filename in glob.glob(self.path_tmp_name + "*"):
                                 os.remove(filename)
                             logger.info("wsi file upload of {self.file_name} finished")
                             ### send received confirmation
-                            await self.send("freceived")
+                            await self.send("fr")
+                            await self.file_upload_list()
                     else:
                         self.file_portion_step += 1
                         self.file_nb_chunks = math.ceil(
                             self.file_portion_array[self.file_portion_step] / chunk_size
                         )
                         self.chunk_bool_array = [False] * self.file_nb_chunks
-                        await self.send("fcontinue")
+                        await self.send("fa")
 
         except Exception as e:
             await self.close()
@@ -261,7 +283,7 @@ class WsiConsumer(AsyncWebsocketConsumer):
 def is_valid_filename(filename):
     # Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot
     # Check if extension is alphanumeric
-    if not re.match(r"^\w[\w\s-]*\.\w+$", filename):
+    if not re.match(r"^\w[\w\s-]*\S\.\w+$", filename):
         return False
     if len(filename) > 50:
         return False
