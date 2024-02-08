@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from . import views
 
-app_name = "priv_files"
+app_name = "filespro"
 
 urlpatterns = [
     path("download/", views.DownloadFile.as_view(), name="download_file"),

@@ -37,12 +37,12 @@ def image_viewer(request, slug_image):
     # if request.method == "POST":
     #     if some_var == 'the_correct_value':
     protected_uri = reverse(
-        "priv_files:image_private", kwargs={"slug_image": "slug_image"}
+        "filespro:image_private", kwargs={"slug_image": "slug_image"}
     )
     file_name = "image name"
     return render(
         request,
-        "priv_files/image_viewer.html",
+        "filespro/image_viewer.html",
         {"protected_uri": protected_uri, "file_name": file_name},
     )
 

@@ -41,7 +41,10 @@
   {% if show_cookie_banner %} {% include 'base/cookies/cookie_banner.html' %} {% endif %}
 
   {% tz_detect %}
-  <script src="{% static 'js/myscripts.js' %}"></script>
+  <script type="module" src="{% static 'js/base.js' %}"></script>
+  <script type="module" src="{% static 'js/wsi.js' %}"></script>
+  <script type="module" src="{% static 'js/filespro.js' %}"></script>
+  <script type="module" src="{% static 'js/search.js' %}"></script>
 
   {% comment %}
   <!-- Bootstrap scripts from sass -->

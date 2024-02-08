@@ -1,0 +1,17 @@
+.filespro_list_files {
+  width: 100%;
+  height: 100px;
+  overflow-y: auto;
+  ul {
+    list-style-type: none;
+    /* Remove default bullets */
+    padding-left: 2px;
+    /* Remove indentation */
+  }
+  ul li::before {
+    content: "\1F4C4";
+    /* Add your special character */
+    padding-right: 10px;
+    /* Adjust spacing */
+  }
+}

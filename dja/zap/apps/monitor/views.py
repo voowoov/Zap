@@ -17,8 +17,8 @@ from django.views import View
 
 UserModel = get_user_model()
 
+from zap.apps.filespro.models import FileUploadFile, FileUploadUser
 from zap.apps.users.mixins import SuperuserLoginRequiredMixin
-from zap.apps.wsi.models import FileUploadFile, FileUploadUser
 
 
 class StaffMonitor(SuperuserLoginRequiredMixin, View):
@@ -39,10 +39,7 @@ class StaffMonitor(SuperuserLoginRequiredMixin, View):
             content_type = ContentType.objects.get_for_model(file_upload_user)
             request.session["wsi_fuu_ct_id"] = content_type.id
             request.session["wsi_fuu_obj_id"] = file_upload_user.id
-            list_of_file_upload = FileUploadFile.objects.filter(
-                file_upload_user=file_upload_user
-            )
-            ctx = {"list_of_file_upload": list_of_file_upload}
+            ctx = {}
             return render(request, "monitor/monitor.html", ctx)
         except Exception as e:
             print(e)

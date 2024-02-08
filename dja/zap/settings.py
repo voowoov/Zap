@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     # "zap.apps.inventory",
     "zap.apps.legal",
     "zap.apps.monitor",
-    "zap.apps.priv_files",
+    "zap.apps.filespro",
     "zap.apps.search",
     "zap.apps.users",
     "zap.apps.wsi",

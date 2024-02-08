@@ -46,7 +46,7 @@ urlpatterns += i18n_patterns(
     path("", include("zap.apps.base.urls")),
     path("", include("zap.apps.users.urls")),
     path("legal/", include("zap.apps.legal.urls")),
-    path("", include("zap.apps.priv_files.urls")),
+    path("", include("zap.apps.filespro.urls")),
     path("", include("zap.apps.xsys.urls")),
     path("admin/", admin.site.urls),
     # path("account/", include("django.contrib.auth.urls")),

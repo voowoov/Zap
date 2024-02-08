@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 UserModel = get_user_model()
-from zap.apps.priv_files.models import PrivFile
 
 from .models import (
     Account,
@@ -50,24 +49,4 @@ class AccountAdmin(admin.ModelAdmin):
     inlines = [
         UserAdmin,
         AddressCpProjectAdmin,
-    ]
-
-
-class PrivFileAdmin(admin.TabularInline):
-    model = PrivFile
-    extra = 0
-    # formfield_overrides = {
-    #     models.DateTimeField: {
-    #         "widget": forms.DateTimeInput(
-    #             attrs={"type": "datetime-local", "style": "height: auto;"}
-    #         )
-    #     },
-    # }
-    readonly_fields = ("file_size_MB",)
-
-
-@admin.register(Project)
-class AccountAdmin(admin.ModelAdmin):
-    inlines = [
-        PrivFileAdmin,
     ]

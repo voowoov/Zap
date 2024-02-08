@@ -22,7 +22,7 @@ class RootSitemap(Sitemap):
     def items(self):
         ### URL path names to include in sitemap
         return [
-            "priv_files:download_file",
+            "filespro:download_file",
             "users:signin_0",
         ]
 

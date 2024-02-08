@@ -37,7 +37,6 @@ NAME_PREFIX_CHOICES = [
 def uploadPathFunctionAvatar(instance, filename):
     randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
     return "avatars/%s" % randomN + ".png"
-    # return os.path.join("public/%s/" % randomN, filename)
 
 
 class UserManager(BaseUserManager):

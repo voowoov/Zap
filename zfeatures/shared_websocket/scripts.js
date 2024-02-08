@@ -2,18 +2,18 @@
 //    Shared worker websocket
 /////////////////////////////////////////////////////////////////////////////////
 
-// get the next wsTabId in storage, single character
-var wsTabId = localStorage.getItem('wsTabId');
-if (wsTabId !== null) {
-  nextTabId = wsTabId.charCodeAt(0) + 1;
+// get the next wsiCurrentTabId in storage, single character
+var wsiCurrentTabId = localStorage.getItem('wsiCurrentTabId');
+if (wsiCurrentTabId !== null) {
+  nextTabId = wsiCurrentTabId.charCodeAt(0) + 1;
   //   33; // '!' to  126; // '~'
   if (nextTabId > 126) {
     nextTabId = 33;
   }
-  localStorage.setItem('wsTabId', String.fromCharCode(nextTabId));
+  localStorage.setItem('wsiCurrentTabId', String.fromCharCode(nextTabId));
 } else {
-  wsTabId = String.fromCharCode(33);
-  localStorage.setItem('wsTabId', wsTabId);
+  wsiCurrentTabId = String.fromCharCode(33);
+  localStorage.setItem('wsiCurrentTabId', wsiCurrentTabId);
 }
 
 
@@ -58,7 +58,7 @@ function initiateWebsocketFallback() {
   };
 }
 
-function wsSend(message) {
+function wsiSend(message) {
   if (useSharedWorker) {
     wsworker.port.postMessage({ command: 'send', message: message });
   } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
@@ -66,7 +66,7 @@ function wsSend(message) {
   }
 }
 
-function wsReconnect() {
+function wsiReconnect() {
   if (useSharedWorker) {
     wsworker.port.postMessage({ command: 'reconnect', url: websocketUrl });
   } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {

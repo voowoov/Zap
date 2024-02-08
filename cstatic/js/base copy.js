@@ -449,7 +449,7 @@ function showSearchControl() {
   if (window.innerWidth < 620) {
     document.body.style.overflowY = 'hidden';
   }
-  openSharedSocket();
+  wsiOpenSharedSocket();
   sendWSnavSearchMessage();
 }
 
@@ -609,18 +609,18 @@ window.addEventListener('resize', function() {
 //    Shared worker websocket
 /////////////////////////////////////////////////////////////////////////////////
 
-// get the next wsTabId in storage, single character
-var wsTabId = localStorage.getItem('wsTabId');
-if (wsTabId !== null) {
-  nextTabId = wsTabId.charCodeAt(0) + 1;
+// get the next wsiCurrentTabId in storage, single character
+var wsiCurrentTabId = localStorage.getItem('wsiCurrentTabId');
+if (wsiCurrentTabId !== null) {
+  nextTabId = wsiCurrentTabId.charCodeAt(0) + 1;
   //   33; // '!' to  126; // '~'
   if (nextTabId > 126) {
     nextTabId = 33;
   }
-  localStorage.setItem('wsTabId', String.fromCharCode(nextTabId));
+  localStorage.setItem('wsiCurrentTabId', String.fromCharCode(nextTabId));
 } else {
-  wsTabId = String.fromCharCode(33);
-  localStorage.setItem('wsTabId', wsTabId);
+  wsiCurrentTabId = String.fromCharCode(33);
+  localStorage.setItem('wsiCurrentTabId', wsiCurrentTabId);
 }
 
 const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
@@ -629,7 +629,7 @@ let wsworker;
 let gsocket;
 let useSharedWorker = !!window.SharedWorker; // is supported
 
-function openSharedSocket() {
+function wsiOpenSharedSocket() {
   if (typeof wsworker === 'undefined') {
     if (useSharedWorker) {
       wsworker = new SharedWorker('/static/js/sharedWorker.js');
@@ -664,31 +664,31 @@ function initiateWebsocketFallback() {
 
   gsocket.onopen = function() {
     handleWsEvent({
-      type: 'open'
+      type: 'onopen'
     });
   };
 
   gsocket.onmessage = function(e) {
     handleWsEvent({
-      type: 'message',
+      type: 'onmessage',
       data: e.data
     });
   };
 
   gsocket.onerror = function() {
     handleWsEvent({
-      type: 'error'
+      type: 'onerror'
     });
   };
 
   gsocket.onclose = function() {
     handleWsEvent({
-      type: 'close'
+      type: 'onclose'
     });
   };
 }
 
-function wsSend(message) {
+function wsiSend(message) {
   if (useSharedWorker) {
     wsworker.port.postMessage({
       command: 'send',
@@ -699,7 +699,7 @@ function wsSend(message) {
   }
 }
 
-function wsReconnect() {
+function wsiReconnect() {
   if (useSharedWorker) {
     wsworker.port.postMessage({
       command: 'reconnect',
@@ -714,12 +714,25 @@ function wsReconnect() {
 
 function handleWsEvent(event) {
   switch (event.type) {
-    case 'message':
+    case 'onopen':
+      console.log('WebSocket is open');
+      if (document.activeElement === navSearchInputTxt) {
+        sendWSnavSearchMessage();
+      }
+      askForListOfFiles()
+      break;
+    case 'onclose':
+      console.log('WebSocket is closed');
+      break;
+    case 'onerror':
+      console.log('WebSocket encountered an error');
+      break;
+    case 'onmessage':
       console.log('Received message:', event.data);
       if (event.data.length > 1) {
         switch (event.data[0]) {
           case 's':
-            if (event.data[1] == wsTabId) {
+            if (event.data[1] == wsiCurrentTabId) {
               navSearchStartTimer = performance.now();
               showWSnavSearchResults(event.data.substring(2));
               break;
@@ -730,7 +743,7 @@ function handleWsEvent(event) {
                 updateListOfFilesFromData(event.data.substring(2));
                 break;
               case 'a':
-                sendWSsendFilePartialUpload();
+                sendwsiSendFilePartialUpload();
                 break;
               case 'r':
                 receivedConfirmationUpload();
@@ -742,20 +755,7 @@ function handleWsEvent(event) {
         }
       }
       break;
-    case 'open':
-      console.log('WebSocket is open');
-      if (document.activeElement === navSearchInputTxt) {
-        sendWSnavSearchMessage();
-      }
-      break;
-    case 'close':
-      console.log('WebSocket is closed');
-      break;
-    case 'error':
-      console.log('WebSocket encountered an error');
-      break;
     default:
-
   }
 }
 
@@ -783,7 +783,7 @@ function showWSnavSearchResults(message) {
 
 function sendWSnavSearchMessage_() {
   navSearchStartTimer = performance.now();
-  wsSend('s' + wsTabId + navSearchInputTxt.value);
+  wsiSend('s' + wsiCurrentTabId + navSearchInputTxt.value);
 }
 
 
@@ -823,6 +823,7 @@ let filePortionStep = 0;
 let filePortionsArray = [];
 let fileUploadName;
 
+const fileUploadListTxt = document.getElementById('fileUploadListTxt')
 const fileUploadRealInput = document.getElementById('fileUploadRealInput');
 const fileUploadChooseBtn = document.getElementById('fileUploadChooseBtn');
 const fileUploadChoiceTxt = document.getElementById('fileUploadChoiceTxt');
@@ -849,7 +850,6 @@ function updateFileUploadChoiceTxt() {
       } else {
         fileUploadLogTxt.innerHTML = '\uD83D\uDCC4' + " File selected. ";
       }
-      console.log(fileName)
     } else {
       if (pageLanguage == "fr") {
         fileUploadLogTxt.innerHTML = '\u26A0' + ' Nom de fichier invalide.';
@@ -911,7 +911,7 @@ fileUploadCancelBtn.addEventListener('click', throttle(function() {
     fileUploadCancelBtn.disabled = false;
     filePortionStep = 0;
     filePortionsArray = [];
-    wsSend('f' + wsTabId + "c");
+    wsiSend('f' + wsiCurrentTabId + "c");
   } else {
     fileUploadLogTxt.innerHTML = ""
     clearSelectionFileUpload()
@@ -930,7 +930,7 @@ fileUploadSendBtn.addEventListener('click', function() {
           fileUploadName = file.name
           filePortionStep = 0
           filePortionsArray = dividePortionsArray(file.size, filePartialSize);
-          wsSend('f' + wsTabId + 's' + JSON.stringify({ file_name: file.name, file_size: file.size }));
+          wsiSend('f' + wsiCurrentTabId + 's' + JSON.stringify({ file_name: file.name, file_size: file.size }));
         } else {
           alert("The file is too large.")
         }
@@ -941,7 +941,7 @@ fileUploadSendBtn.addEventListener('click', function() {
   }
 });
 
-function sendWSsendFilePartialUpload() {
+function sendwsiSendFilePartialUpload() {
   try {
     const file = fileUploadRealInput.files[0]; // Get file from file input
     var chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
@@ -970,7 +970,7 @@ function sendWSsendFilePartialUpload() {
                 arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
               arrayBuffer.set(new Uint8Array(view.buffer));
               arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
-              wsSend(arrayBuffer);
+              wsiSend(arrayBuffer);
               chunkId++;
               resolve(readNextChunk()); // Resolve the promise with the next recursive call
             }
@@ -1035,19 +1035,22 @@ function dividePortionsArray(fullSize, partialSize) {
 }
 
 function updateListOfFilesFromData(data) {
-  let files = JSON.parse(data)
-  console.log(files[0].file)
-  console.log(files[0].file_name)
-}
+  let fileMetaList = JSON.parse(data);
+
+  let ulItems = fileMetaList.map(fileMeta => {
+    return `<li>${fileMeta.file_name}</li>`;
+  });
+
+  let ulString = `<ul>${ulItems.join('')}</ul>`;
+  fileUploadListTxt.innerHTML = ulString
+};
 
 function askForListOfFiles() {
-  wsSend('f' + wsTabId + "u");
+  wsiSend('f' + wsiCurrentTabId + "u");
 }
 
-openSharedSocket();
-window.onload = function() {
-  setTimeout(askForListOfFiles, 1000); // 1000 milliseconds
-};
+wsiOpenSharedSocket();
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////

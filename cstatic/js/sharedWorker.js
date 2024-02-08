@@ -36,19 +36,19 @@ self.onconnect = function(e) {
     wsocket = new WebSocket(url);
 
     wsocket.onopen = function() {
-      broadcast({ type: 'open' });
+      broadcast({ type: 'onopen' });
     };
 
     wsocket.onmessage = function(e) {
-      broadcast({ type: 'message', data: e.data });
+      broadcast({ type: 'onmessage', data: e.data });
     };
 
     wsocket.onerror = function() {
-      broadcast({ type: 'error' });
+      broadcast({ type: 'onerror' });
     };
 
     wsocket.onclose = function() {
-      broadcast({ type: 'close' });
+      broadcast({ type: 'onclose' });
     };
   }
 

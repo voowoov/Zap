@@ -1,8 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////////
-//    
-//    Navbar Search Box
-//    
-/////////////////////////////////////////////////////////////////////////////////
+import { wsiOpenSharedSocket } from './wsi.js';
+import { wsiSend } from './wsi.js';
+import { wsiCurrentTabId } from './wsi.js';
+
+export function wsiToSearchSendQuery() { searchToWsiSendQuery(); };
+export function wsiToSearchMessageReceived(message) { showSearchResults(message) };
+
+const pageLanguage = document.documentElement.lang;
+
 
 var screenWidthLg = 992; // Replace with your value
 
@@ -72,7 +76,8 @@ function showSearchControl() {
   if (window.innerWidth < 620) {
     document.body.style.overflowY = 'hidden';
   }
-  openNavSearchSocket();
+  wsiOpenSharedSocket();
+  sendWSnavSearchMessage();
 }
 
 function hideSearchControl() {
@@ -89,8 +94,10 @@ function hideSearchControl() {
   document.body.style.overflowY = 'auto';
 }
 
-function activateSearchBox() {
+var activatedSearchResults = false;
 
+function activateSearchBox() {
+  activatedSearchResults = true;
   showSearchControl();
 
   // Unhide navSearchBtnClearX if there is text inside the input field
@@ -99,6 +106,7 @@ function activateSearchBox() {
   }
 
   function deactivateSearchBox() {
+    activatedSearchResults = false;
     navSearchInputTxt.removeEventListener('input', handleInputTextChange);
     navSearchBtnClearX.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
     navSearchBtnClearX.removeEventListener('mouseup', handleClickOnXbutton);
@@ -185,7 +193,9 @@ function activateSearchBox() {
 }
 
 navSearchInputTxt.addEventListener("mousedown", function() {
-  activateSearchBox();
+  if (!activatedSearchResults) {
+    activateSearchBox();
+  }
 });
 
 navSearchBtnEnter.addEventListener("click", function() {
@@ -194,7 +204,9 @@ navSearchBtnEnter.addEventListener("click", function() {
 
 navSearchTriggerBtn.addEventListener('click', function() {
   if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
-    activateSearchBox();
+    if (!activatedSearchResults) {
+      activateSearchBox();
+    }
   }
 });
 
@@ -218,37 +230,17 @@ window.addEventListener('resize', function() {
 });
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//  Nav Search websocket
-/////////////////////////////////////////////////////////////////////////////////
 
-var nsws;
 
-function openNavSearchSocket() {
-  if (typeof nsws === 'undefined') {
-    nsws = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-      window.location.host + '/' +
-      pageLanguage + '/ws/search/');
-    nsws.onopen = function(e) {
-      sendWSnavSearchMessage();
-    }
-    nsws.onmessage = function(e) {
-      showWSnavSearchResults(e.data);
-    };
-    window.addEventListener('beforeunload', function(event) {
-      nsws.close();
-    });
-  }
-}
 
-function sendWSnavSearchMessage() {
+// /////////////////////////////////////////////////////////////////////////////////
+// //  Nav Search websocket
+// /////////////////////////////////////////////////////////////////////////////////
+var navSearchStartTimer;
+
+function showSearchResults(jsonObject) {
   navSearchStartTimer = performance.now();
-  // Send the input text as a WebSocket message
-  nsws.send(navSearchInputTxt.value);
-}
-
-function showWSnavSearchResults(message) {
-  var jsonArray = JSON.parse(message);
+  var jsonArray = JSON.parse(jsonObject);
   var ul = document.createElement("ul");
   for (var i = 0; i < jsonArray.length; i++) {
     // Create a list item element
@@ -263,4 +255,34 @@ function showWSnavSearchResults(message) {
 
   let timeDiff = performance.now() - navSearchStartTimer;
   console.log(`${timeDiff} ms.`);
+}
+
+function searchToWsiSendQuery() {
+  navSearchStartTimer = performance.now();
+  wsiSend('s' + wsiCurrentTabId + navSearchInputTxt.value);
+}
+
+const sendWSnavSearchMessage = debounce_search(searchToWsiSendQuery, 400);
+
+function debounce_search(func, delay) {
+  let lastCallTime = 0;
+  let timeoutId;
+
+  return function() {
+    const context = this;
+    const args = arguments;
+    const now = Date.now();
+
+    clearTimeout(timeoutId);
+
+    if (now - lastCallTime < delay) {
+      timeoutId = setTimeout(() => {
+        lastCallTime = Date.now();
+        func.apply(context, args);
+      }, delay - (now - lastCallTime));
+    } else {
+      lastCallTime = now;
+      func.apply(context, args);
+    }
+  }
 }
