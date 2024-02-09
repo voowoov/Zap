@@ -1,153 +1,130 @@
-@use '../custom' as *;
+@use '../components/custom' as *;
 @use '../components/mixins' as *;
-
-
 .footer_long {
-    padding-top: 1rem;
-    width: 100%;
-    background-color: var(--color-footer-bg-1);
+  padding-top: 1rem;
+  width: 100%;
+  background-color: var(--color-footer-bg-1);
 }
 
-  
 // STYLE THE CONTACT-BOX CONTENT 
 .contact-box {
-    position: relative;
-
-    &__icon {
-       width: 2rem;
-       stroke: $primary; 
-       padding-top: 0.5rem;
-
-       @include media-breakpoint-up(sm) {
-        width: 4rem;
-       }
+  position: relative;
+  &__icon {
+    width: 2rem;
+    stroke: $primary;
+    padding-top: 0.5rem;
+    @include media-breakpoint-up(sm) {
+      width: 4rem;
     }
-
-
-    &__info {
-        padding: 0.4rem;
-        font-weight: 600;
-        
-
-
-        &__title {
-            color: $white;
-            text-decoration: none;
-            font-size: 1rem;
-
-            @include media-breakpoint-up(sm) {
-                font-size: 1.4rem;
-               }
-
-        }
-
-        &__subtitle {
-            font-size: 0.8rem;
-            color: $gray-600;
-            text-decoration: none;
-
-            @include media-breakpoint-up(sm) {
-                font-size: 1rem;
-               }
-            
-        }
+  }
+  &__info {
+    padding: 0.4rem;
+    font-weight: 600;
+    &__title {
+      color: $white;
+      text-decoration: none;
+      font-size: 1rem;
+      @include media-breakpoint-up(sm) {
+        font-size: 1.4rem;
+      }
     }
+    &__subtitle {
+      font-size: 0.8rem;
+      color: $gray-600;
+      text-decoration: none;
+      @include media-breakpoint-up(sm) {
+        font-size: 1rem;
+      }
+    }
+  }
 }
 
 // STYLE THE SOCIAL MEDIA CONTENT 
 .footer-socialmedia {
-    background-color: var(--color-footer-bg-2);
-    color: var(--color-nav-text); 
-    a {
-        width:50px;
-        height:45px;
-        @include flexCenter;
-        &:hover {
-            background-color: var(--color-social-hover);
-        }
+  background-color: var(--color-footer-bg-2);
+  color: var(--color-nav-text);
+  a {
+    width: 50px;
+    height: 45px;
+    @include flexCenter;
+    &:hover {
+      background-color: var(--color-social-hover);
     }
-    svg {
-        width:30px;
-        height:30px;
-    }
-    .color-youtube {
-        color: #ff0000
-    }
-    .color-linkedin {
-        color: #0a66c2
-    }
-    .color-reddit {
-        color: #ff4500
-    }
-    .color-twitter {
-        color: #1da1f2
-    }
-    .color-facebook {
-        color: #1877f2
-    }
-    .color-instagram {
-        color: #c32aa3
-    }
-
-
+  }
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+  .color-youtube {
+    color: #ff0000
+  }
+  .color-linkedin {
+    color: #0a66c2
+  }
+  .color-reddit {
+    color: #ff4500
+  }
+  .color-twitter {
+    color: #1da1f2
+  }
+  .color-facebook {
+    color: #1877f2
+  }
+  .color-instagram {
+    color: #c32aa3
+  }
 }
 
 // STYLE THE CAMPANY INFO CONTENT 
 .campany-list {
-    display: block;
-    list-style-type: none;
-    position: relative;
-
-    li {
-        margin-bottom: 0.5rem;
-        text-decoration: none;
-
-        a {
-            color: $white;
-            text-decoration: none;
-
-            &:hover {
-                color: $primary;
-            }
-        }
+  display: block;
+  list-style-type: none;
+  position: relative;
+  li {
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    a {
+      color: $white;
+      text-decoration: none;
+      &:hover {
+        color: $primary;
+      }
     }
+  }
 }
 
 // STYLE THE COPYRIGHT  CONTENT 
 .footer-small {
-    background-color: var(--color-nav-bg);
-    height: 45px;
-    display:flex;
-    align-items:center;
-    &__copyright {
-        color: var(--color-text);
-        font-weight: 400;
-        font-size: smaller;
-        a {
-            color: var(--color-text);
-            font-weight: 400;
-            text-decoration: underline;
-            &:hover {
-                color: var(--color-text-hover);
-            }
-        }
+  background-color: var(--color-nav-bg);
+  height: 45px;
+  display: flex;
+  align-items: center;
+  &__copyright {
+    color: var(--color-text);
+    font-weight: 400;
+    font-size: smaller;
+    a {
+      color: var(--color-text);
+      font-weight: 400;
+      text-decoration: underline;
+      &:hover {
+        color: var(--color-text-hover);
+      }
     }
+  }
 }
-
 
 // STYLE THE BACK TO TOP BUTTON 
 .back-to-top {
-    position: fixed;
-    width: 3rem;
-    height: 3rem;
-    right: 1.875rem;
-    bottom: 1.875rem;
-    z-index: 9999;
-
-    i {
-        color: $white;
-        font-size: 1rem;
-        @include absoluteCenter;
-    }
+  position: fixed;
+  width: 3rem;
+  height: 3rem;
+  right: 1.875rem;
+  bottom: 1.875rem;
+  z-index: 9999;
+  i {
+    color: $white;
+    font-size: 1rem;
+    @include absoluteCenter;
+  }
 }
-

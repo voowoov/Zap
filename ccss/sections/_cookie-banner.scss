@@ -1,22 +1,21 @@
-@use '../custom' as *;
+@use '../components/custom' as *;
 @use '../components/mixins' as *;
-
-
 .cookie_banner {
-    position:fixed;
-    bottom: 0px;
-    width:100%;
-    background: rgb(22, 22, 22);
-    color: #fff;
-    border-style: solid;
-    border-color: coral;
-    animation: moveUpAnimation ease 0.8s
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  background: rgb(22, 22, 22);
+  color: #fff;
+  border-style: solid;
+  border-color: coral;
+  animation: moveUpAnimation ease 0.8s
 }
+
 @keyframes moveUpAnimation {
-    0% {
-        bottom: -25px;
-    }
-    100% {
-        bottom: 0px;
-     }
-}  
+  0% {
+    bottom: -25px;
+  }
+  100% {
+    bottom: 0px;
+  }
+}

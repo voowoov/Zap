@@ -7,6 +7,9 @@ import { wsiCurrentTabId } from './wsi.js';
 /////////////////////////////////////////////////////////////////////////////////
 const pageLanguage = document.documentElement.lang;
 
+
+
+
 const fileChunkSize = 1990; // Size of chunks
 const fileMaxNbChunks = 100;
 const fileMaxSize = 10000000;

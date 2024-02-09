@@ -230,7 +230,7 @@ LANGUAGE_CODE = "en"
 ### Internationalization (language translation)
 USE_I18N = True
 LOCALE_PATHS = [
-    BASE_DIR / "locale/",
+    BASE_DIR / "zlocale/",
 ]
 LANGUAGES = (
     ("en", _("English")),

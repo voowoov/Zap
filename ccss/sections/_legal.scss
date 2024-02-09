@@ -1,4 +1,4 @@
-@use '../custom' as *;
+@use '../components/custom' as *;
 @use '../components/mixins' as *;
 .legal_section {
   background-color: var(--color-legal-bg);

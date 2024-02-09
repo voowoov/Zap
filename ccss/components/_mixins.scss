@@ -1,4 +1,4 @@
-@use '../custom' as *;
+@use '../components/custom' as *;
 // GRADIENT MIXIN 
 @mixin gradientBg {
   background: linear-gradient(to right, var(--color-1), var(--color-2));

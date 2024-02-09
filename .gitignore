@@ -1,5 +1,5 @@
 # Directories
-/anode/node_modules
+/node/node_modules
 /duplicati
 /duplicati_backups
 /pgdb
