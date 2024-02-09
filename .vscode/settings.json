@@ -34,7 +34,4 @@
     "scss.format.enable": false,
     "css.format.enable": true,
     "sass.format.enabled": false,
-    "JSObfuscator.changeFileExtension": "min.js",
-    "JSObfuscator.overwriteExistingFiles": true,
-    "JSObfuscator.subPathInWorkspace": "cstatic/js",
   }

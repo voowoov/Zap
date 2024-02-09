@@ -32,6 +32,8 @@ services:
       - ./media:/home/app/media
       - ./static_collect:/home/app/static
       - ./priv_files:/home/app/priv_files
+      - ./tmp_files:/usr/src/tmp_files
+      - ./docker/websocket/protocol.py:/usr/local/lib/python3.10/site-packages/autobahn/websocket/protocol.py
     depends_on:
       - web
     environment:

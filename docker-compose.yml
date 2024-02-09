@@ -15,11 +15,11 @@ services:
     volumes:
       - ./dja/:/usr/src/app/
       - ./media:/usr/src/media
-      - ./priv_files:/usr/src/priv_files
-      - ./cstatic:/usr/src/cstatic # dev runserver django directly
+      - ./static:/usr/src/static # dev runserver django directly
       - ./static_collect:/usr/src/static_collect # func collectstatic only
-      - ./websocket/protocol.py:/usr/local/lib/python3.10/site-packages/autobahn/websocket/protocol.py
+      - ./priv_files:/usr/src/priv_files
       - ./tmp_files:/usr/src/tmp_files
+      - ./docker/websocket/protocol.py:/usr/local/lib/python3.10/site-packages/autobahn/websocket/protocol.py
     # expose:
     #   - 8001
     ports:

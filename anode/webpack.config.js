@@ -8,7 +8,7 @@ const plugin_compression = new CompressionPlugin({ algorithm: 'gzip' })
 const pl_comp_small = new CompressionPlugin({ algorithm: 'gzip', threshold: 0, minRatio: 0.9 })
 
 const dir = '../cjs/'
-const out_path = path.resolve(__dirname, '../cstatic/js')
+const out_path = path.resolve(__dirname, '../static/js')
 
 module.exports = (env, argv) => [{
   entry: {

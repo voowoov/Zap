@@ -4,7 +4,7 @@
   "description": "Learning bootstrap v5 with sass",
   "main": "index.js",
   "scripts": {
-    "compile:sass-css": "sass --watch --no-source-map ../ccss/style.scss:../cstatic/styles.css --style compressed",
+    "compile:sass-css": "sass --watch --no-source-map ../ccss/style.scss:../static/styles.css --style compressed",
     "compile:webpack-js": "webpack --watch --mode=development"
   },
   "keywords": [

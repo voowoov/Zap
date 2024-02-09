@@ -10,7 +10,7 @@ services:
       - ./dja/:/usr/src/app/
       - ./media:/usr/src/media
       - ./priv_files:/usr/src/priv_files
-      - ./cstatic:/usr/src/cstatic
+      - ./static:/usr/src/static
       - ./static_collect:/usr/src/static_collect # func collectstatic only
     depends_on:
       - pgdb

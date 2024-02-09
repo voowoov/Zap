@@ -1,5 +1,5 @@
 /.vscode merge=ours
 /css_scss merge=ours
-# /cstatic merge=ours 
+# /static merge=ours 
 /zfeatures merge=ours 
 /zothers merge=ours 

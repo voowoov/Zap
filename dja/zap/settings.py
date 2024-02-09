@@ -156,7 +156,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = TOP_DIR / "static_collect"
 ### directories that collectstatic pulls from
 STATICFILES_DIRS = [
-    TOP_DIR / "cstatic",
+    TOP_DIR / "static",
 ]
 ### browser url where media files are served by nginx
 MEDIA_URL = "/media/"
@@ -165,7 +165,7 @@ MEDIA_ROOT = TOP_DIR / "media/"
 
 ###### Custom Config #######
 PRIVATE_STORAGE_ROOT = TOP_DIR / "priv_files"
-STATIC_ROOT_DEV = TOP_DIR / "cstatic"  # see urls.py
+STATIC_ROOT_DEV = TOP_DIR / "static"  # see urls.py
 
 ###### Database #######
 ### sqlite3
