@@ -1,7 +1,19 @@
+/////////////////////////////////////////////////////////////////////////////////
+//    Dynamic imports
+//    do the imports in js instead of normal imports in case the module
+//    is not present since search or filespro may not be required
+/////////////////////////////////////////////////////////////////////////////////
+let wsiToFilesproAskForListOfFiles, wsiToFilesproMessageReceived;
+
+import ( /* webpackIgnore: true */ './filescript.js')
+.then((module) => {
+    wsiToFilesproAskForListOfFiles = module.wsiToFilesproAskForListOfFiles;
+    wsiToFilesproMessageReceived = module.wsiToFilesproMessageReceived;
+  })
+  .catch((error) => {});
+
 import { wsiToSearchSendQuery } from './search.js';
 import { wsiToSearchMessageReceived } from './search.js';
-import { wsiToFilesproAskForListOfFiles } from './filespro.js';
-import { wsiToFilesproMessageReceived } from './filespro.js';
 /////////////////////////////////////////////////////////////////////////////////
 //    wsi
 /////////////////////////////////////////////////////////////////////////////////
@@ -24,8 +36,13 @@ function handleWsEvent(event) {
   switch (event.type) {
     case 'onopen':
       console.log('WebSocket is open');
-      wsiToSearchSendQuery()
-      wsiToFilesproAskForListOfFiles()
+      // check if the module is loaded
+      if (typeof wsiToSearchSendQuery === 'function') {
+        wsiToSearchSendQuery();
+      }
+      if (typeof wsiToFilesproAskForListOfFiles === 'function') {
+        wsiToFilesproAskForListOfFiles();
+      }
       break;
     case 'onclose':
       console.log('WebSocket is closed');
@@ -40,9 +57,14 @@ function handleWsEvent(event) {
         if (event.data[1] == wsiCurrentTabId) {
           switch (event.data[0]) {
             case 's':
-              wsiToSearchMessageReceived(message);
+              // check if the module is loaded
+              if (typeof wsiToSearchMessageReceived === 'function') {
+                wsiToSearchMessageReceived(message);
+              }
             case 'f':
-              wsiToFilesproMessageReceived(message);
+              if (typeof wsiToFilesproMessageReceived === 'function') {
+                wsiToFilesproMessageReceived(message);
+              }
           }
         }
       }

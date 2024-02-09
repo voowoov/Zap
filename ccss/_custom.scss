@@ -113,12 +113,12 @@ $navBarHeight: 40px;
 // - IMPORT IMPORT ONLY THE PART OF BOOTSTRAP YOU WANT TO USE
 // ##########################################
 // // Configuration
-@import "../node_modules/bootstrap/scss/functions";
-@import "../node_modules/bootstrap/scss/variables";
-@import "../node_modules/bootstrap/scss/variables-dark";
-@import "../node_modules/bootstrap/scss/mixins";
-@import "../node_modules/bootstrap/scss/maps";
-@import "../node_modules/bootstrap/scss/utilities";
+@import "../anode/node_modules/bootstrap/scss/functions";
+@import "../anode/node_modules/bootstrap/scss/variables";
+@import "../anode/node_modules/bootstrap/scss/variables-dark";
+@import "../anode/node_modules/bootstrap/scss/mixins";
+@import "../anode/node_modules/bootstrap/scss/maps";
+@import "../anode/node_modules/bootstrap/scss/utilities";
 // // Include any optional Bootstrap components as you like
 // @import "../node_modules/bootstrap/scss/root";
 // @import "../node_modules/bootstrap/scss/reboot";

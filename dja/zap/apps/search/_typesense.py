@@ -11,7 +11,6 @@ from zap.apps.search.models import Movie
 import typesense
 
 load_dotenv()
-
 client = typesense.Client(
     {
         "nodes": [
@@ -111,6 +110,9 @@ def typesense_delete_a_collection():
     return "deleted collection"
 
 
+import time
+
+
 def typesense_search_documents(query: str):
     try:
         if query == "":
@@ -132,9 +134,8 @@ def typesense_search_documents(query: str):
         json_data = json.dumps(data, indent=1)
         return json_data
     except Exception as e:
-        print("asdasdf")
-        print(e)
-        logger.warning(e)
+        logger.error(e)
+        return None
 
 
 ###########################################################################################

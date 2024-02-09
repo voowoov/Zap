@@ -37,7 +37,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                     match text_data[0]:
                         case "s":
                             await self.frequency_limiting(10)
-                            await self.wsi_search_received_message()
+                            # await self.wsi_search_received_message()
                         case "f":
                             await self.frequency_limiting(20)
                             await self.wsi_filespro_received_message()
