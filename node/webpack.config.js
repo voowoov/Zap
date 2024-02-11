@@ -5,14 +5,16 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const prod_mode = "production"
 const jsc_filename = '[name].js'
 const css_filename = '[name].css'
-const plugin_jsobfuscator = new JavaScriptObfuscator({ rotateStringArray: true }, [])
-const plugin_compression = new CompressionPlugin({ algorithm: 'gzip' })
+
+const plugin_jsobfuscator = new JavaScriptObfuscator({ rotateStringArray: true, disableConsoleOutput: true, }, [])
+const plugin_compression_norma = new CompressionPlugin({ algorithm: 'gzip' })
 const plugin_compression_small = new CompressionPlugin({ algorithm: 'gzip', threshold: 0, minRatio: 0.9 })
-const plugin_MiniCssExtractPlugin = new MiniCssExtractPlugin({ filename: css_filename })
-const plugin_compressionCss = new CompressionPlugin({ filename: '[path][base].gz', algorithm: 'gzip', test: /\.css$/ })
+const plugin_compression_scsss = new CompressionPlugin({ filename: '[path][base].gz', algorithm: 'gzip', test: /\.css$/ })
+const plugin_MiniCssExtractPlu = new MiniCssExtractPlugin({ filename: css_filename })
 
 const jsc_dir = '../cjs/'
 const jsc_out_path = path.resolve(__dirname, '../static/js')
+const jsc_priv_path = path.resolve(__dirname, '../priv_files/js')
 const css_dir = '../ccss/'
 const css_out_path = path.resolve(__dirname, '../static/styles')
 
@@ -20,12 +22,20 @@ module.exports = (env, argv) => [
   //  Javascript with obfuscation
   {
     entry: {
-      mainscript: [jsc_dir + 'base.js', jsc_dir + 'wsi.js', jsc_dir + 'search.js'],
-      filescript: [jsc_dir + 'filespro.js', jsc_dir + 'images.js'],
+      mainscript: [jsc_dir + 'base.js', jsc_dir + 'wsi.js', jsc_dir + 'search.js', jsc_dir + 'filespro.js'],
+      imagescript: [jsc_dir + 'images.js'],
       sharedWorker: [jsc_dir + 'sharedWorker.js'],
     },
     output: { path: jsc_out_path, filename: jsc_filename },
-    plugins: argv.mode === prod_mode ? [plugin_jsobfuscator, plugin_compression, ] : [],
+    plugins: argv.mode === prod_mode ? [plugin_jsobfuscator, plugin_compression_norma, ] : [],
+  },
+  //  Javascript with obfuscation - priv js files
+  {
+    entry: {
+      priv_monitor_script: [jsc_dir + 'monitor.js'],
+    },
+    output: { path: jsc_priv_path, filename: jsc_filename },
+    plugins: argv.mode === prod_mode ? [plugin_jsobfuscator, plugin_compression_norma, ] : [],
   },
   //  Javascript without obfuscation
   {
@@ -51,6 +61,6 @@ module.exports = (env, argv) => [
         ],
       }],
     },
-    plugins: argv.mode === prod_mode ? [plugin_MiniCssExtractPlugin, plugin_compressionCss] : [plugin_MiniCssExtractPlugin]
+    plugins: argv.mode === prod_mode ? [plugin_MiniCssExtractPlu, plugin_compression_scsss] : [plugin_MiniCssExtractPlu]
   }
 ];

@@ -1,27 +1,20 @@
-/////////////////////////////////////////////////////////////////////////////////
-//    Dynamic imports
-//    do the imports in js instead of normal imports in case the module
-//    is not present since search or filespro may not be required
-/////////////////////////////////////////////////////////////////////////////////
-let wsiToFilesproAskForListOfFiles, wsiToFilesproMessageReceived;
+import setupFileUpload from './filespro.js';
+import { wsiToSearchSendQuery, wsiToSearchMessageReceived } from './search.js';
 
-import ( /* webpackIgnore: true */ './filescript.js')
-.then((module) => {
-    wsiToFilesproAskForListOfFiles = module.wsiToFilesproAskForListOfFiles;
-    wsiToFilesproMessageReceived = module.wsiToFilesproMessageReceived;
-  })
-  .catch((error) => {});
 
-import { wsiToSearchSendQuery } from './search.js';
-import { wsiToSearchMessageReceived } from './search.js';
+/////////////////////////////////////////////////////////////////////////////////
+//    check to call filespro or not
+/////////////////////////////////////////////////////////////////////////////////
+const filesproFunctions = setupFileUpload();
+
 /////////////////////////////////////////////////////////////////////////////////
 //    wsi
 /////////////////////////////////////////////////////////////////////////////////
 // localStorage of the browser is used to store the last tabId in a single char
 // get the next wsiCurrentTabId in storage, single character
-export var wsiCurrentTabId = localStorage.getItem('wsiCurrentTabId');
+export let wsiCurrentTabId = localStorage.getItem('wsiCurrentTabId');
 if (wsiCurrentTabId !== null) {
-  var nextTabId = wsiCurrentTabId.charCodeAt(0) + 1;
+  let nextTabId = wsiCurrentTabId.charCodeAt(0) + 1;
   //   33; // '!' to  126; // '~'
   if (nextTabId > 126) {
     nextTabId = 33;
@@ -36,13 +29,8 @@ function handleWsEvent(event) {
   switch (event.type) {
     case 'onopen':
       console.log('WebSocket is open');
-      // check if the module is loaded
-      if (typeof wsiToSearchSendQuery === 'function') {
-        wsiToSearchSendQuery();
-      }
-      if (typeof wsiToFilesproAskForListOfFiles === 'function') {
-        wsiToFilesproAskForListOfFiles();
-      }
+      wsiToSearchSendQuery();
+      filesproFunctions.wsiToFilesproAskForListOfFiles();
       break;
     case 'onclose':
       console.log('WebSocket is closed');
@@ -58,13 +46,9 @@ function handleWsEvent(event) {
           switch (event.data[0]) {
             case 's':
               // check if the module is loaded
-              if (typeof wsiToSearchMessageReceived === 'function') {
-                wsiToSearchMessageReceived(message);
-              }
+              wsiToSearchMessageReceived(message);
             case 'f':
-              if (typeof wsiToFilesproMessageReceived === 'function') {
-                wsiToFilesproMessageReceived(message);
-              }
+              filesproFunctions.wsiToFilesproMessageReceived(message);
           }
         }
       }

@@ -6,7 +6,7 @@ let camera
 let scaleZ, MAX_SCALE, MIN_SCALE
 let limitingDimensionIsX
 
-var img = new Image;
+let img = new Image;
 if (protectedUri) {
   img.src = protectedUri;
 }
@@ -218,42 +218,7 @@ imageViewerFileRealInput.onchange = function(e) {
   }
 };
 
-imageViewerFileSaveBtn.addEventListener('click', function() {
-  var imgsrc = canvas.toDataURL("image/png");
-  var blob = dataURLtoBlob(imgsrc);
-  var file = new File([blob], 'my_avatar.png', {
-    type: "image/png",
-    lastModified: new Date()
-  });
-  // console.log(file.size);
-  // send image file to server with fetch
-  csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-  let formData = new FormData();
-  formData.append('file', file);
-  formData.append("csrfmiddlewaretoken", csrf_token);
-  fetch(imageSaveUri, {
-      method: 'POST',
-      body: formData,
-    }).then(response => response.json())
-    .then(response => {
-      console.log(response)
-    })
-});
 
-// to transform a dataURL to a blob (no need to understand in detail)
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], {
-    type: mime
-  });
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////

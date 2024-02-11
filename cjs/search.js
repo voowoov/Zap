@@ -1,6 +1,4 @@
-import { wsiOpenSharedSocket } from './wsi.js';
-import { wsiSend } from './wsi.js';
-import { wsiCurrentTabId } from './wsi.js';
+import { wsiOpenSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
 
 export function wsiToSearchSendQuery() { searchToWsiSendQuery(); };
 export function wsiToSearchMessageReceived(message) { showSearchResults(message) };
@@ -8,7 +6,7 @@ export function wsiToSearchMessageReceived(message) { showSearchResults(message)
 const pageLanguage = document.documentElement.lang;
 
 
-var screenWidthLg = 992; // Replace with your value
+let screenWidthLg = 992; // Replace with your value
 
 const navSearchTriggerBtn = document.getElementsByClassName('btn_nav__search')[0];
 const navSearchMain = document.getElementsByClassName('navSearchMain')[0];
@@ -94,7 +92,7 @@ function hideSearchControl() {
   document.body.style.overflowY = 'auto';
 }
 
-var activatedSearchResults = false;
+let activatedSearchResults = false;
 
 function activateSearchBox() {
   activatedSearchResults = true;
@@ -153,7 +151,7 @@ function activateSearchBox() {
   navSearchMain.addEventListener('mousedown', handlePreventLeavingInput);
 
   function handleScrollingFromMainCtn(event) {
-    var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+    let delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
     navSearchResDiv0.scrollTop -= (delta * 30);
     event.preventDefault();
   }
@@ -236,15 +234,15 @@ window.addEventListener('resize', function() {
 // /////////////////////////////////////////////////////////////////////////////////
 // //  Nav Search websocket
 // /////////////////////////////////////////////////////////////////////////////////
-var navSearchStartTimer;
+let navSearchStartTimer;
 
 function showSearchResults(jsonObject) {
   navSearchStartTimer = performance.now();
-  var jsonArray = JSON.parse(jsonObject);
-  var ul = document.createElement("ul");
-  for (var i = 0; i < jsonArray.length; i++) {
+  let jsonArray = JSON.parse(jsonObject);
+  let ul = document.createElement("ul");
+  for (let i = 0; i < jsonArray.length; i++) {
     // Create a list item element
-    var li = document.createElement("li");
+    let li = document.createElement("li");
     // Set the content of the list item to the name and age of each person
     li.innerHTML = jsonArray[i].title + " (" + jsonArray[i].vote + ")";
     // Append the list item to the list

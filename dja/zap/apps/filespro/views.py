@@ -50,7 +50,8 @@ def image_viewer(request, slug_image):
 def image_private(request, slug_image):
     # ... some logic to get the secret URL from the slug ...
     response = HttpResponse()
-    response["X-Accel-Redirect"] = "/media_private/felis.png"
+    response["Content-Type"] = "application/png"
+    response["X-Accel-Redirect"] = "/media_private/Felis.png"
     return response
 
 

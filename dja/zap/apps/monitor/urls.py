@@ -7,4 +7,14 @@ app_name = "monitor"
 
 urlpatterns = [
     path(_("monitor625453245/"), views.StaffMonitor.as_view(), name="monitor"),
+    path(
+        "MyAjaxReceiveTestView/",
+        views.MyAjaxReceiveTestView.as_view(),
+        name="MyAjaxReceiveTestView",
+    ),
+    path(
+        "PrivMonitorScript/",
+        views.PrivMonitorScript.as_view(),
+        name="PrivMonitorScript",
+    ),
 ]
