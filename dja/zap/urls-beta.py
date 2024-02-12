@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.sitemaps import views
 from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
-from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.base import TemplateView
 from zap.apps.base.sitemaps import PostSitemap, RootSitemap
 
 sitemaps = {

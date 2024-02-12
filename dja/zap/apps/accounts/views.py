@@ -1,19 +1,16 @@
-import json
+import logging
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import EmptyPage, Paginator
-from django.http import FileResponse, HttpResponseRedirect, JsonResponse
+from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone, translation
+from django.utils import timezone
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
 from .forms import AddressCpProjectForm, ProjectForm
-from .models import Mailmessage
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 
 class DownloadFile(LoginRequiredMixin, View):
@@ -21,8 +18,8 @@ class DownloadFile(LoginRequiredMixin, View):
         try:
             path = request.user.account.invoices.get(pk=pk).invoice_pdr.path
             response = FileResponse(open(path, "rb"), as_attachment=True)
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"error: DownloadFile: {e}")
         # filename = 'name123.pdf'
         # response = FileResponse(
         # open(path, 'rb'), as_attachment=True, filename=filename)
@@ -57,7 +54,8 @@ class AccountSummary(LoginRequiredMixin, View):
             invoices = account.invoices.all()
             ctx = {"user": user, "account": account, "invoices": invoices}
             return render(request, "accounts/account_summary.html", ctx)
-        except:
+        except Exception as e:
+            logger.error(f"error: AccountSummary: {e}")
             return redirect("base:home")
 
 
@@ -152,28 +150,3 @@ class EditAddressCpProject(View):
             "form": self.form,
         }
         return render(request, "accounts/edit_address_cp.html", ctx)
-
-
-from PIL import Image
-
-
-@ensure_csrf_cookie
-def modify_avatar(request):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            try:
-                image = request.FILES.get("file")
-                if image.name.endswith(".png"):
-                    Image.MAX_IMAGE_PIXELS = 56000
-                    im = Image.open(image)
-                    if im.format == "PNG":
-                        im.verify()  # will throw an exception if not verifed
-                        width, height = im.size
-                        if width == height == 235:
-                            request.user.avatar.delete(save=False)
-                            request.user.avatar = image
-                            request.user.save()
-                            return JsonResponse({"msg": "image saved"})
-            except Exception:
-                pass
-    return JsonResponse({"msg": "failed to upload image"}, safe=False)

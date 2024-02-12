@@ -3,8 +3,10 @@
 /////////////////////////////////////////////////////////////////////////////////
 Array.from(document.getElementsByClassName('monitorFunction')).forEach(el => {
   el.addEventListener('click', () => {
-    let fn = window[el.innerHTML];
-    if (typeof fn === 'function') fn();
+    let fnName = el.innerHTML; // Get the function name from the innerHTML
+    if (typeof eval(fnName) === 'function') {
+      eval(fnName + '()');
+    }
   });
 });
 /////////////////////////////////////////////////////////////////////////////////
@@ -12,12 +14,9 @@ Array.from(document.getElementsByClassName('monitorFunction')).forEach(el => {
 /////////////////////////////////////////////////////////////////////////////////
 Array.from(document.getElementsByClassName('monitorSendCommand')).forEach(el => {
   el.addEventListener('click', () => {
-    let fn = window['sendCommand']; // replace 'myFunction' with your function name
-    console.log(el.innerHTML)
-    if (typeof fn === 'function') fn(el.innerHTML);
+    sendCommand(el.innerHTML);
   });
 });
-
 /////////////////////////////////////////////////////////////////////////////////
 //  
 /////////////////////////////////////////////////////////////////////////////////
@@ -131,8 +130,8 @@ window.addEventListener('beforeunload', function(event) {
 /////////////////////////////////////////////////////////////////////////////////
 function showMyObjectList() {
   let myURLsendRequest = JSON.parse(document.getElementById('myURLsendRequest').textContent);
+  let myObjectList = JSON.parse(document.getElementById('myObjectList').textContent)
   console.log("url to ajax view: ", myURLsendRequest)
-  let myObjectList = json.myObjectList
   console.log("objects: ", myObjectList)
 }
 ////// fetch data on server
@@ -144,6 +143,7 @@ function sendAjaxRequest() {
   formData.append("message", "This is a fetch from js");
   fetch(myURLsendRequest, {
       method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
       body: formData,
     }).then(response => response.json())
     .then(response => {

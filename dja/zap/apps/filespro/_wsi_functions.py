@@ -6,6 +6,7 @@ import os
 import re
 import struct
 from pathlib import Path
+from django.utils.crypto import get_random_string
 
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.db import database_sync_to_async
@@ -14,6 +15,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
+from PIL import Image
 
 from .models import FileUploadFile, FileUploadUser
 
@@ -34,30 +36,44 @@ class WSIPrivFilesMixin:
         try:
             ### file upload user object is transmitted to wsi via 2 session variables
             ### that are initiated in the view
-            content_type_id = self.scope["session"]["wsi_fuu_ct_id"]
-            object_id = self.scope["session"]["wsi_fuu_obj_id"]
-            self.file_upload_user = await self.get_my_object(content_type_id, object_id)
-        except:
-            pass
+            file_upload_user_content_type_id = self.scope["session"]["wsi_fuu_ct_id"]
+            file_upload_user_object_id = self.scope["session"]["wsi_fuu_obj_id"]
+            self.file_upload_user = await self.get_object_from_content_type(
+                file_upload_user_content_type_id, file_upload_user_object_id
+            )
+            # owner_object = await self.get_generic_object_in_object(
+            #     self.file_upload_user
+            # )
+            # print(owner_object)
+        except Exception as e:
+            logger.error(f"error: wsi_filespro_init_file_upload_user: {e}")
 
     async def wsi_filespro_received_message(self):
         match self.message[0]:
-            case "u":
+            case "u":  # update list of files in file_upload_user
                 if self.file_upload_user:
                     await self.file_upload_list()
-            case "s":
-                if self.file_upload_user:
-                    await self.file_upload_demand(self.message[1:])
-            case "c":
+            case "s":  # start the upload
+                await self.file_upload_demand(self.message[1:])
+            case "c":  # cancel the upload
                 if self.file_upload_user:
                     await self.file_cancel_demand(self.message[1:])
 
     @database_sync_to_async
-    def get_my_object(self, content_type_id, object_id):
+    def get_object_from_content_type(self, content_type_id, object_id):
         try:
             content_type = ContentType.objects.get_for_id(content_type_id)
             model = content_type.model_class()
-            return model.objects.get(pk=object_id)  ### replace with your actual query
+            return model.objects.get(pk=object_id)
+        except ObjectDoesNotExist:
+            return None
+
+    @database_sync_to_async
+    def get_generic_object_in_object(self, object):
+        try:
+            content_type = ContentType.objects.get_for_id(object.content_type_id)
+            model = content_type.model_class()
+            return model.objects.get(pk=object.object_id)
         except ObjectDoesNotExist:
             return None
 
@@ -70,9 +86,9 @@ class WSIPrivFilesMixin:
             )
             data_json = json.dumps(data)
             await self.send("f" + self.tab_id + "u" + str(data_json))
-
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"error: file_upload_list: {e}")
+            await self.close()
 
     async def file_cancel_demand(self, message):
         try:
@@ -81,31 +97,45 @@ class WSIPrivFilesMixin:
                 ### delete the tmp files
                 for filename in glob.glob(self.path_tmp_name + "*"):
                     os.remove(filename)
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"error: file_cancel_demand: {e}")
+            await self.close()
 
     async def file_upload_demand(self, message):
         try:
-            data = json.loads(message)
-            if len(message) < 100:
+            if len(message) < 200:
+                data = json.loads(message)
+                self.upload_type = data["upload_type"]
                 file_name = data["file_name"]
                 file_size = data["file_size"]
                 is_valid = True
+                match self.upload_type:
+                    case "manual":
+                        if await sync_to_async(
+                            FileUploadFile.objects.filter(
+                                file_upload_user=self.file_upload_user,
+                                file_name=file_name,
+                            ).exists
+                        )():
+                            is_valid = False
+                            await self.send(
+                                "f" + self.tab_id + "e" + "file already exists"
+                            )
+                        if file_size > self.file_upload_user.remaining_storage:
+                            is_valid = False
+                            await self.send(
+                                "f" + self.tab_id + "e" + "insufficient remaining space"
+                            )
+                    case "avatar":
+                        if not self.scope["user"].is_authenticated:
+                            raise ValueError("User not authenticated.")
+                        if file_size > 170000:
+                            raise ValueError("Image size exceeds limit.")
+                    case _:
+                        raise ValueError("Inadequate upload_type: " + self.upload_type)
                 if not self.is_valid_filename(file_name):
                     is_valid = False
                     await self.send("f" + self.tab_id + "e" + "invalid file name")
-                if await sync_to_async(
-                    FileUploadFile.objects.filter(
-                        file_upload_user=self.file_upload_user, file_name=file_name
-                    ).exists
-                )():
-                    is_valid = False
-                    await self.send("f" + self.tab_id + "e" + "file already exists")
-                if file_size > self.file_upload_user.remaining_storage:
-                    is_valid = False
-                    await self.send(
-                        "f" + self.tab_id + "e" + "insufficient remaining space"
-                    )
                 if is_valid and self.tab_id:
                     self.file_name = file_name
                     self.file_size = file_size
@@ -118,7 +148,7 @@ class WSIPrivFilesMixin:
                     )
                     self.chunk_bool_array = [False] * self.file_nb_chunks
                     self.path_tmp_name = (
-                        path_directory + "u" + str(self.file_upload_user.id) + "u"
+                        path_directory + "u" + get_random_string(1) + "u"
                     )  ### only one random letter name to limit the number of possible tmp_files
                     self.path_full = (
                         self.path_tmp_name + "full." + self.file_name.split(".")[-1]
@@ -128,20 +158,17 @@ class WSIPrivFilesMixin:
                         pass
                     await self.send("f" + self.tab_id + "a")
             else:
-                await self.close()
+                raise ValueError(f"Message too long: {message}")
         except Exception as e:
-            await self.close()
             logger.error(f"error: wsi file upload demand: {e}")
+            await self.close()
 
     async def wsi_filespro_received_bytes(self, bytes_data):
         try:
             ### The first 4 bytes are your integer, the current chunk_id
             chunk_id = struct.unpack("<I", bytes_data[:4])[0]
             if self.chunk_bool_array[chunk_id]:
-                logger.error(
-                    "error: wsi file upload alert unexpected chunk id repeated"
-                )
-                await self.close()
+                raise ValueError(f"unexpected chunk id repeate")
             else:
                 self.chunk_bool_array[chunk_id] = True
                 path = self.path_tmp_name + str(chunk_id)
@@ -169,23 +196,21 @@ class WSIPrivFilesMixin:
                                 "error: wsi file upload unexpected alert inconsistent file size"
                             )
                         else:
-                            ### create a new file_upload_file model object with the full file
-                            with open(self.path_full, "rb") as output_file:
-                                file_upload_file = await sync_to_async(
-                                    FileUploadFile.objects.create
-                                )(
-                                    file_upload_user=self.file_upload_user,
-                                    file=File(output_file),
-                                    file_name=self.file_name,
-                                    file_size=self.file_size,
-                                )
+                            ### Transfer finished
+                            match self.upload_type:
+                                case "manual":
+                                    await self.save_file_to_file_upload_file()
+                                    await self.file_upload_list()
+                                case "avatar":
+                                    if self.scope["user"].is_authenticated:
+                                        await self.save_file_to_user_avatar()
+                                case _:
+                                    raise ValueError(f"unexpected upload_type")
                             ### delete the tmp files
                             for filename in glob.glob(self.path_tmp_name + "*"):
                                 os.remove(filename)
                             logger.info("wsi file upload of {self.file_name} finished")
-                            ### send received confirmation
-                            await self.send("f" + self.tab_id + "r")
-                            await self.file_upload_list()
+
                     else:
                         self.file_portion_step += 1
                         self.file_nb_chunks = math.ceil(
@@ -195,8 +220,45 @@ class WSIPrivFilesMixin:
                         await self.send("f" + self.tab_id + "a")
 
         except Exception as e:
-            await self.close()
             logger.error(f"error: wsi file upload receiving: {e}")
+            await self.close()
+
+    async def save_file_to_file_upload_file(self):
+        try:
+            with open(self.path_full, "rb") as output_file:
+                file_upload_file = await sync_to_async(FileUploadFile.objects.create)(
+                    file_upload_user=self.file_upload_user,
+                    file=File(output_file),
+                    file_name=self.file_name,
+                    file_size=self.file_size,
+                )
+            ### send received confirmation
+            await self.send("f" + self.tab_id + "r")
+        except Exception as e:
+            logger.error(f"error: save_file_to_file_upload_file: {e}")
+            await self.close()
+
+    async def save_file_to_user_avatar(self):
+        try:
+            with open(self.path_full, "rb") as output_file:
+                if output_file.name.endswith(".png"):
+                    Image.MAX_IMAGE_PIXELS = 56000
+                    im = Image.open(output_file)
+                    if im.format == "PNG":
+                        im.verify()  # will throw an exception if not verifed
+                        width, height = im.size
+                        if width == height == 235:
+                            self.scope["user"].avatar.delete(save=False)
+                            self.scope["user"].avatar = File(output_file)
+                            await sync_to_async(self.scope["user"].save)()
+                            ### send received confirmation
+                            await self.send("f" + self.tab_id + "r")
+                            return True
+            raise ValueError("Image is not adequate.")
+        except Exception as e:
+            logger.error(f"error: save_file_to_user_avatar: {e}")
+            await self.close()
+        return False
 
     def is_valid_filename(self, filename):
         # Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot

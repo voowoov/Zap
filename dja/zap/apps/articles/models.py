@@ -1,10 +1,9 @@
-import random
-import string
 from io import BytesIO
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from tinymce.models import HTMLField
@@ -12,8 +11,7 @@ from zap.apps.users.models import User
 
 
 def uploadPathFunction(instance, filename):
-    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
-    return "article/images/%s" % randomN + filename
+    return "article/images/%s" % get_random_string(8) + filename
 
 
 class Author(models.Model):

@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,16 +7,12 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 
+logger = logging.getLogger(__name__)
+
 
 class DownloadFile(LoginRequiredMixin, View):
     def get(self, request):
         try:
-            # path = request.user.account.invoices.get(pk=pk).invoice_pdr.path
-            # path = "media/private/pack.png"
-            # path = "media/public/pack.png"
-            # print(open(path, "rb"))
-            # response = FileResponse(open(path, "rb"), as_attachment=True)
-
             name = "Felisss.png"
             response = HttpResponse()
             response["Content-Disposition"] = 'attachment; filename="' + name + '"'
@@ -28,8 +25,7 @@ class DownloadFile(LoginRequiredMixin, View):
             del response["Expires"]
 
         except Exception as e:
-            print(e)
-            pass
+            logger.error(f"error: DownloadFile: {e}")
         return response
 
 

@@ -134,7 +134,7 @@ def typesense_search_documents(query: str):
         json_data = json.dumps(data, indent=1)
         return json_data
     except Exception as e:
-        logger.error(e)
+        logger.error(f"error: typesense_search_documents: {e}")
         return None
 
 

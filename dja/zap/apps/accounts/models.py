@@ -1,17 +1,15 @@
 import datetime
 import os
-import random
-import string
 
 from django.conf import settings
-from django.db import models, transaction
+from django.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 
 def uploadPathFunction(instance, filename):
-    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
-    return os.path.join("HG5GPD8/%s/" % randomN, filename)
+    return os.path.join("HG5GPD8/%s/" % get_random_string(8), filename)
 
 
 STATUS_CHOICES = [

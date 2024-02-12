@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 
 
@@ -20,4 +20,3 @@ def acceptable_use_policy(request):
 
 def return_and_refund_policy(request):
     return render(request, "legal/return_and_refund_policy.html", {})
-

@@ -8,8 +8,8 @@
 {% comment %} Force the scrolling to the top of the page {% endcomment %}
 <script>
   history.scrollRestoration = "manual";
-  $(window).on('beforeunload', function () {
-    $(window).scrollTop(0);
+  window.addEventListener('beforeunload', function () {
+    window.scroll(0, 0);
   });
 </script>
 <main class="d-flex flex-fill">

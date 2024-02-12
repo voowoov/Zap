@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import redirect, render
-from django.urls import reverse, translate_url
+from django.shortcuts import redirect
+from django.urls import translate_url
 from django.utils.translation import gettext_lazy as _
-from django.views import View
 
 UserModel = get_user_model()
 

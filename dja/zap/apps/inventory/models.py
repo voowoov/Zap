@@ -1,15 +1,12 @@
 import os
-import random
-import string
 from decimal import Decimal
 
 from django.core.validators import MinValueValidator
-from django.db import models, transaction
-from django.templatetags.static import static
-from django.utils import timezone
+from django.db import models
 from django.utils.translation import gettext_lazy as _
-from mptt.models import MPTTModel, TreeForeignKey
+# from mptt.models import MPTTModel, TreeForeignKey
 from zap.apps.users.models import User
+from django.utils.crypto import get_random_string
 
 SHIPPING_RESTRICTION_CHOICES = [
     (10, "Normal"),
@@ -67,8 +64,7 @@ STATUS_CHOICES = [
 
 
 def uploadPathFunction(instance, filename):
-    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
-    return os.path.join("HG5GPD8/%s/" % randomN, filename)
+    return os.path.join("HG5GPD8/%s/" % get_random_string(8), filename)
 
 
 class Category(MPTTModel):

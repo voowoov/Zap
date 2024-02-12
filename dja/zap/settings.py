@@ -265,26 +265,20 @@ SERVER_EMAIL = os.getenv("DJANGO_SERVER_EMAIL")
 
 ###### Django Logger settings #######
 LOGGING = {
-    "version": 1,  # the dictConfig format version
-    "disable_existing_loggers": False,  # retain the default loggers
+    "version": 1,
+    "disable_existing_loggers": False,
     "handlers": {
-        "mail_admins": {
-            "level": "ERROR",
-            "class": "django.utils.log.AdminEmailHandler",
+        "console": {
+            "class": "logging.StreamHandler",
         },
-    },
-    "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "filename": "general.log",
-            "level": "DEBUG",
+            "filename": "general.log",  # Specify the desired log file name
         },
     },
-    "loggers": {
-        "": {
-            "handlers": ["mail_admins"],
-            "handlers": ["file"],
-        },
+    "root": {
+        "handlers": ["console", "file"],  # Use both console and file handlers
+        "level": "WARNING",  # Set the desired log level (e.g., INFO, DEBUG, etc.)
     },
 }
 

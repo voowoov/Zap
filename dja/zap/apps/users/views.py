@@ -1,3 +1,4 @@
+import logging
 import zoneinfo
 
 from django.contrib import messages
@@ -9,24 +10,21 @@ from django.contrib.auth import (
     password_validation,
 )
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone, translation
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import requires_csrf_token
 from zap.apps.users.mixins import session_lev2_timestamp
-from zap.apps.users.tasks import send_email_account_creation_link_task
 from zap.apps.users.tokens import create_user_token, password_reset_token
 from zap.apps.xsys.models import CookieOnServer
+
+logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
@@ -135,7 +133,8 @@ class Signin_Lev2(View):
     def get(self, request):
         try:
             self.form = SigninFormLev2(initial={"email": request.user.email})
-        except:
+        except Exception as e:
+            logger.error(f"error: Signin_Lev2, get: {e}")
             return redirect("base:home")
         return self.this_render(request)
 
@@ -144,7 +143,8 @@ class Signin_Lev2(View):
             user = request.user
             email = user.email
             self.form = SigninFormLev2(initial={"email": request.user.email})
-        except:
+        except Exception as e:
+            logger.error(f"error: Signin_Lev2, post: {e}")
             return redirect("base:home")
         password = request.POST.get("password")
         user_res = authenticate(request, email=email, password=password)
@@ -198,8 +198,8 @@ class CreateAccount(View):
                             request, messages.INFO, _("Your account was created.")
                         )
                         return redirect("base:home")
-                    except:
-                        pass
+                    except Exception as e:
+                        logger.error(f"error: CreateAccount, post: {e}")
             return self.this_render(request)
         return redirect("base:home")
 

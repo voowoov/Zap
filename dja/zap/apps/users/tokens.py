@@ -1,7 +1,11 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.crypto import constant_time_compare, salted_hmac
 from django.utils.http import base36_to_int, int_to_base36
+
+logger = logging.getLogger(__name__)
 
 
 class UserCreationTokenGenerator(PasswordResetTokenGenerator):
@@ -17,12 +21,14 @@ class UserCreationTokenGenerator(PasswordResetTokenGenerator):
         # Parse the token
         try:
             ts_b36, _ = token.split("-")
-        except ValueError:
+        except Exception as e:
+            logger.error(f"error: UserCreationTokenGenerator, check_token: {e}")
             return False
 
         try:
             ts = base36_to_int(ts_b36)
-        except ValueError:
+        except Exception as e:
+            logger.error(f"error: UserCreationTokenGenerator, check_token: {e}")
             return False
 
         # Check that the timestamp/uid has not been tampered with

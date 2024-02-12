@@ -1,10 +1,12 @@
+import logging
 import random
 import time
 
 from celery import shared_task
 from django.core.management import call_command
-from django.db import transaction
 from maintenance_mode.core import get_maintenance_mode, set_maintenance_mode
+
+logger = logging.getLogger(__name__)
 
 
 ### remove expired sessions from the database (python manage.py clearsessions)

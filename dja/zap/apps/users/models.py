@@ -1,10 +1,7 @@
 import datetime
-import os
-import random
-import string
 import zoneinfo
+from django.utils.crypto import get_random_string
 
-from django import forms
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
@@ -35,8 +32,7 @@ NAME_PREFIX_CHOICES = [
 
 
 def uploadPathFunctionAvatar(instance, filename):
-    randomN = "".join(random.choices(string.ascii_letters + string.digits, k=8))
-    return "avatars/%s" % randomN + ".png"
+    return "avatars/%s" % get_random_string(8) + ".png"
 
 
 class UserManager(BaseUserManager):

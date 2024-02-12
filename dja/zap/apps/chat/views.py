@@ -1,15 +1,11 @@
 # chat/views.py
-from django.core.cache import cache
-from django.http import FileResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
-from django.utils.crypto import get_random_string
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from zap.apps.chat.objects import ListStaffChat
-from zap.apps.users.models import User
+import logging
 
-from .forms import ChatSessionInitForm
-from .models import ChatSession
+from django.shortcuts import redirect, render
+from django.views import View
+from zap.apps.chat.objects import ListStaffChat
+
+logger = logging.getLogger(__name__)
 
 list_staff_chat = ListStaffChat()
 
@@ -28,7 +24,8 @@ class ChatLobby(View):
                 "room_name": "roomNameAasdf",
             }
             return render(request, "chat/chat_lobby.html", ctx)
-        except:
+        except Exception as e:
+            logger.error(f"error: ChatLobby: {e}")
             return redirect("base:home")
 
 
@@ -46,7 +43,8 @@ class ChatStaff(View):
                 "room_name": "roomNameAasdf",
             }
             return render(request, "chat/chat_staff.html", ctx)
-        except:
+        except Exception as e:
+            logger.error(f"error: ChatStaff: {e}")
             return redirect("base:home")
 
 
@@ -60,13 +58,11 @@ class ChatVideo(View):
     def this_render(self, request):
         user = request.user
         try:
-            ctx = {
-            }
+            ctx = {}
             return render(request, "chat/chat_video.html", ctx)
-        except:
+        except Exception as e:
+            logger.error(f"error: ChatVideo: {e}")
             return redirect("base:home")
-
-
 
 
 # def room_chat(request, chat_session_id):

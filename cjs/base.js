@@ -170,7 +170,7 @@ function getCookie(cname) {
 // Back-to-top button functions
 /////////////////////////////////////////////////////////////////////////////////
 (function() {
-  let btnBackToTop = document.getElementById("btnBackToTop");
+  let btnBackToTop = document.querySelector('.btnBackToTop');
   if (btnBackToTop) {
     window.onscroll = function() {
       scrollTresholdDetectFunction()
@@ -199,7 +199,7 @@ function getCookie(cname) {
 //    navbar swipe link string with touch, mouse wheel or drag
 /////////////////////////////////////////////////////////////////////////////////
 (function() {
-  const navbarSwipeMenu = document.getElementById("navbarSwipeMenu");
+  const navbarSwipeMenu = document.querySelector('.navlinkbarswipe');
   if (navbarSwipeMenu) {
     navbarSwipeMenu.addEventListener("wheel", event => {
       event.preventDefault();

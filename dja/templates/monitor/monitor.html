@@ -14,17 +14,19 @@
           <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
         </div>
 
-        <div class="d-flex flex-column align-items-start" style="width:250px;">
+        <div class="m-0 p-0 d-flex flex-column align-items-start" style="width:250px;">
           Shared files
-          <div id="fileUploadCtn">
-            <div class="filespro_list_files border" id="fileUploadListTxt"></div>
-            <input type="file" id="fileUploadRealInput" hidden="hidden">
-            <button id="fileUploadChooseBtn">Choose File</button>
-            <div id="fileUploadChoiceTxt">No file chosen, yet.</div>
-            <button id="fileUploadSendBtn" disabled>Send</button>
-            <button id="fileUploadCancelBtn" disabled>Cancel</button>
-            <div id="fileUploadLogTxt"></div>
+          <div class="fileUploadCtn border p-1" style="width:100%">
+            <div class="fileUploadList border"></div>
+            <input class="fileUploadRealInput" type="file" hidden="hidden">
+            <button class="fileUploadChooseBtn">Choose File</button>
+            <div class="fileUploadChoiceTxt">No file chosen, yet.</div>
+            <button class="fileUploadSendBtn" disabled>Send</button>
+            <button class="fileUploadCancelBtn" disabled>Cancel</button>
+            <div class="fileUploadLogTxt"></div>
           </div>
+          Send a file
+          <button class="fileUploadSendAvatarBtn">Send a file</button>
           <button class='monitorSendCommand'>delete_upload_tmp_files</button>
         </div>
 

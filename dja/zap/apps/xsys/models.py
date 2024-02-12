@@ -1,16 +1,7 @@
 # Create your models here.
-import datetime
-import os
-import random
-import string
-
-from dateutil import tz
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
-from zap.apps.users.models import User
 
 
 class CookieOnServer(models.Model):
@@ -21,9 +12,7 @@ class CookieOnServer(models.Model):
 
     @classmethod
     def create_and_get_instance(cls):
-        random_string = "".join(
-            random.choices(string.ascii_letters + string.digits, k=32)
-        )
+        random_string = get_random_string(32)
         instance = cls(cos_id=random_string)
         instance.save()
         return instance

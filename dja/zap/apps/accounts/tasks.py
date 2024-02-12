@@ -8,7 +8,6 @@ from zap.apps.accounts.models import Account
 
 @shared_task(name="send_mass_email_promo_task")
 def send_mass_email_promo_task():
-    # with transaction.atomic():
 
     all_accounts = list(Account.objects.all().values_list("user__email", "first_name"))
 

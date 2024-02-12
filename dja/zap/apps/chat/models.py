@@ -1,5 +1,4 @@
 import datetime
-import os
 
 from dateutil import tz
 from django.conf import settings
@@ -56,14 +55,3 @@ class ChatSession(models.Model):
         )
         return time
 
-
-# class ChatParticipant(models.Model):
-#     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
-#     anonym_id = models.CharField(max_length=8)
-
-
-# class ChatMessage(models.Model):
-#     participant = models.ForeignKey(ChatParticipant, on_delete=models.CASCADE)
-#     date = models.DateTimeField(auto_now_add=True, editable=False)
-#     message = models.TextField(default="")

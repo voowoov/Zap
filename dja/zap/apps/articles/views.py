@@ -1,18 +1,10 @@
-import os
 import time
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import EmptyPage, Paginator
-from django.http import (
-    FileResponse,
-    HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseRedirect,
+from django.http import ( HttpResponseBadRequest,
 )
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.shortcuts import get_object_or_404, render
 from django.views import View
-from django.views.generic import ListView
 
 from .models import Article, Author
 

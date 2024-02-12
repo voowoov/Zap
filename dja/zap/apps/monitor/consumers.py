@@ -1,3 +1,6 @@
+import glob
+import logging
+import os
 from datetime import datetime
 
 import zap.apps.chat.objects as chat
@@ -9,8 +12,8 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.translation import get_language
-import os
-import glob
+
+logger = logging.getLogger(__name__)
 
 
 class MonitorConsumer(WebsocketConsumer):
@@ -58,13 +61,12 @@ class MonitorConsumer(WebsocketConsumer):
                         case _:
                             self.send("unknown command")
                 elif bytes_data:
-                    # Handle binary message
-                    print(f"Received binary data: {bytes_data}")
+                    pass
             else:
-                self.close()
-
+                raise ValueError(f"error non-superuser in monitor")
         except Exception as e:
-            print(e)
+            logger.error(f"error: monitor websocket message receiving: {e}")
+            self.close()
 
 
 def delete_upload_tmp_files():

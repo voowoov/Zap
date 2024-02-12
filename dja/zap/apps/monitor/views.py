@@ -1,14 +1,10 @@
 # chat/views.py
-import os
-import re
+import logging
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.http import (
-    FileResponse,
     HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import redirect, render
@@ -17,6 +13,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
+
+logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
@@ -48,15 +46,16 @@ class StaffMonitor(SuperuserLoginRequiredMixin, View):
             }
             return render(request, "monitor/monitor.html", ctx)
         except Exception as e:
-            print(e)
+            logger.error(f"error: StaffMonitor: {e}")
             return redirect("base:home")
 
 
 class PrivMonitorScript(View):
     def get(self, request):
-        response = HttpResponse()
-        response["X-Accel-Redirect"] = "/media_private/js/priv_monitor_script.js"
-        return response
+        if request.user.is_superuser:
+            response = HttpResponse()
+            response["X-Accel-Redirect"] = "/media_private/js/priv_monitor_script.js"
+            return response
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -64,19 +63,23 @@ class PrivMonitorScript(View):
 class MyAjaxReceiveTestView(View):
     def post(self, request, *args, **kwargs):
         # Ensure the request is AJAX
-        if not request.is_ajax():
+        if not is_ajax(request):
             return JsonResponse({"error": "Invalid request"}, status=400)
 
         # Get the message from the POST data
         message = request.POST.get("message")
 
         # Do something with the message...
-        print(f"Received message: {message}")
+        print(f"AJAX Received message: {message}")
 
         # Send back a JSON response
         return JsonResponse(
             {
-                "received_message": message,
+                "original_message": message,
                 "response_message": "This is a response from Django",
             }
         )
+
+
+def is_ajax(request):
+    return request.headers.get("x-requested-with") == "XMLHttpRequest"

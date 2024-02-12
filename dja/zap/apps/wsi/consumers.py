@@ -1,8 +1,7 @@
 import logging
 import time
 
-import zap.apps.search._wsi_functions as search
-from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from zap.apps.filespro._wsi_functions import WSIPrivFilesMixin
 from zap.apps.search._wsi_functions import WSISearchMixin
 
@@ -17,6 +16,10 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
 
     async def disconnect(self, close_code):
         pass
+
+    async def send(self, text_data):
+        print(f"WSI Sending: {text_data}")
+        await super().send(text_data)
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
@@ -42,40 +45,45 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                             await self.frequency_limiting(20)
                             await self.wsi_filespro_received_message()
                         case _:
-                            await self.close()
+                            raise ValueError(
+                                f"unexpected prefix letter: {text_data[0]}"
+                            )
                     self.message = None
             elif bytes_data:
                 ### Handle binary message
                 if len(bytes_data) > 6 and hasattr(self, "file_portion_array"):
                     await self.wsi_filespro_received_bytes(bytes_data)
                 else:
-                    logger.error(
-                        "error: wsi file upload unexpected binary message is too short or is missing initial attribute"
+                    raise ValueError(
+                        f"unexpected binary message is too short or is missing initial attribute"
                     )
-                    await self.close()
             else:
                 await self.close()
         except Exception as e:
-            await self.close()
             logger.error(f"error: wsi message receiving: {e}")
+            await self.close()
 
     async def frequency_limiting(self, thenthseconds):
-        num = self.channel_name_abr or (250 << 16) | (250 << 8) | 0
-        ### stored in 4 bytes in one integer (int is 4 bytes)
-        ### Extract the bytes
-        score = (num >> 8) & 0xFF  # 2nd byte out of 4
-        timer = num & 0xFF  # last byte (lsb)
-        ### the timer is each 25 seconds with one decimal (0-250) time.time() is epoch time in s
-        new_timer = int(time.time() % 25 * 10)  # in 0.1s
-        if new_timer < timer:
-            diff = 250 - timer + new_timer
-        else:
-            diff = new_timer - timer
-        ### score function (in 0.1s) the score is from 0-250
-        score = min((score - thenthseconds + diff), 250)
-        if score < 0:
+        try:
+            num = self.channel_name_abr or (250 << 16) | (250 << 8) | 0
+            ### stored in 4 bytes in one integer (int is 4 bytes)
+            ### Extract the bytes
+            score = (num >> 8) & 0xFF  # 2nd byte out of 4
+            timer = num & 0xFF  # last byte (lsb)
+            ### the timer is each 25 seconds with one decimal (0-250) time.time() is epoch time in s
+            new_timer = int(time.time() % 25 * 10)  # in 0.1s
+            if new_timer < timer:
+                diff = 250 - timer + new_timer
+            else:
+                diff = new_timer - timer
+            ### score function (in 0.1s) the score is from 0-250
+            score = min((score - thenthseconds + diff), 250)
+            if score < 0:
+                logger.warning(f"warning: frequency limiting core went to zero {e}")
+                await self.close()
+            num = (score << 8) | new_timer
+            self.channel_name_abr = num
+            print("WSI Received:", self.message, "score: ", score)
+        except Exception as e:
+            logger.error(f"error: wsi message receiving: {e}")
             await self.close()
-        num = (score << 8) | new_timer
-        self.channel_name_abr = num
-
-        print("score: ", score, " ", self.message)
