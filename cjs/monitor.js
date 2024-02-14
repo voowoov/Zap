@@ -6,7 +6,7 @@ Array.from(document.getElementsByClassName('monitorFunction')).forEach(el => {
     let fnName = el.innerHTML; // Get the function name from the innerHTML
     if (typeof eval(fnName) === 'function') {
       eval(fnName + '()');
-    }
+    };
   });
 });
 /////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ const webSocketURL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://'
 const monitorSocket = new WebSocket(webSocketURL);
 
 monitorSocket.onmessage = function(e) {
-  addLogRes(e.data)
+  addLogRes(e.data);
 };
 
 monitorSocket.onclose = function(e) {
@@ -42,42 +42,68 @@ monitorSocket.onclose = function(e) {
 monitorSocket.onerror = function(event) {
   if (event.code === 1009) {
     alert("The message received was too large.");
-  }
+  };
 };
 
+let monitor_last_commands;
+let monitor_last_commands_index = -1;
+const monitor_last_commands_max_length = 10;
 commandInput.onkeydown = function(e) {
-  if (e.key === "Enter") { // enter, return
-    event.preventDefault();
-    commandSubmit.click();
-  }
+  switch (e.key) {
+    case "Enter":
+      e.preventDefault();
+      commandSubmit.click();
+      break;
+    case "ArrowUp":
+      e.preventDefault();
+      monitor_last_commands = JSON.parse(localStorage.getItem('monitor_last_commands'));
+      monitor_last_commands_index = Math.min(Math.max(monitor_last_commands_index + 1, -1), monitor_last_commands_max_length - 1);
+      commandInput.value = monitor_last_commands_index == -1 ? "" : monitor_last_commands[monitor_last_commands_index];
+      break;
+    case "ArrowDown":
+      e.preventDefault();
+      monitor_last_commands = JSON.parse(localStorage.getItem('monitor_last_commands'));
+      monitor_last_commands_index = Math.min(Math.max(monitor_last_commands_index - 1, -1), monitor_last_commands_max_length - 1);
+      commandInput.value = monitor_last_commands_index == -1 ? "" : monitor_last_commands[monitor_last_commands_index];
+      break;
+    default:
+  };
 };
 
 commandSubmit.onclick = function(e) {
-  sendCommand(commandInput.value);
-  commandInput.value = '';
+  if (commandInput.value.length > 0) {
+    monitor_last_commands = JSON.parse(localStorage.getItem('monitor_last_commands'));
+    monitor_last_commands = monitor_last_commands.filter(item => item !== commandInput.value);
+    monitor_last_commands.unshift(commandInput.value);
+    if (monitor_last_commands.length > monitor_last_commands_max_length) { monitor_last_commands.splice(monitor_last_commands_max_length); };
+    localStorage.setItem('monitor_last_commands', JSON.stringify(monitor_last_commands));
+    monitor_last_commands_index = -1;
+    sendCommand(commandInput.value);
+    commandInput.value = '';
+  };
 };
 
 function addLogRes(log) {
-  commandLog.value += ('return: ' + log + '\n');
+  commandLog.value += ('r: ' + log + '\n');
   commandLog.scrollTop = commandLog.scrollHeight;
-}
+};
 
 function addComlog(log) {
-  commandLog.value += ('cmd: ' + log + '\n');
+  commandLog.value += (log + '\n');
   commandLog.scrollTop = commandLog.scrollHeight;
-}
+};
 
 function sendCommand(command) {
   if (command.length > 0) {
     monitorSocket.send(command);
     addComlog(command);
-  }
-}
+  };
+};
 
 function sendPacketBurstJS() {
-  packetSize = parseInt(document.getElementById("wstestsize").value);
-  repetitions = parseInt(document.getElementById("wstestrepetitions").value);
-  delay = parseInt(document.getElementById("wstestdelay").value);
+  let packetSize = parseInt(document.getElementById("wstestsize").value);
+  let repetitions = parseInt(document.getElementById("wstestrepetitions").value);
+  let delay = parseInt(document.getElementById("wstestdelay").value);
   const str1 = 'x'.repeat(packetSize);
   console.log('sending ' + repetitions + ' packets of size ' + packetSize)
   let x = 0;
@@ -85,17 +111,18 @@ function sendPacketBurstJS() {
     if (x === repetitions) {
       clearInterval(intervalId);
       return;
-    }
+    };
     console.log(x);
     monitorSocket.send(str1);
     x++;
   }, delay);
-}
+};
 
 function connectAndDisconnectJS() {
-  repetitions = parseInt(document.getElementById("wstestrepetitions").value);
-  delay = parseInt(document.getElementById("wstestdelay").value);
+  let repetitions = parseInt(document.getElementById("wstestrepetitions").value);
+  let delay = parseInt(document.getElementById("wstestdelay").value);
   let count = 0;
+  let monitorSocket1;
   const intervalId = setInterval(() => {
     if (count % 2 === 0) {
       // First command
@@ -105,20 +132,20 @@ function connectAndDisconnectJS() {
       // Second command
       console.log("Disconnect");
       monitorSocket1.close();
-    }
+    };
     count++;
     if (count === 2 * repetitions) {
       clearInterval(intervalId);
-    }
+    };
   }, delay);
-}
+};
 
 function sendBinaryMessage() {
   // Create some binary data.
-  var array = new Uint8Array([1, 2, 3, 4, 5]);
+  let array = new Uint8Array([1, 2, 3, 4, 5]);
   // Send the binary data.
   monitorSocket.send(array.buffer);
-}
+};
 
 window.addEventListener('beforeunload', function(event) {
   monitorSocket.close();
@@ -147,5 +174,5 @@ function sendAjaxRequest() {
     }).then(response => response.json())
     .then(response => {
       console.log("json received: ", response)
-    })
-}
+    });
+};

@@ -10,13 +10,7 @@ from maintenance_mode.core import get_maintenance_mode, set_maintenance_mode
 logger = logging.getLogger(__name__)
 
 
-### remove expired sessions from the database (python manage.py clearsessions)
-@shared_task(name="delete_")
-def clearsessions_task():
-    call_command("clearsessions")
-    return None
-
-
+###  run that task periodically - tmp_files may accumulate in case of problems where tmp_files dont get deleted properly
 def delete_upload_tmp_files():
     try:
         files = glob.glob(settings.WSI_TMP_FILE_DIRECTORY + "*")

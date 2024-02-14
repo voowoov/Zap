@@ -1,6 +1,7 @@
 import glob
 import logging
 import os
+import threading
 from datetime import datetime
 
 import zap.apps.chat.objects as chat
@@ -35,10 +36,8 @@ class MonitorConsumer(WebsocketConsumer):
                 # logger.debug(self.scope["path"])
                 if text_data:
                     # command_name and command_arg are split by the first space occuring
-                    result = text_data.split(maxsplit=1)
-                    command_name = result[0]
-                    command_arg = result[1] if len(result) > 1 else ""
-                    match command_name:
+                    words = text_data.split()
+                    match words[0]:
                         case "movies_fixture_to_db":
                             self.send(ts.movies_fixture_to_db())
                         case "delete_all_movies_from_db":
@@ -55,6 +54,9 @@ class MonitorConsumer(WebsocketConsumer):
                             self.send(ts.typesense_add_single_document())
                         case "close_connection_in_django":
                             self.close()
+                        case "task":
+                            if len(words) > 1:
+                                self.send(self.run_celery_task(words[1], words[2:]))
                         case _:
                             self.send("unknown command")
                 elif bytes_data:
@@ -64,3 +66,17 @@ class MonitorConsumer(WebsocketConsumer):
         except Exception as e:
             logger.error(f"error: monitor websocket message receiving: {e}")
             self.close()
+
+    def run_celery_task(self, task_name, args):
+        from zap.celery import app  # replace with your actual module
+
+        logger.debug(f"run_celery_task: {task_name, args}")
+        result = app.send_task(task_name, args=args, kwargs={})
+        thread = threading.Thread(
+            target=self.after_celery_task_finishes, args=(task_name, result)
+        )
+        thread.start()
+        return f"sent to celery"
+
+    def after_celery_task_finishes(self, task_name, result):
+        self.send(f"{task_name} r: {result.get()}")

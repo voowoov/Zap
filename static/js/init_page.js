@@ -15,7 +15,7 @@
   \***************************/
 /***/ (() => {
 
-eval("let nC = (m, s) => m.charAt(m.indexOf(s) + s.length);\r\nlet th = nC(document.cookie, \"eme=\");\r\nth = th == \"A\" ? window.matchMedia ? window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? 1 : 0 : 0 : th == \"d\" ? 1 : 0;\r\nif (th) { document.documentElement.setAttribute(\"color_theme\", \"dark\"); }\n\n//# sourceURL=webpack://zap/../cjs/init_page.js?");
+eval("let nC = (m, s) => m.includes(s) ? m.charAt(m.indexOf(s) + s.length) : \"A\";\r\nlet th = nC(document.cookie, \"eme=\");\r\nth = th == \"A\" ? window.matchMedia ? window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? 1 : 0 : 0 : th == \"d\" ? 1 : 0;\r\nif (th) { document.documentElement.setAttribute(\"color_theme\", \"dark\"); };\n\n//# sourceURL=webpack://zap/../cjs/init_page.js?");
 
 /***/ })
 

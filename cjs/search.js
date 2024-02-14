@@ -1,4 +1,5 @@
 import { wsiOpenSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
+import { throttle } from './base.js';
 
 /////////////////////////////////////////////////////////////////////////////////
 //  Search
@@ -18,7 +19,7 @@ export default function setupWsiSearch() {
     navSearchPlaceHolder = "Rechercher";
   } else {
     navSearchPlaceHolder = "Search";
-  }
+  };
   navSearchMain.innerHTML = `
   <div class="d-flex flex-column align-items-center text_color">
     <div class="navSearchBoxDiv0">
@@ -68,13 +69,13 @@ export default function setupWsiSearch() {
     navSearchResDiv0.style.display = 'block';
     if (!window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
       navSearchMain.style.display = "block";
-    }
+    };
     navSearchInputTxt.focus();
     navSearchTriggerBtn.setAttribute('aria-expanded', 'true');
     // hide the main page scroll bar under a certain screen width
     if (window.innerWidth < 620) {
       document.body.style.overflowY = 'hidden';
-    }
+    };
     wsiOpenSharedSocket();
     sendWSnavSearchMessage();
   }
@@ -87,11 +88,11 @@ export default function setupWsiSearch() {
     navSearchResDiv0.style.display = 'none';
     if (!window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
       navSearchMain.style.display = "none";
-    }
+    };
     navSearchInputTxt.blur();
     navSearchTriggerBtn.setAttribute('aria-expanded', 'false');
     document.body.style.overflowY = 'auto';
-  }
+  };
 
   let activatedSearchResults = false;
 
@@ -125,8 +126,8 @@ export default function setupWsiSearch() {
       } else {
         // Hide navSearchBtnClearX if the input field is empty
         navSearchBtnClearX.style.display = "none";
-      }
-      sendWSnavSearchMessage()
+      };
+      sendWSnavSearchMessage();
     }
     navSearchInputTxt.addEventListener('input', handleInputTextChange);
 
@@ -140,15 +141,15 @@ export default function setupWsiSearch() {
       navSearchInputTxt.value = "";
       navSearchInputTxt.focus();
       navSearchBtnClearX.style.display = "none";
-      sendWSnavSearchMessage()
-    }
+      sendWSnavSearchMessage();
+    };
     navSearchBtnClearX.addEventListener('mouseup', handleClickOnXbutton);
 
     function handlePreventLeavingInput(event) {
       if (event.target !== navSearchInputTxt) {
         event.preventDefault();
-      }
-    }
+      };
+    };
     navSearchMain.addEventListener('mousedown', handlePreventLeavingInput);
 
     function handleScrollingFromMainCtn(event) {
@@ -166,47 +167,46 @@ export default function setupWsiSearch() {
         !navSearchTriggerBtn.contains(event.target)) {
         // The click occurred outside of both elements
         deactivateSearchBox();
-      }
-    }
+      };
+    };
     document.addEventListener('mousedown', handleClickedOutside);
 
     function handleEscapeKeydown(event) {
       if (event.key === 'Escape') {
         deactivateSearchBox();
-      }
-    }
+      };
+    };
     document.addEventListener('keydown', handleEscapeKeydown);
 
     function handleBackButtonClick(event) {
       deactivateSearchBox();
-    }
-    navSearchBtnBack.addEventListener("click", handleBackButtonClick);
+    };
+    navSearchBtnBack.addEventListener("click", throttle(handleBackButtonClick, 1000));
 
     function handleSearchTriggerBtnClick(event) {
       if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'true') {
         deactivateSearchBox();
-      }
-    }
-    navSearchTriggerBtn.addEventListener("click", handleSearchTriggerBtnClick);
-
-  }
+      };
+    };
+    navSearchTriggerBtn.addEventListener("click", throttle(handleSearchTriggerBtnClick, 1000));
+  };
 
   navSearchInputTxt.addEventListener("mousedown", function() {
     if (!activatedSearchResults) {
       activateSearchBox();
-    }
+    };
   });
 
-  navSearchBtnEnter.addEventListener("click", function() {
-    console.log("search button click")
-  });
+  navSearchBtnEnter.addEventListener("click", throttle(function() {
+    console.log("search button click");
+  }, 1000));
 
   navSearchTriggerBtn.addEventListener('click', function() {
     if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
       if (!activatedSearchResults) {
         activateSearchBox();
-      }
-    }
+      };
+    };
   });
 
   // Change the display based on windows width
@@ -217,12 +217,12 @@ export default function setupWsiSearch() {
       if (navSearchMain.style.display == "block" &&
         navSearchResDiv0.style.display == "none") {
         navSearchMain.style.display = "none";
-      }
-    }
-  }
+      };
+    };
+  };
   navSearchMain.style.display = "none";
   navSearchResDiv0.style.display = "none";
-  setSearchBoxDisplayPerScreenWidth()
+  setSearchBoxDisplayPerScreenWidth();
 
   window.addEventListener('resize', function() {
     setSearchBoxDisplayPerScreenWidth();
@@ -248,13 +248,13 @@ export default function setupWsiSearch() {
       li.innerHTML = jsonArray[i].title + " (" + jsonArray[i].vote + ")";
       // Append the list item to the list
       ul.appendChild(li);
-    }
+    };
     navSearchResDiv0.innerHTML = "";
     navSearchResDiv0.appendChild(ul);
 
     let timeDiff = performance.now() - navSearchStartTimer;
     console.log(`${timeDiff} ms.`);
-  }
+  };
 
   function searchToWsiSendQuery() {
     navSearchStartTimer = performance.now();
@@ -283,10 +283,10 @@ export default function setupWsiSearch() {
       } else {
         lastCallTime = now;
         func.apply(context, args);
-      }
-    }
-  }
+      };
+    };
+  };
   return {
     showSearchResults: showSearchResults
   };
-}
+};

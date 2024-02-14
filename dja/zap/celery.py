@@ -28,8 +28,8 @@ app.conf.beat_schedule = {
     #     "schedule": crontab(hour="*", minute="*", day_of_week="*"),
     #     "args": (10,),
     # },
-    # "clearsessions_everyday_crontab": {
-    #     "task": "clearsessions_task",
+    # "clear_sessions_everyday_crontab": {
+    #     "task": "clear_sessions",
     #     "schedule": crontab(hour="9", minute="0", day_of_week="*"),
     # },
     # "add-every-minute-contrab": {

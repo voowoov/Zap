@@ -22,6 +22,9 @@ from zap.apps.users.models import User
 
 
 def test(request):
+    session_key = request.session.session_key
+    print(f"session_key: {session_key}")
+
     # translation.activate("en")
     # print(_("Are you sure?"))
 

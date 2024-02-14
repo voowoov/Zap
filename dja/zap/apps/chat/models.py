@@ -8,7 +8,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from zap.apps.users.models import User
 
-
 private_storage = FileSystemStorage(location=settings.PRIVATE_STORAGE_ROOT)
 
 
@@ -20,13 +19,13 @@ class ChatSession(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="client_user",
-        blank=True,
         null=True,
+        blank=True,
     )
-    anonymous_id = models.CharField(max_length=8)
-    anonymous_chat_client_name = models.CharField(max_length=255, blank=True, null=True)
-    anonymous_chat_client_desc = models.CharField(max_length=255, blank=True, null=True)
-    chat_subject = models.CharField(max_length=255)
+    anonymous_session_id = models.IntegerField(null=True, blank=True)
+    anonymous_chat_client_name = models.CharField(max_length=255, null=True, blank=True)
+    anonymous_chat_client_desc = models.CharField(max_length=255, null=True, blank=True)
+
     last_updated = models.DateTimeField(default=timezone.now)
     ####### Conversation #######
     ### 3 ASCII characters for the [day after 2023-01-01 0h UTC-0], [minute of the day], [milliseconds of minute]
@@ -54,4 +53,3 @@ class ChatSession(models.Model):
             + datetime.timedelta(milliseconds=ord(three_chars[2]))
         )
         return time
-

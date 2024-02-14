@@ -6,15 +6,15 @@ import setupWsiFileUpload from './filespro.js';
 //    check whether to load search
 /////////////////////////////////////////////////////////////////////////////////
 if (document.querySelector('.navSearchMain')) {
-  var searchFunctions = setupWsiSearch();
-}
+  var searchFunctions = setupWsiSearch(); // keep at var so it goes in the module top level
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 //    check whether to load filespro
 /////////////////////////////////////////////////////////////////////////////////
 if (document.querySelector('.fileUploadSendBtn') || document.querySelector('.fileUploadSendAvatarBtn')) {
-  var fileUploadFunctions = setupWsiFileUpload();
-}
+  var fileUploadFunctions = setupWsiFileUpload(); // keep at var so it goes in the module top level
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 //    wsi
@@ -27,12 +27,12 @@ if (wsiCurrentTabId !== null) {
   //   33; // '!' to  126; // '~'
   if (nextTabId > 126) {
     nextTabId = 33;
-  }
+  };
   localStorage.setItem('wsiCurrentTabId', String.fromCharCode(nextTabId));
 } else {
   wsiCurrentTabId = String.fromCharCode(33);
   localStorage.setItem('wsiCurrentTabId', wsiCurrentTabId);
-}
+};
 
 function handleWsEvent(event) {
   switch (event.type) {
@@ -40,7 +40,7 @@ function handleWsEvent(event) {
       console.log('WebSocket is open');
       if (typeof fileUploadFunctions !== 'undefined') {
         fileUploadFunctions.wsiToFilesproAskForListOfFiles();
-      }
+      };
       break;
     case 'onclose':
       console.log('WebSocket is closed');
@@ -51,25 +51,25 @@ function handleWsEvent(event) {
     case 'onmessage':
       console.log('WSI Received message:', event.data);
       if (event.data.length > 2) {
-        let message = event.data.substring(2)
+        let message = event.data.substring(2);
         if (event.data[1] == wsiCurrentTabId) {
           switch (event.data[0]) {
             case 's':
               // check if the module is loaded
               if (typeof searchFunctions !== 'undefined') {
                 searchFunctions.showSearchResults(message);
-              }
+              };
             case 'f':
               if (typeof fileUploadFunctions !== 'undefined') {
                 fileUploadFunctions.wsiToFilesproMessageReceived(message);
-              }
-          }
-        }
-      }
+              };
+          };
+        };
+      };
       break;
     default:
-  }
-}
+  };
+};
 
 const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
   window.location.host + '/wsi/';
@@ -94,18 +94,18 @@ export function wsiOpenSharedSocket() {
       });
     } else {
       initiateWebsocketFallback();
-    }
+    };
     window.addEventListener('beforeunload', function() {
       if (useSharedWorker) {
         wsworker.port.postMessage({
           command: 'removePort'
         });
       } else {
-        gsocket.close()
-      }
+        gsocket.close();
+      };
     });
-  }
-}
+  };
+};
 
 function initiateWebsocketFallback() {
   gsocket = new WebSocket(websocketUrl);
@@ -134,7 +134,7 @@ function initiateWebsocketFallback() {
       type: 'onclose'
     });
   };
-}
+};
 
 export function wsiSend(message) {
   if (useSharedWorker) {
@@ -144,11 +144,11 @@ export function wsiSend(message) {
     });
   } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
     gsocket.send(message);
-  }
+  };
   if (message.length < 100) {
-    console.log("WSI Sending: " + message)
-  }
-}
+    console.log("WSI Sending: " + message);
+  };
+};
 
 export function wsiReconnect() {
   if (useSharedWorker) {
@@ -160,5 +160,5 @@ export function wsiReconnect() {
     gsocket.close();
     gsocket = null;
     initiateWebsocketFallback();
-  }
-}
+  };
+};
