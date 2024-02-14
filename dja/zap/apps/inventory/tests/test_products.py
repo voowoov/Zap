@@ -5,5 +5,3 @@
 #     new_product = single_product
 #     get_product = Product.objects.all().first()
 #     assert new_product.id == get_product.id
-
-#     print(get_product.category.name)

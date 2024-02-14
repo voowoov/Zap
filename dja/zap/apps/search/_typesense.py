@@ -62,7 +62,7 @@ def typesense_import_documents():
     # Get all movies and annotate them with a new field movieid
     products = Movie.objects.all()  # .annotate(movieid=F("id"))
     # Open a file in write mode
-    with open("products.jsonl", "w") as f:
+    with open("zap/apps/search/fixtures/add_to_typesense.jsonl", "w") as f:
         # Iterate over the queryset of dictionaries
         for product in products.values("title", "language", "release_date", "vote"):
             # Convert each dictionary into a JSON string
@@ -71,7 +71,7 @@ def typesense_import_documents():
             f.write(product_json + "\n")
 
     # Import the JSON into Typesense
-    with open("products.jsonl") as jsonl_file:
+    with open("zap/apps/search/fixtures/add_to_typesense.jsonl") as jsonl_file:
         client_bulk.collections["products"].documents.import_(
             jsonl_file.read().encode("utf-8"), {"action": "create"}
         )
@@ -81,15 +81,15 @@ def typesense_import_documents():
 
 def typesense_test_count_documents():
     collections = client.collections["products"].retrieve()
-    # keep this print
-    print("number of documents : " + str(collections["num_documents"]))
+    logger.info(
+        f"info: typesense_test_count_documents: number of documents: {collections['num_documents']}"
+    )
     search_parameters = {
         "q": "en",
         "query_by": "language",
     }
     documents = client.collections["products"].documents.search(search_parameters)
-    # keep this print
-    print(documents)
+    logger.info(f"info: typesense_test_count_documents: documents: {documents}")
     return "retrieved documents"
 
 
@@ -151,5 +151,4 @@ def movies_fixture_to_db():
 
 def delete_all_movies_from_db():
     Movie.objects.all().delete()
-    # print("deleteddd")
     return "Deleted all movies from db"

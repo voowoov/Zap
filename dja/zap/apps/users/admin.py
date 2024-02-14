@@ -59,7 +59,16 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (
             None,
-            {"fields": ("email", "password", "account", "is_responsible", "is_active")},
+            {
+                "fields": (
+                    "email",
+                    "password",
+                    "account",
+                    "is_responsible",
+                    "is_active",
+                    "filespro_folder",
+                )
+            },
         ),
         (
             _("Personal info"),

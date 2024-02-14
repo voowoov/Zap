@@ -6,18 +6,14 @@ import os
 import re
 import struct
 from pathlib import Path
-from django.utils.crypto import get_random_string
 
-from asgiref.sync import async_to_sync, sync_to_async
-from channels.db import database_sync_to_async
+from asgiref.sync import sync_to_async
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
+from django.utils.crypto import get_random_string
 from PIL import Image
 
-from .models import FileUploadFile, FileUploadUser
+from .models import FilesproFile, FilesproFolder
 
 logger = logging.getLogger(__name__)
 
@@ -25,80 +21,79 @@ path_directory = settings.WSI_TMP_FILE_DIRECTORY
 ### the same must be in the js.
 chunk_size = 1990  ### websocket message size is limited, see ws protocol overide
 max_nb_chunks = 100
-max_file_size = 100000000
+max_file_size = 10000000
 
 ### other setting
 expected_duration_rate = 0.000005  ### s/byte
 
 
 class WSIPrivFilesMixin:
-    async def wsi_filespro_init_file_upload_user(self):
-        try:
-            ### file upload user object is transmitted to wsi via 2 session variables
-            ### that are initiated in the view
-            file_upload_user_content_type_id = self.scope["session"]["wsi_fuu_ct_id"]
-            file_upload_user_object_id = self.scope["session"]["wsi_fuu_obj_id"]
-            self.file_upload_user = await self.get_object_from_content_type(
-                file_upload_user_content_type_id, file_upload_user_object_id
-            )
-            # owner_object = await self.get_generic_object_in_object(
-            #     self.file_upload_user
-            # )
-            # print(owner_object)
-        except Exception as e:
-            logger.error(f"error: wsi_filespro_init_file_upload_user: {e}")
 
     async def wsi_filespro_received_message(self):
+        await self.init_filespro_folder()
         match self.message[0]:
-            case "u":  # update list of files in file_upload_user
-                if self.file_upload_user:
-                    await self.file_upload_list()
+            case "u":  # update list of files in filespro_folder
+                await self.send_folder_list()
             case "s":  # start the upload
-                await self.file_upload_demand(self.message[1:])
+                if not self.filespro_transfer_underway:
+                    await self.file_upload_demand(self.message[1:])
+                else:
+                    raise ValueError("File upload demand during underway transfer.")
             case "c":  # cancel the upload
-                if self.file_upload_user:
-                    await self.file_cancel_demand(self.message[1:])
+                await self.cancel_file_upload(self.message[1:])
 
-    @database_sync_to_async
-    def get_object_from_content_type(self, content_type_id, object_id):
-        try:
-            content_type = ContentType.objects.get_for_id(content_type_id)
-            model = content_type.model_class()
-            return model.objects.get(pk=object_id)
-        except ObjectDoesNotExist:
-            return None
+    async def init_filespro_folder(self):
+        if not self.filespro_enabled:
+            try:
+                self.filespro_folder = await sync_to_async(FilesproFolder.objects.get)(
+                    pk=self.scope["user"].filespro_folder_id
+                )
+                self.filespro_enabled = True
+            except Exception as e:
+                logger.error(f"error: init_filespro_folder: {e}")
+                await self.close()
 
-    @database_sync_to_async
-    def get_generic_object_in_object(self, object):
-        try:
-            content_type = ContentType.objects.get_for_id(object.content_type_id)
-            model = content_type.model_class()
-            return model.objects.get(pk=object.object_id)
-        except ObjectDoesNotExist:
-            return None
-
-    async def file_upload_list(self):
+    async def send_folder_list(self):
         try:
             data = await sync_to_async(list)(
-                FileUploadFile.objects.filter(
-                    file_upload_user=self.file_upload_user
+                FilesproFile.objects.filter(
+                    filespro_folder=self.filespro_folder
                 ).values("file_name", "file")
             )
             data_json = json.dumps(data)
             await self.send("f" + self.tab_id + "u" + str(data_json))
         except Exception as e:
-            logger.error(f"error: file_upload_list: {e}")
+            logger.error(f"error: send_folder_list: {e}")
             await self.close()
 
-    async def file_cancel_demand(self, message):
+    async def cancel_file_upload(self, message):
         try:
-            if len(self.file_portion_array) > 0:
-                self.file_portion_array = []
-                ### delete the tmp files
-                for filename in glob.glob(self.path_tmp_name + "*"):
-                    os.remove(filename)
+            if self.filespro_transfer_underway:
+                self.filespro_transfer_underway = False
+                await self.update_file_tranfer_canceled()
+                await self.delete_tmp_files()
         except Exception as e:
-            logger.error(f"error: file_cancel_demand: {e}")
+            logger.error(f"error: cancel_file_upload: {e}")
+            await self.close()
+
+    async def delete_tmp_files(self):
+        try:
+            for filename in glob.glob(self.path_tmp_name + "*"):
+                os.remove(filename)
+        except Exception as e:
+            logger.error(f"error: delete_tmp_files: {e}")
+            await self.close()
+
+    async def update_file_tranfer_canceled(self):
+        try:
+            nb_bytes_at_cancel = (
+                sum(self.file_portion_array[: self.file_portion_step]) + self.chunk_id
+            ) * chunk_size
+            await sync_to_async(
+                self.filespro_folder.update_freq_lim_get_remaining_store
+            )(nb_bytes_at_cancel)
+        except Exception as e:
+            logger.error(f"error: file_tranfer_canceled: {e}")
             await self.close()
 
     async def file_upload_demand(self, message):
@@ -109,22 +104,33 @@ class WSIPrivFilesMixin:
                 file_name = data["file_name"]
                 file_size = data["file_size"]
                 is_valid = True
+                remaining_store = await sync_to_async(
+                    self.filespro_folder.update_freq_lim_get_remaining_store
+                )()
+                if file_size > remaining_store[0]:
+                    is_valid = False
+                    await self.send(
+                        "f" + self.tab_id + "e" + "insufficient remaining space"
+                    )
+                    return False
+                else:
+                    if file_size > remaining_store[0] - remaining_store[1]:
+                        is_valid = False
+                        await self.send(
+                            "f" + self.tab_id + "e" + "wait a cooldown period"
+                        )
+                        return False
                 match self.upload_type:
                     case "manual":
                         if await sync_to_async(
-                            FileUploadFile.objects.filter(
-                                file_upload_user=self.file_upload_user,
+                            FilesproFile.objects.filter(
+                                filespro_folder=self.filespro_folder,
                                 file_name=file_name,
                             ).exists
                         )():
                             is_valid = False
                             await self.send(
                                 "f" + self.tab_id + "e" + "file already exists"
-                            )
-                        if file_size > self.file_upload_user.remaining_storage:
-                            is_valid = False
-                            await self.send(
-                                "f" + self.tab_id + "e" + "insufficient remaining space"
                             )
                     case "avatar":
                         if not self.scope["user"].is_authenticated:
@@ -137,18 +143,18 @@ class WSIPrivFilesMixin:
                     is_valid = False
                     await self.send("f" + self.tab_id + "e" + "invalid file name")
                 if is_valid and self.tab_id:
+                    self.filespro_transfer_underway = True
                     self.file_name = file_name
                     self.file_size = file_size
                     self.file_portion_step = 0
-                    self.file_portion_array = self.divide_portions_array(
-                        file_size, chunk_size * max_nb_chunks
-                    )
-                    self.file_nb_chunks = math.ceil(
-                        self.file_portion_array[self.file_portion_step] / chunk_size
-                    )
+                    self.file_portion_array = self.divide_portion_array()
+                    self.file_nb_chunks = self.file_portion_array[
+                        self.file_portion_step
+                    ]
                     self.chunk_bool_array = [False] * self.file_nb_chunks
+                    random_name = "u" + get_random_string(1) + "u"
                     self.path_tmp_name = (
-                        path_directory + "u" + get_random_string(1) + "u"
+                        path_directory + random_name
                     )  ### only one random letter name to limit the number of possible tmp_files
                     self.path_full = (
                         self.path_tmp_name + "full." + self.file_name.split(".")[-1]
@@ -163,61 +169,64 @@ class WSIPrivFilesMixin:
             logger.error(f"error: wsi file upload demand: {e}")
             await self.close()
 
-    async def wsi_filespro_received_bytes(self, bytes_data):
+    async def filespro_receive_bytes_chunk(self, bytes_data):
         try:
-            ### The first 4 bytes are your integer, the current chunk_id
-            chunk_id = struct.unpack("<I", bytes_data[:4])[0]
-            if self.chunk_bool_array[chunk_id]:
+            ### The first 4 bytes are your integer, the current self.chunk_id
+            self.chunk_id = struct.unpack("<I", bytes_data[:4])[0]
+            if self.chunk_bool_array[self.chunk_id]:
                 raise ValueError(f"unexpected chunk id repeate")
             else:
-                self.chunk_bool_array[chunk_id] = True
-                path = self.path_tmp_name + str(chunk_id)
-                with open(path, "wb") as f:
-                    f.write(bytes_data[4:])
-                ### Check if all the chunks of this partial file are received
-                if all(self.chunk_bool_array):
-                    ### make a partial file
-                    path_partial = self.path_tmp_name + "out"
-                    with open(path_partial, "wb") as output_file:
-                        for x in range(self.file_nb_chunks):
-                            chunk_file_path = self.path_tmp_name + str(x)
-                            with open(chunk_file_path, "rb") as partial_file:
+                self.chunk_bool_array[self.chunk_id] = True
+                if self.filespro_transfer_underway:
+                    path = self.path_tmp_name + str(self.chunk_id)
+                    with open(path, "wb") as f:
+                        f.write(bytes_data[4:])
+                    ### Check if all the chunks of this partial file are received
+                    if all(self.chunk_bool_array):
+                        ### make a partial file
+                        path_partial = self.path_tmp_name + "out"
+                        with open(path_partial, "wb") as output_file:
+                            for x in range(self.file_nb_chunks):
+                                chunk_file_path = self.path_tmp_name + str(x)
+                                with open(chunk_file_path, "rb") as partial_file:
+                                    partial_file_data = partial_file.read()
+                                    output_file.write(partial_file_data)
+                        ### add the partial file to the full file
+                        with open(self.path_full, "ab") as output_file:
+                            with open(path_partial, "rb") as partial_file:
                                 partial_file_data = partial_file.read()
                                 output_file.write(partial_file_data)
-                    ### add the partial file to the full file
-                    with open(self.path_full, "ab") as output_file:
-                        with open(path_partial, "rb") as partial_file:
-                            partial_file_data = partial_file.read()
-                            output_file.write(partial_file_data)
-                    ### the full file is complete
-                    if self.file_portion_step == len(self.file_portion_array) - 1:
-                        if os.path.getsize(self.path_full) != self.file_size:
-                            logger.error(
-                                "error: wsi file upload unexpected alert inconsistent file size"
-                            )
+                        ### the full file is complete
+                        if self.file_portion_step == len(self.file_portion_array) - 1:
+                            if os.path.getsize(self.path_full) != self.file_size:
+                                logger.error(
+                                    "error: wsi file upload unexpected alert inconsistent file size"
+                                )
+                            else:
+                                ### Transfer finished
+                                self.filespro_transfer_underway = False
+                                match self.upload_type:
+                                    case "manual":
+                                        await self.save_file_to_file_upload_file()
+                                        await self.send_folder_list()
+                                    case "avatar":
+                                        if self.scope["user"].is_authenticated:
+                                            await self.save_file_to_user_avatar()
+                                    case _:
+                                        raise ValueError(f"unexpected upload_type")
+                                await self.delete_tmp_files()
+                                logger.info(
+                                    f"wsi file upload of {self.file_name} finished"
+                                )
+                        ### ask for next partial file's serie of chunks
                         else:
-                            ### Transfer finished
-                            match self.upload_type:
-                                case "manual":
-                                    await self.save_file_to_file_upload_file()
-                                    await self.file_upload_list()
-                                case "avatar":
-                                    if self.scope["user"].is_authenticated:
-                                        await self.save_file_to_user_avatar()
-                                case _:
-                                    raise ValueError(f"unexpected upload_type")
-                            ### delete the tmp files
-                            for filename in glob.glob(self.path_tmp_name + "*"):
-                                os.remove(filename)
-                            logger.info("wsi file upload of {self.file_name} finished")
-
-                    else:
-                        self.file_portion_step += 1
-                        self.file_nb_chunks = math.ceil(
-                            self.file_portion_array[self.file_portion_step] / chunk_size
-                        )
-                        self.chunk_bool_array = [False] * self.file_nb_chunks
-                        await self.send("f" + self.tab_id + "a")
+                            self.chunk_id = 0  # to calculate bytes transfered at cancel
+                            self.file_portion_step += 1
+                            self.file_nb_chunks = self.file_portion_array[
+                                self.file_portion_step
+                            ]
+                            self.chunk_bool_array = [False] * self.file_nb_chunks
+                            await self.send("f" + self.tab_id + "a")
 
         except Exception as e:
             logger.error(f"error: wsi file upload receiving: {e}")
@@ -226,8 +235,8 @@ class WSIPrivFilesMixin:
     async def save_file_to_file_upload_file(self):
         try:
             with open(self.path_full, "rb") as output_file:
-                file_upload_file = await sync_to_async(FileUploadFile.objects.create)(
-                    file_upload_user=self.file_upload_user,
+                file_upload_file = await sync_to_async(FilesproFile.objects.create)(
+                    filespro_folder=self.filespro_folder,
                     file=File(output_file),
                     file_name=self.file_name,
                     file_size=self.file_size,
@@ -275,10 +284,11 @@ class WSIPrivFilesMixin:
             return False
         return True
 
-    # with 10 and 3, will output: [3, 3, 3, 1]
-    def divide_portions_array(self, full_size, partial_size):
-        quotient, remainder = divmod(full_size, partial_size)
-        portions = [partial_size for _ in range(quotient)]
+    # Nb of chunks per step, with file_size 2156, max_nb_chunks 100 and chunk_size 10, will output: [100, 100, 16]
+    def divide_portion_array(self):
+        partial_size = chunk_size * max_nb_chunks
+        quotient, remainder = divmod(self.file_size, partial_size)
+        portion_array = [max_nb_chunks for _ in range(quotient)]
         if remainder != 0:
-            portions.append(remainder)
-        return portions
+            portion_array.append(math.ceil(remainder / chunk_size))
+        return portion_array

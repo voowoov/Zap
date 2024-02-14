@@ -1,18 +1,18 @@
 import datetime
-import platform
 import subprocess  # to run .bat .sh files
 from time import sleep
+import logging
 
 from dateutil import tz
-from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from zap.apps.accounts.models import Account, AddressCpProject, AddressUPS, Param
 from zap.apps.articles.forms import ArticleForm, AuthorForm, ImageContentForm
 from zap.apps.articles.models import Article, Author, ImageContent
-from zap.apps.chat.models import ChatSession
 from zap.apps.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -127,4 +127,6 @@ class Command(BaseCommand):
                 #     img_data = f.read()
                 # obj.image_main.save('image_name.png', ContentFile(img_data), save=True)
             else:
-                print(form.errors)
+                logger.warning(
+                    f"warning: init_db: ArticleForm: form_errors: {form.errors}"
+                )

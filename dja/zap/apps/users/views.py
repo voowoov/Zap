@@ -67,7 +67,7 @@ class Signin_0(View):
 
     def post(self, request):
         self.form = SigninForm0(request.POST)
-        print(self.form.errors)
+        logger.warning(f"warning: Signin_0: form_errors: {self.form.errors}")
         if self.form.is_valid():
             # process the data in form.cleaned_data as required
             email = self.form.cleaned_data["email"].lower()

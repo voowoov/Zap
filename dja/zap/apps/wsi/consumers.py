@@ -1,6 +1,7 @@
 import logging
 import time
 
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from zap.apps.filespro._wsi_functions import WSIPrivFilesMixin
 from zap.apps.search._wsi_functions import WSISearchMixin
@@ -11,14 +12,17 @@ logger = logging.getLogger(__name__)
 class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
     async def connect(self):
         self.channel_name_abr = None
-        await self.wsi_filespro_init_file_upload_user()
+        self.filespro_enabled = False
+        self.filespro_transfer_underway = False
         await self.accept()
 
     async def disconnect(self, close_code):
+        if self.filespro_enabled:
+            await self.update_file_tranfer_canceled()
         pass
 
     async def send(self, text_data):
-        print(f"WSI Sending: {text_data}")
+        logger.debug(f"WSI Sending: {text_data}")
         await super().send(text_data)
 
     async def receive(self, text_data=None, bytes_data=None):
@@ -52,7 +56,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
             elif bytes_data:
                 ### Handle binary message
                 if len(bytes_data) > 6 and hasattr(self, "file_portion_array"):
-                    await self.wsi_filespro_received_bytes(bytes_data)
+                    await self.filespro_receive_bytes_chunk(bytes_data)
                 else:
                     raise ValueError(
                         f"unexpected binary message is too short or is missing initial attribute"
@@ -79,11 +83,13 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
             ### score function (in 0.1s) the score is from 0-250
             score = min((score - thenthseconds + diff), 250)
             if score < 0:
-                logger.warning(f"warning: frequency limiting core went to zero {e}")
+                logger.warning(
+                    f"warning: WSI received: frequency limiting score went to zero {e}"
+                )
                 await self.close()
             num = (score << 8) | new_timer
             self.channel_name_abr = num
-            print("WSI Received:", self.message, "score: ", score)
+            logger.debug(f"WSI Received: message: {self.message}, score: {score}")
         except Exception as e:
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()

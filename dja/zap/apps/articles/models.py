@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -8,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from tinymce.models import HTMLField
 from zap.apps.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 def uploadPathFunction(instance, filename):
@@ -57,7 +60,7 @@ class Article(models.Model):
                 self.image_tumbnail.save("thumbnail.jpg", my_form.save(), save=False)
                 super().save(*args, **kwargs)
             else:
-                print(my_form.errors)
+                logger.info(f"warning: Article form errors: {my_form.errors}")
 
 
 class ImageContent(models.Model):

@@ -3,7 +3,7 @@ services:
   web:
     container_name: web_zap
     build: ./dja/
-    command: tail -f /dev/null # python manage.py init-db 
+    command: tail -f /dev/null # python manage.py init_db 
     env_file:
       - .env
     volumes:

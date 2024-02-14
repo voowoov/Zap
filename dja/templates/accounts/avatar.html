@@ -13,19 +13,13 @@
 </div>
 
 <input class="imageViewerFileRealInput" type="file" hidden="hidden" accept=".png,.jpg,.jpeg,.bitmap">
-<button class="imageViewerFileChooseBtn">Choose an image</button>
+<button class="imageViewerFileChooseBtn">{% trans "Choose an image file from my computer for editing" %}</button>
 <span class="imageViewerFileChoiceTxt"></span>
-<button class="fileUploadSendAvatarBtn">Save my avatar</button>
+<button class="fileUploadSendAvatarBtn">{% trans "Save my avatar image on the server" %}</button>
+<div class="fileUploadLogTxt">.</div>
 
 <div class="">
-  Instructions to create an avatar image:
-  <ol class="">
-    <li>Press "Choose Image File" and select an image file from your computer;</li>
-    <li>Use the mouse (left-click and wheel) or touch-screen (drag and pinch) to zoom and position your avatar
-      inside the circle;</li>
-    <li>Press "Save Avatar".</li>
-  </ol>
-  <div> Note: All avatar images are saved to Zap at a maximum resolution of [235&nbsp;x&nbsp;235].</div>
+  <div> Note: Avatar images are saved at a resolution of 235&nbsp;x&nbsp;235.</div>
 </div>
 
 {% csrf_token %}

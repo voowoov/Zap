@@ -1,6 +1,6 @@
 import datetime
+import logging
 import zoneinfo
-from django.utils.crypto import get_random_string
 
 from django.contrib import auth
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -8,8 +8,12 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from zap.apps.accounts.models import Account, Param
+from zap.apps.filespro.models import FilesproFolder
+
+logger = logging.getLogger(__name__)
 
 listtemp = sorted(zoneinfo.available_timezones())
 timezone_canada = [("Auto", "Auto")]  # init
@@ -44,6 +48,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.password = make_password(password)
+        user.filespro_folder = FilesproFolder.create(10000000)
         if create_account:
             with transaction.atomic():
                 param = Param.objects.first()
@@ -135,6 +140,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     social_name = models.CharField(max_length=255, blank=True)
     social_desc = models.CharField(max_length=255, blank=True)
     log = models.TextField(blank=True)
+    filespro_folder = models.ForeignKey(
+        FilesproFolder, on_delete=models.PROTECT, blank=True
+    )
 
     ######### Original fields  #####################
     email = models.EmailField(
@@ -195,7 +203,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         # send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def add_log(self, text):
-        print(self.log)
+        logger.debug(f"User: add_log: {self.log}")
         self.log += (
             datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
         )

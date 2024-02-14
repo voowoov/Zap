@@ -40,7 +40,6 @@ class ProjectView(View):
 
 class AccountSummary(LoginRequiredMixin, View):
     def get(self, request):
-        print(timezone.localtime(timezone.now()))
 
         return self.this_render(request)
 

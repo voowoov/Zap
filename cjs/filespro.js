@@ -20,6 +20,7 @@ export default function setupWsiFileUpload() {
   const fileMaxSize = 10000000;
 
   const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
+  let transfer_underway = false
   let filePortionStep = 0;
   let filePortionsArray = [];
   let fileUploadName;
@@ -33,17 +34,17 @@ export default function setupWsiFileUpload() {
   const fileUploadCancelBtn = document.querySelector('.fileUploadCancelBtn');
   const fileUploadLogTxt = document.querySelector('.fileUploadLogTxt');
   const fileUploadSendAvatarBtn = document.querySelector('.fileUploadSendAvatarBtn');
+
   if (fileUploadSendAvatarBtn) {
     fileUploadSendAvatarBtn.addEventListener('click', function() {
       const canvas = document.querySelector('.image_viewer_canvas');
       let imgsrc = canvas.toDataURL("image/png");
       let blob = dataURLtoBlob(imgsrc);
-      file_a = new File([blob], 'my_avatar.png', {
+      file_a = new File([blob], 'avatar.png', {
         type: "image/png",
         lastModified: new Date(),
       });
       console.log('file size', file_a.size);
-
       sendFileWsi("avatar");
     });
 
@@ -74,7 +75,8 @@ export default function setupWsiFileUpload() {
       sendFileWsi("manual");
     });
     fileUploadCancelBtn.addEventListener('click', throttle(function() {
-      if (filePortionsArray.length > 0) {
+      if (transfer_underway) {
+        transfer_underway = false
         if (pageLanguage == "fr") {
           fileUploadLog('\u2716' + " Envoie du fichier cancellé. ");
         } else {
@@ -84,7 +86,6 @@ export default function setupWsiFileUpload() {
         fileUploadSendBtn.disabled = false;
         fileUploadCancelBtn.disabled = false;
         filePortionStep = 0;
-        filePortionsArray = [];
         wsiSend('f' + wsiCurrentTabId + "c");
       } else {
         fileUploadLog("");
@@ -146,9 +147,23 @@ export default function setupWsiFileUpload() {
     switch (strError) {
       case 'file already exists':
         if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Le fichier est déjà partagé. ');
+          fileUploadLog('\u26A0' + ' Le fichier est déjà partagé.');
         } else {
-          fileUploadLog('\u26A0' + ' The file is already shared. ');
+          fileUploadLog('\u26A0' + ' The file is already shared.');
+        }
+        break;
+      case 'insufficient remaining space':
+        if (pageLanguage == "fr") {
+          fileUploadLog('\u26A0' + ' Espace insuffisant.');
+        } else {
+          fileUploadLog('\u26A0' + ' Insufficient space.');
+        }
+        break;
+      case 'wait a cooldown period':
+        if (pageLanguage == "fr") {
+          fileUploadLog('\u26A0' + ' Veuillez attendre pour quelques minutes.');
+        } else {
+          fileUploadLog('\u26A0' + ' Please wait for a few minutes.');
         }
         break;
       default:
@@ -163,7 +178,7 @@ export default function setupWsiFileUpload() {
       fileUploadSendBtn.disabled = false;
     }
     filePortionStep = 0;
-    filePortionsArray = [];
+    transfer_underway = false;
   }
 
   function clearSelectionFileUpload() {
@@ -175,7 +190,7 @@ export default function setupWsiFileUpload() {
       fileUploadCancelBtn.disabled = true;
     }
     filePortionStep = 0;
-    filePortionsArray = [];
+    transfer_underway = false;
   }
 
   function sendFileWsi(upload_type) {
@@ -184,55 +199,62 @@ export default function setupWsiFileUpload() {
         fileUploadChooseBtn.disabled = true;
         fileUploadSendBtn.disabled = true;
       }
-      fileUploadName = file_a.name
-      filePortionStep = 0
-      filePortionsArray = dividePortionsArray(file_a.size, filePartialSize);
+      fileUploadName = file_a.name;
+      filePortionStep = 0;
+      filePortionsArray = dividePortionsArray();
+      transfer_underway = true;
       wsiSend('f' + wsiCurrentTabId + 's' + JSON.stringify({ upload_type: upload_type, file_name: file_a.name, file_size: file_a.size }));
     }
   }
 
   function sendFilePartialUpload() {
     try {
-      let chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
-      let chunkId = 0; // Start with the first chunk
-      let percentage = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
-      if (pageLanguage == "fr") {
-        fileUploadLog('\u231B' + " Envoie du fichier en cours.  " + percentage);
-      } else {
-        fileUploadLog('\u231B' + " Sending file in progress.  " + percentage);
-      }
+      if (transfer_underway) {
+        let chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
+        let chunkId = 0; // Start with the first chunk
+        let percentage = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
+        if (pageLanguage == "fr") {
+          fileUploadLog('\u231B' + " Envoie du fichier en cours.  " + percentage);
+        } else {
+          fileUploadLog('\u231B' + " Sending file in progress.  " + percentage);
+        }
 
-      function readNextChunk() {
-        return new Promise((resolve, reject) => {
-          if (chunkId < chunksNb) {
-            let start = filePortionsArray[filePortionStep][0] + chunkId * fileChunkSize;
-            let end = Math.min(start + fileChunkSize, filePortionsArray[filePortionStep][1] + 1);
-            let blob = file_a.slice(start, end); // Create a blob representing the chunk
-            let reader = new FileReader();
-            reader.onloadend = function(evt) {
-              if (evt.target.readyState == FileReader.DONE) { // When the chunk is read
-                // make the byte array with [Chunk id (4 bytes int) + File byte array (rest of the bytes)]
-                let buffer = new ArrayBuffer(4),
-                  view = new DataView(buffer);
-                view.setInt32(0, chunkId, true);
-                let resultByteLength = evt.target.result.byteLength,
-                  arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
-                arrayBuffer.set(new Uint8Array(view.buffer));
-                arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
-                wsiSend(arrayBuffer);
-                chunkId++;
-                resolve(readNextChunk()); // Resolve the promise with the next recursive call
-              }
-            };
-            reader.readAsArrayBuffer(blob);
+        function readNextChunk() {
+          return new Promise((resolve, reject) => {
+            if (chunkId < chunksNb && transfer_underway) {
+              let start = filePortionsArray[filePortionStep][0] + chunkId * fileChunkSize;
+              let end = Math.min(start + fileChunkSize, filePortionsArray[filePortionStep][1] + 1);
+              let blob = file_a.slice(start, end); // Create a blob representing the chunk
+              let reader = new FileReader();
+              reader.onloadend = function(evt) {
+                if (evt.target.readyState == FileReader.DONE) { // When the chunk is read
+                  // make the byte array with [Chunk id (4 bytes int) + File byte array (rest of the bytes)]
+                  let buffer = new ArrayBuffer(4),
+                    view = new DataView(buffer);
+                  view.setInt32(0, chunkId, true);
+                  let resultByteLength = evt.target.result.byteLength,
+                    arrayBuffer = new Uint8Array(view.byteLength + resultByteLength);
+                  arrayBuffer.set(new Uint8Array(view.buffer));
+                  arrayBuffer.set(new Uint8Array(evt.target.result), view.byteLength);
+                  wsiSend(arrayBuffer);
+                  chunkId++;
+                  resolve(readNextChunk()); // Resolve the promise with the next recursive call
+                }
+              };
+              reader.readAsArrayBuffer(blob);
+            } else {
+              resolve(); // Resolve the promise when there are no more chunks to read
+            }
+          });
+        }
+        readNextChunk().then(() => {
+          if (filePortionStep == filePortionsArray.length - 1) {
+            transfer_underway = false;
           } else {
-            resolve(); // Resolve the promise when there are no more chunks to read
+            filePortionStep++;
           }
         });
       }
-      readNextChunk().then(() => {
-        filePortionStep++;
-      });
     } catch (error) {
       // console.error(error);
     }
@@ -240,9 +262,9 @@ export default function setupWsiFileUpload() {
 
   function receivedConfirmationSuccessfull() {
     if (pageLanguage == "fr") {
-      fileUploadLog('\u2713' + " Envoie réeussi de " + fileUploadName);
+      fileUploadLog('\u2713' + " Envoie réeussi de: " + fileUploadName);
     } else {
-      fileUploadLog('\u2713' + " Sent successfully " + fileUploadName);
+      fileUploadLog('\u2713' + " Sent successfully: " + fileUploadName);
     }
     clearSelectionFileUpload()
   }
@@ -261,14 +283,14 @@ export default function setupWsiFileUpload() {
 
   // sets a 2d Array with start position, end position and length for each portion of the file
   // ex 10 and 3 will output  [[0, 2, 3], [3, 5, 3], [6, 8, 3], [9, 9, 1]]
-  function dividePortionsArray(fullSize, partialSize) {
-    let quotient = Math.floor(fullSize / partialSize);
-    let remainder = fullSize % partialSize;
+  function dividePortionsArray() {
+    let quotient = Math.floor(file_a.size / filePartialSize);
+    let remainder = file_a.size % filePartialSize;
     let start = 0;
     let portions = [];
     for (let i = 0; i < quotient; i++) {
-      let end = start + partialSize;
-      portions.push([start, end - 1, partialSize]);
+      let end = start + filePartialSize;
+      portions.push([start, end - 1, filePartialSize]);
       start = end;
     }
     if (remainder != 0) {

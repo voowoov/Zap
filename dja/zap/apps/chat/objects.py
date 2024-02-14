@@ -1,6 +1,10 @@
+import logging
+
 from django.core.cache import cache
 from django.templatetags.static import static
 from zap.apps.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class ListStaffChat:
@@ -22,7 +26,7 @@ class ListStaffChat:
                 chat_staff_list.append(staff_data)
             cache.set("chat_staff_list", chat_staff_list)
         except Exception as e:
-            print(e)
+            logger.error(f"error: ListStaffChat: {e}")
 
     def del_staff(self, user_id):
         chat_staff_list = cache.get("chat_staff_list", [])
@@ -57,6 +61,3 @@ def disable_staff_chat(userid):
     list_staff_chat = ListStaffChat()
     list_staff_chat.del_staff(userid)
     return "disabled staff chat"
-
-
-

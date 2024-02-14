@@ -68,7 +68,6 @@ function addComlog(log) {
 }
 
 function sendCommand(command) {
-  console.log("seding")
   if (command.length > 0) {
     monitorSocket.send(command);
     addComlog(command);

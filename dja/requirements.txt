@@ -18,12 +18,10 @@ django-scheduler
 django-htmx
 django-debug-toolbar
 typesense
-# django-elasticsearch-dsl
 # django-hosts    # for subdomains running in the same django project
 # django-mptt
 # django-cors-headers
 # django-js-asset
-# gunicorn
 
 #### Tests ####
 pytest

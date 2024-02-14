@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 
 # Register your models here.
-from .models import FileUploadFile, FileUploadUser
+from .models import FilesproFile, FilesproFolder
 
 
 def delete_selected(modeladmin, request, queryset):
@@ -16,12 +16,12 @@ delete_selected.short_description = "Delete selected objects"
 
 
 # overides of delete by queryset to delete method of the model
-class FileUploadFileAdmin(admin.ModelAdmin):
+class FilesproFileAdmin(admin.ModelAdmin):
     def delete_model(self, request, obj):
         obj.delete()  # when in the object page
 
     actions = [delete_selected]  # by selection when in the list
 
 
-admin.site.register(FileUploadUser)
-admin.site.register(FileUploadFile, FileUploadFileAdmin)
+admin.site.register(FilesproFolder)
+admin.site.register(FilesproFile, FilesproFileAdmin)

@@ -9,7 +9,6 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from channels.layers import get_channel_layer
-from django.conf import settings
 from django.core.cache import cache
 from django.utils.translation import get_language
 
@@ -32,8 +31,8 @@ class MonitorConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         try:
             if self.scope["user"].is_superuser:
-                # print(get_language())
-                # print(self.scope["path"])
+                # logger.debug(f"MonitorConsumer, get_language(): {get_language()}")
+                # logger.debug(self.scope["path"])
                 if text_data:
                     # command_name and command_arg are split by the first space occuring
                     result = text_data.split(maxsplit=1)
@@ -56,8 +55,6 @@ class MonitorConsumer(WebsocketConsumer):
                             self.send(ts.typesense_add_single_document())
                         case "close_connection_in_django":
                             self.close()
-                        case "delete_upload_tmp_files":
-                            self.send(delete_upload_tmp_files())
                         case _:
                             self.send("unknown command")
                 elif bytes_data:
@@ -67,10 +64,3 @@ class MonitorConsumer(WebsocketConsumer):
         except Exception as e:
             logger.error(f"error: monitor websocket message receiving: {e}")
             self.close()
-
-
-def delete_upload_tmp_files():
-    files = glob.glob(settings.WSI_TMP_FILE_DIRECTORY + "*")
-    for file in files:
-        if os.path.isfile(file):
-            os.remove(file)

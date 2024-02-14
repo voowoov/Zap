@@ -1,12 +1,10 @@
 # chat/views.py
 import logging
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.http import (
-    HttpResponse,
-    JsonResponse,
-)
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -18,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
-from zap.apps.filespro.models import FileUploadFile, FileUploadUser
+from zap.apps.filespro.models import FilesproFile, FilesproFolder
 from zap.apps.users.mixins import SuperuserLoginRequiredMixin
 
 
@@ -31,16 +29,6 @@ class StaffMonitor(SuperuserLoginRequiredMixin, View):
 
     def this_render(self, request):
         try:
-            user = request.user
-            file_upload_user = FileUploadUser.get_or_create_file_upload_user(
-                owner_object=user,
-                max_storage_size=10000000,
-            )
-            # file upload user object is transmitted to wsi via 2 session variables
-            content_type = ContentType.objects.get_for_model(file_upload_user)
-            request.session["wsi_fuu_ct_id"] = content_type.id
-            request.session["wsi_fuu_obj_id"] = file_upload_user.id
-
             ctx = {
                 "my_object_list": ["apple", "banana", "cherry"],
             }
@@ -70,7 +58,7 @@ class MyAjaxReceiveTestView(View):
         message = request.POST.get("message")
 
         # Do something with the message...
-        print(f"AJAX Received message: {message}")
+        logger.debug(f"AJAX Received message: {message}")
 
         # Send back a JSON response
         return JsonResponse(

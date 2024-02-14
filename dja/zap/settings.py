@@ -278,7 +278,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console", "file"],  # Use both console and file handlers
-        "level": "WARNING",  # Set the desired log level (e.g., INFO, DEBUG, etc.)
+        "level": "DEBUG",  # Set the desired log level (e.g., INFO, DEBUG, etc.)
     },
 }
 
