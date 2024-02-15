@@ -19,7 +19,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
     async def disconnect(self, close_code):
         if self.filespro_folder_id:
             await self.update_file_tranfer_freq_limiting()
-        pass
+            await self.delete_tmp_files()
 
     async def send(self, text_data):
         logger.debug(f"WSI Sending: {text_data}")

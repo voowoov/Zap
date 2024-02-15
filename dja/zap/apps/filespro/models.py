@@ -19,15 +19,7 @@ FREQ_LIM_BYTES_PER_DEMAND = 10000  # cost of demand
 
 
 def uploadPathFunction(instance, filename):
-    directory = filename.split("/")[-2]  # the last directory in the path
-    return (
-        "uploads/"
-        + directory
-        + "/"
-        + get_random_string(12)
-        + "."
-        + filename.split(".")[-1]
-    )
+    return "uploads/" + get_random_string(12) + "." + filename.split(".")[-1]
 
 
 class FilesproFolder(models.Model):
