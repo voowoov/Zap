@@ -10,6 +10,7 @@ from pathlib import Path
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.files import File
+from django.db import transaction
 from django.utils.crypto import get_random_string
 from PIL import Image
 
@@ -43,12 +44,9 @@ class WSIPrivFilesMixin:
                 await self.cancel_file_upload(self.message[1:])
 
     async def init_filespro_folder(self):
-        if not self.filespro_enabled:
+        if not self.filespro_folder_id:
             try:
-                self.filespro_folder = await sync_to_async(FilesproFolder.objects.get)(
-                    pk=self.scope["user"].filespro_folder_id
-                )
-                self.filespro_enabled = True
+                self.filespro_folder_id = self.scope["user"].filespro_folder_id
             except Exception as e:
                 logger.error(f"error: init_filespro_folder: {e}")
                 await self.close()
@@ -57,7 +55,7 @@ class WSIPrivFilesMixin:
         try:
             data = await sync_to_async(list)(
                 FilesproFile.objects.filter(
-                    filespro_folder=self.filespro_folder
+                    filespro_folder_id=self.filespro_folder_id
                 ).values("file_name", "file")
             )
             data_json = json.dumps(data)
@@ -69,11 +67,24 @@ class WSIPrivFilesMixin:
     async def cancel_file_upload(self, message):
         try:
             if self.filespro_transfer_underway:
-                self.filespro_transfer_underway = False
-                await self.update_file_tranfer_canceled()
+                await self.update_file_tranfer_freq_limiting()
                 await self.delete_tmp_files()
+                self.filespro_transfer_underway = False
+
         except Exception as e:
             logger.error(f"error: cancel_file_upload: {e}")
+            await self.close()
+
+    async def update_file_tranfer_freq_limiting(self):
+        try:
+            nb_bytes_at_end_or_cancel = (
+                sum(self.file_portion_array[: self.file_portion_step]) + self.chunk_id
+            ) * chunk_size
+            await sync_to_async(FilesproFolder.update_freq_limit_storage)(
+                self.filespro_folder_id, nb_bytes_at_end_or_cancel
+            )
+        except Exception as e:
+            logger.error(f"error: update_file_tranfer_freq_limiting: {e}")
             await self.close()
 
     async def delete_tmp_files(self):
@@ -82,18 +93,6 @@ class WSIPrivFilesMixin:
                 os.remove(filename)
         except Exception as e:
             logger.error(f"error: delete_tmp_files: {e}")
-            await self.close()
-
-    async def update_file_tranfer_canceled(self):
-        try:
-            nb_bytes_at_cancel = (
-                sum(self.file_portion_array[: self.file_portion_step]) + self.chunk_id
-            ) * chunk_size
-            await sync_to_async(
-                self.filespro_folder.update_freq_lim_get_remaining_store
-            )(nb_bytes_at_cancel)
-        except Exception as e:
-            logger.error(f"error: file_tranfer_canceled: {e}")
             await self.close()
 
     async def file_upload_demand(self, message):
@@ -105,8 +104,8 @@ class WSIPrivFilesMixin:
                 file_size = data["file_size"]
                 is_valid = True
                 remaining_store = await sync_to_async(
-                    self.filespro_folder.update_freq_lim_get_remaining_store
-                )()
+                    FilesproFolder.update_freq_limit_and_get_storage
+                )(self.filespro_folder_id)
                 if file_size > remaining_store[0]:
                     is_valid = False
                     await self.send(
@@ -124,7 +123,7 @@ class WSIPrivFilesMixin:
                     case "manual":
                         if await sync_to_async(
                             FilesproFile.objects.filter(
-                                filespro_folder=self.filespro_folder,
+                                filespro_folder_id=self.filespro_folder_id,
                                 file_name=file_name,
                             ).exists
                         )():
@@ -135,7 +134,7 @@ class WSIPrivFilesMixin:
                     case "avatar":
                         if not self.scope["user"].is_authenticated:
                             raise ValueError("User not authenticated.")
-                        if file_size > 170000:
+                        if file_size > 150000:
                             raise ValueError("Image size exceeds limit.")
                     case _:
                         raise ValueError("Inadequate upload_type: " + self.upload_type)
@@ -204,10 +203,9 @@ class WSIPrivFilesMixin:
                                 )
                             else:
                                 ### Transfer finished
-                                self.filespro_transfer_underway = False
                                 match self.upload_type:
                                     case "manual":
-                                        await self.save_file_to_file_upload_file()
+                                        await self.save_file_to_filespro_file()
                                         await self.send_folder_list()
                                     case "avatar":
                                         if self.scope["user"].is_authenticated:
@@ -215,6 +213,7 @@ class WSIPrivFilesMixin:
                                     case _:
                                         raise ValueError(f"unexpected upload_type")
                                 await self.delete_tmp_files()
+                                self.filespro_transfer_underway = False
                                 logger.info(
                                     f"wsi file upload of {self.file_name} finished"
                                 )
@@ -232,11 +231,11 @@ class WSIPrivFilesMixin:
             logger.error(f"error: wsi file upload receiving: {e}")
             await self.close()
 
-    async def save_file_to_file_upload_file(self):
+    async def save_file_to_filespro_file(self):
         try:
             with open(self.path_full, "rb") as output_file:
-                file_upload_file = await sync_to_async(FilesproFile.objects.create)(
-                    filespro_folder=self.filespro_folder,
+                filespro_file = await sync_to_async(FilesproFile.objects.create)(
+                    filespro_folder_id=self.filespro_folder_id,
                     file=File(output_file),
                     file_name=self.file_name,
                     file_size=self.file_size,
@@ -244,25 +243,30 @@ class WSIPrivFilesMixin:
             ### send received confirmation
             await self.send("f" + self.tab_id + "r")
         except Exception as e:
-            logger.error(f"error: save_file_to_file_upload_file: {e}")
+            logger.error(f"error: save_file_to_filespro_file: {e}")
             await self.close()
 
     async def save_file_to_user_avatar(self):
         try:
-            with open(self.path_full, "rb") as output_file:
-                if output_file.name.endswith(".png"):
-                    Image.MAX_IMAGE_PIXELS = 56000
-                    im = Image.open(output_file)
-                    if im.format == "PNG":
-                        im.verify()  # will throw an exception if not verifed
-                        width, height = im.size
-                        if width == height == 235:
-                            self.scope["user"].avatar.delete(save=False)
-                            self.scope["user"].avatar = File(output_file)
-                            await sync_to_async(self.scope["user"].save)()
-                            ### send received confirmation
-                            await self.send("f" + self.tab_id + "r")
-                            return True
+            with Image.open(self.path_full) as img:
+                img.verify()  # will throw an exception if not verified
+            with Image.open(self.path_full) as img:
+                width, height = img.size
+                if img.format == "PNG" and width == height == 205:
+                    # If the image is 32-bit (RGBA), convert it to 24-bit (RGB)
+                    if img.mode == "RGBA":
+                        img = img.convert("RGB")
+                    img.save(self.path_full, "PNG")
+                    with open(self.path_full, "rb") as img_file:
+                        self.scope["user"].avatar.delete(save=False)
+                        self.scope["user"].avatar = File(img_file)
+                        await sync_to_async(self.scope["user"].save)()
+                        ### send received confirmation
+                        await self.send(
+                            "f" + self.tab_id + "r" + self.scope["user"].avatar.url
+                        )
+                        await self.update_file_tranfer_freq_limiting()
+                        return True
             raise ValueError("Image is not adequate.")
         except Exception as e:
             logger.error(f"error: save_file_to_user_avatar: {e}")

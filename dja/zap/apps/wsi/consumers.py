@@ -12,13 +12,13 @@ logger = logging.getLogger(__name__)
 class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
     async def connect(self):
         self.channel_name_abr = None
-        self.filespro_enabled = False
+        self.filespro_folder_id = None
         self.filespro_transfer_underway = False
         await self.accept()
 
     async def disconnect(self, close_code):
-        if self.filespro_enabled:
-            await self.update_file_tranfer_canceled()
+        if self.filespro_folder_id:
+            await self.update_file_tranfer_freq_limiting()
         pass
 
     async def send(self, text_data):

@@ -1,3 +1,6 @@
+/////////////////////////////////////////////////////////////////////////////////
+//  ImageViewer
+/////////////////////////////////////////////////////////////////////////////////
 (function() {
   const canvas = document.querySelector('.image_viewer_canvas');
   if (canvas) {
@@ -192,49 +195,38 @@
     canvas.addEventListener("touchend", function(event) {
       imageViewerCanvasContainer.removeEventListener('touchmove', preventScroll, { passive: false });
     }, false);
-    (function() {
+
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //  Avatar functions
+    /////////////////////////////////////////////////////////////////////////////////
+    const imageViewerFileChooseBtn = document.querySelector('.imageViewerFileChooseBtn');
+
+    if (imageViewerFileChooseBtn) {
+
+      const fileUploadSendAvatarBtn = document.querySelector('.fileUploadSendAvatarBtn');
+      const imageViewerFileChooseBtn = document.querySelector('.imageViewerFileChooseBtn');
       const imageViewerFileRealInput = document.querySelector('.imageViewerFileRealInput');
-      if (imageViewerFileRealInput) {
-        const imageViewerFileChooseBtn = document.querySelector('.imageViewerFileChooseBtn');
-        const imageViewerFileChoiceTxt = document.querySelector('.imageViewerFileChoiceTxt');
-        const imageViewerInitialImage = document.querySelector('.image_viewer_initial_image');
+      const fileUploadLogTxt = document.querySelector('.fileUploadLogTxt');
+      const imageViewerInitialImage = document.querySelector('.imageViewerInitialImage');
 
-        imageViewerFileChooseBtn.addEventListener('click', throttle(function() {
-          imageViewerFileRealInput.click();
-        }, 1000));
+      imageViewerFileChooseBtn.addEventListener('click', function() {
+        imageViewerFileRealInput.click();
+      });
 
-        imageViewerFileRealInput.onchange = function(e) {
-          let file = e.target.files[0];
-          if (file.type.startsWith('image/')) {
-            img.src = URL.createObjectURL(file);
-            imageViewerInitialImage.remove();
+      imageViewerFileRealInput.onchange = function(e) {
+        let file = e.target.files[0];
+        if (file.type.startsWith('image/')) {
+          img.src = URL.createObjectURL(file);
+          imageViewerInitialImage.hidden = true;
+          fileUploadSendAvatarBtn.disabled = false;
+          if (document.documentElement.lang == "fr") {
+            fileUploadLogTxt.innerHTML = '\uD83E\uDD1A' + ' Centrer et zoomer votre avatar.';
           } else {
-            if (document.documentElement.lang == "fr") {
-              imageViewerFileChoiceTxt.innerHTML = '\u26A0' + ' Ne correspond pas à une image.';
-            } else {
-              imageViewerFileChoiceTxt.innerHTML = '\u26A0' + ' Does not correspond to an image.';
-            };
+            fileUploadLogTxt.innerHTML = '\uD83E\uDD1A' + ' Center and scale your avatar.';
           };
         };
       };
-    })();
+    };
   };
 })();
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////
-function throttle(func, delay) {
-  let lastCall = 0;
-  return function(...args) {
-    const now = Date.now();
-    if (now - lastCall < delay) { return; }
-    lastCall = now;
-    return func.apply(this, args);
-  };
-};
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////

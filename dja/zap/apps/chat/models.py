@@ -8,8 +8,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from zap.apps.users.models import User
 
-private_storage = FileSystemStorage(location=settings.PRIVATE_STORAGE_ROOT)
-
 
 class ChatSession(models.Model):
     chat_host_id = models.ForeignKey(

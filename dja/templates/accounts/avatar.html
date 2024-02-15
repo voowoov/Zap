@@ -1,25 +1,26 @@
 {% load static %}{% load i18n %}
+<div class="">
+  Avatar
+</div>
 <div class="image_viewer_canvas_container">
   <div class="image_viewer_mask">
     <canvas class="image_viewer_canvas"></canvas>
-    <svg class="image_viewer_initial_image" viewBox="0 0 53 53" xmlns="http://www.w3.org/2000/svg">
-      <path style="fill:#E7ECED;" d="M18.613,41.552l-7.907,4.313c-0.464,0.253-0.881,0.564-1.269,0.903C14.047,50.655,19.998,53,26.5,53
-      c6.454,0,12.367-2.31,16.964-6.144c-0.424-0.358-0.884-0.68-1.394-0.934l-8.467-4.233c-1.094-0.547-1.785-1.665-1.785-2.888v-3.322
-      c0.238-0.271,0.51-0.619,0.801-1.03c1.154-1.63,2.027-3.423,2.632-5.304c1.086-0.335,1.886-1.338,1.886-2.53v-3.546
-      c0-0.78-0.347-1.477-0.886-1.965v-5.126c0,0,1.053-7.977-9.75-7.977s-9.75,7.977-9.75,7.977v5.126
-      c-0.54,0.488-0.886,1.185-0.886,1.965v3.546c0,0.934,0.491,1.756,1.226,2.231c0.886,3.857,3.206,6.633,3.206,6.633v3.24
-      C20.296,39.899,19.65,40.986,18.613,41.552z" /></svg>
+    {% if user.avatar %}
+    <img class="imageViewerInitialImage" src="{{ user.avatar.url }}" width="30px" alt="Avatar">
+    {% else %}
+    <img class="imageViewerInitialImage" src="{% static '/images/default_avatar.svg' %}" width="30px" alt="Avatar">
+    {% endif %}
   </div>
 </div>
 
 <input class="imageViewerFileRealInput" type="file" hidden="hidden" accept=".png,.jpg,.jpeg,.bitmap">
-<button class="imageViewerFileChooseBtn">{% trans "Choose an image file from my computer for editing" %}</button>
-<span class="imageViewerFileChoiceTxt"></span>
-<button class="fileUploadSendAvatarBtn">{% trans "Save my avatar image on the server" %}</button>
+<button
+  class="imageViewerFileChooseBtn">{% trans "Choose an image file from my computer for editing my avatar" %}</button>
+<button class="fileUploadSendAvatarBtn" disabled>{% trans "Save my avatar image on the server" %}</button>
 <div class="fileUploadLogTxt">.</div>
 
 <div class="">
-  <div> Note: Avatar images are saved at a resolution of 235&nbsp;x&nbsp;235.</div>
+  <div> Note: Avatar images are saved at a resolution of 205&nbsp;x&nbsp;205&nbsp;pixels.</div>
 </div>
 
 {% csrf_token %}
@@ -36,8 +37,8 @@
 
 <style>
   .image_viewer_canvas_container {
-    width: 235px;
-    height: 235px;
+    width: 205px;
+    height: 205px;
     padding: 0;
     position: relative;
   }
@@ -49,7 +50,7 @@
     mask-image: radial-gradient(circle, black 70%, rgba(0, 0, 0, 0.6) 70%);
   }
 
-  .image_viewer_initial_image {
+  .imageViewerInitialImage {
     position: absolute;
     top: 0;
     left: 0;

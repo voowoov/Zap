@@ -3,6 +3,7 @@ import { wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //  File uploads
 /////////////////////////////////////////////////////////////////////////////////
@@ -33,35 +34,6 @@ export default function setupWsiFileUpload() {
   const fileUploadSendBtn = document.querySelector('.fileUploadSendBtn');
   const fileUploadCancelBtn = document.querySelector('.fileUploadCancelBtn');
   const fileUploadLogTxt = document.querySelector('.fileUploadLogTxt');
-  const fileUploadSendAvatarBtn = document.querySelector('.fileUploadSendAvatarBtn');
-
-  if (fileUploadSendAvatarBtn) {
-    fileUploadSendAvatarBtn.addEventListener('click', throttle(function() {
-      const canvas = document.querySelector('.image_viewer_canvas');
-      let imgsrc = canvas.toDataURL("image/png");
-      let blob = dataURLtoBlob(imgsrc);
-      fileA = new File([blob], 'avatar.png', {
-        type: "image/png",
-        lastModified: new Date(),
-      });
-      console.log('file size', fileA.size);
-      sendFileWsi("avatar");
-    }, 1000));
-
-    function dataURLtoBlob(dataurl) {
-      let arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], {
-        type: mime
-      });
-    };
-  };
 
   if (fileUploadSendBtn) {
     fileUploadChooseBtn.addEventListener('click', throttle(function() {
@@ -161,9 +133,9 @@ export default function setupWsiFileUpload() {
         break;
       case 'wait a cooldown period':
         if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Veuillez attendre pour quelques minutes.');
+          fileUploadLog('\u26A0' + ' Veuillez essayer plus tard.');
         } else {
-          fileUploadLog('\u26A0' + ' Please wait for a few minutes.');
+          fileUploadLog('\u26A0' + ' Please try again later.');
         };
         break;
       default:
@@ -260,7 +232,8 @@ export default function setupWsiFileUpload() {
     };
   };
 
-  function receivedConfirmationSuccessfull() {
+  function receivedConfirmationSuccessfull(message) {
+    if (avatar) { avatar.resetButtons(message) };
     if (pageLanguage == "fr") {
       fileUploadLog('\u2713' + " Envoie réeussi de: " + fileUploadName);
     } else {
@@ -313,24 +286,78 @@ export default function setupWsiFileUpload() {
   };
 
   function wsiToFilesproMessageReceived(message) {
+    let message_ = message.substring(1)
     switch (message[0]) {
       case 'u':
-        if (fileUploadList) { updateListOfFilesFromData(message.substring(1)); };
+        if (fileUploadList) { updateListOfFilesFromData(message_); };
         break;
       case 'a':
         sendFilePartialUpload();
         break;
       case 'r':
-        receivedConfirmationSuccessfull();
+        receivedConfirmationSuccessfull(message_);
         break;
       case 'e':
-        errorFileUpload(message.substring(1));
+        errorFileUpload(message_);
         break;
+    };
+  };
+
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //  Avatar functions
+  /////////////////////////////////////////////////////////////////////////////////
+  const fileUploadSendAvatarBtn = document.querySelector('.fileUploadSendAvatarBtn');
+  if (fileUploadSendAvatarBtn) {
+    var avatar = setupAvatar()
+  };
+
+  function setupAvatar() {
+    const imageViewerFileChooseBtn = document.querySelector('.imageViewerFileChooseBtn');
+    const imageViewerInitialImage = document.querySelector('.imageViewerInitialImage');
+
+    // Send the result avatar using filespro
+    fileUploadSendAvatarBtn.addEventListener('click', throttle(function() {
+      const canvas = document.querySelector('.image_viewer_canvas');
+      let imgsrc = canvas.toDataURL("image/png");
+      let blob = dataURLtoBlob(imgsrc);
+      fileA = new File([blob], 'avatar.png', {
+        type: "image/png",
+        lastModified: new Date(),
+      });
+      console.log('file size', fileA.size);
+      fileUploadSendAvatarBtn.disabled = true
+      imageViewerFileChooseBtn.disabled = true;
+      sendFileWsi("avatar");
+    }, 1000));
+
+    function dataURLtoBlob(dataurl) {
+      let arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], {
+        type: mime
+      });
+    };
+
+    function resetButtons(message) {
+      imageViewerInitialImage.src = message;
+      imageViewerInitialImage.hidden = false;
+      fileUploadSendAvatarBtn.disabled = false;
+      imageViewerFileChooseBtn.disabled = false;
+    };
+    return {
+      resetButtons: resetButtons,
     };
   };
 
   return {
     wsiToFilesproAskForListOfFiles: wsiToFilesproAskForListOfFiles,
-    wsiToFilesproMessageReceived: wsiToFilesproMessageReceived
+    wsiToFilesproMessageReceived: wsiToFilesproMessageReceived,
   };
 };

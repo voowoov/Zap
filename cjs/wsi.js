@@ -12,7 +12,8 @@ if (document.querySelector('.navSearchMain')) {
 /////////////////////////////////////////////////////////////////////////////////
 //    check whether to load filespro
 /////////////////////////////////////////////////////////////////////////////////
-if (document.querySelector('.fileUploadSendBtn') || document.querySelector('.fileUploadSendAvatarBtn')) {
+if (document.querySelector('.fileUploadSendBtn') ||
+  document.querySelector('.fileUploadSendAvatarBtn')) {
   var fileUploadFunctions = setupWsiFileUpload(); // keep at var so it goes in the module top level
 };
 
