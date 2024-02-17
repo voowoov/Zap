@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
-from zap.apps.users.tokens import create_user_token, password_reset_token
+from zap.apps.xsys.tokens import password_reset_token, user_token_generator
 
 
 @shared_task(name="send_email_account_creation_link_task")
@@ -49,7 +49,7 @@ def send_email_password_reset_task(user):
 
 def make_link_create_user(email):
     uid = urlsafe_base64_encode(force_bytes(email))
-    token = create_user_token.make_token(email)
+    token = user_token_generator.make_token(email)
     return domain + reverse("create_user", args=[uid, token])
 
 

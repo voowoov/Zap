@@ -1,4 +1,4 @@
-import { wsiOpenSharedSocket } from './wsi.js';
+import { wsiOpenOrAccessSharedSocket } from './wsi.js';
 import { wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
@@ -11,10 +11,15 @@ import { throttle } from './base.js';
 export default function setupWsiFileUpload() {
   console.log('filespro module enabled');
   const pageLanguage = document.documentElement.lang;
-  setTimeout(function() {
-    wsiOpenSharedSocket();
-  }, 0);
 
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // could be already open
+  /////////////////////////////////////////////////////////////////////////////////
+  setTimeout(function() {
+    wsiOpenOrAccessSharedSocket();
+    if (fileUploadList) { askForListOfFiles(); }
+  }, 0);
 
   const fileChunkSize = 1990; // Size of chunks
   const fileMaxNbChunks = 100;
@@ -34,6 +39,24 @@ export default function setupWsiFileUpload() {
   const fileUploadSendBtn = document.querySelector('.fileUploadSendBtn');
   const fileUploadCancelBtn = document.querySelector('.fileUploadCancelBtn');
   const fileUploadLogTxt = document.querySelector('.fileUploadLogTxt');
+
+  function wsiToFilesproMessageReceived(message) {
+    let message_ = message.substring(1)
+    switch (message[0]) {
+      case 'u':
+        if (fileUploadList) { updateListOfFilesFromJson(message_); };
+        break;
+      case 'a':
+        sendFilePartialUpload();
+        break;
+      case 'r':
+        receivedConfirmationSuccessfull(message_);
+        break;
+      case 'e':
+        errorFileUpload(message_);
+        break;
+    };
+  };
 
   if (fileUploadSendBtn) {
     fileUploadChooseBtn.addEventListener('click', throttle(function() {
@@ -95,7 +118,7 @@ export default function setupWsiFileUpload() {
   };
 
   function validate_file() {
-    if (is_valid_filename(fileA.name)) {
+    if (isValidFilename(fileA.name)) {
       if (fileA.size < fileMaxSize) {
         return true;
       } else {
@@ -114,6 +137,22 @@ export default function setupWsiFileUpload() {
     };
     return false;
   };
+
+  function isValidFilename(filename) {
+    // Check total length
+    if (filename.length > 255) return false;
+    // Check extension length
+    let parts = filename.split(".");
+    if (parts.length < 2 || parts[parts.length - 1].length < 2 || parts[parts.length - 1].length > 7) return false;
+    // Check invalid characters
+    let invalidChars = /[<>:"/\\|?*]/;
+    if (invalidChars.test(filename)) return false;
+    // Check for trailing spaces or periods
+    if (filename[filename.length - 1] === " " || filename[filename.length - 1] === ".") return false;
+    // Check for non-printable characters
+    if (/[\x00-\x1F\x80-\x9F]/.test(filename)) return false;
+    return true;
+  }
 
   function errorFileUpload(strError) {
     switch (strError) {
@@ -228,31 +267,10 @@ export default function setupWsiFileUpload() {
         });
       };
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     };
   };
 
-  function receivedConfirmationSuccessfull(message) {
-    if (avatar) { avatar.resetButtons(message) };
-    if (pageLanguage == "fr") {
-      fileUploadLog('\u2713' + " Envoie réeussi de: " + fileUploadName);
-    } else {
-      fileUploadLog('\u2713' + " Sent successfully: " + fileUploadName);
-    };
-    clearSelectionFileUpload();
-  };
-
-  function is_valid_filename(filename) {
-    // Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot
-    // Check if extension is alphanumeric
-    let filenameRegex = /^\w[\w\s-]*\S\.\w+$/;
-    if (!filenameRegex.test(filename)) { return false; };
-    if (filename.length > 50) { return false; };
-    // Check if extension is present and not too long
-    let extension = filename.split('.').pop();
-    if (!extension || extension.length < 3 || extension.length > 5) { return false; };
-    return true;
-  };
 
   // sets a 2d Array with start position, end position and length for each portion of the file
   // ex 10 and 3 will output  [[0, 2, 3], [3, 5, 3], [6, 8, 3], [9, 9, 1]]
@@ -272,35 +290,61 @@ export default function setupWsiFileUpload() {
     return portions;
   };
 
-  function updateListOfFilesFromData(data) {
-    let fileMetaList = JSON.parse(data);
-    let ulItems = fileMetaList.map(fileMeta => {
-      return `<li>${fileMeta.file_name}</li>`;
-    });
-    let ulString = `<ul>${ulItems.join('')}</ul>`;
-    fileUploadList.innerHTML = ulString;
-  };
+  function receivedConfirmationSuccessfull(message) {
+    if (avatar) { avatar.resetInterface(message) };
+    if (fileUploadList) { askForListOfFiles() };
 
-  function wsiToFilesproAskForListOfFiles() {
-    wsiSend('f' + wsiCurrentTabId + "u");
-  };
-
-  function wsiToFilesproMessageReceived(message) {
-    let message_ = message.substring(1)
-    switch (message[0]) {
-      case 'u':
-        if (fileUploadList) { updateListOfFilesFromData(message_); };
-        break;
-      case 'a':
-        sendFilePartialUpload();
-        break;
-      case 'r':
-        receivedConfirmationSuccessfull(message_);
-        break;
-      case 'e':
-        errorFileUpload(message_);
-        break;
+    if (pageLanguage == "fr") {
+      fileUploadLog('\u2713' + " Envoie réeussi de: " + fileUploadName);
+    } else {
+      fileUploadLog('\u2713' + " Sent successfully: " + fileUploadName);
     };
+    clearSelectionFileUpload();
+  };
+
+  function askForListOfFiles() {
+    try {
+      wsiSend('f' + wsiCurrentTabId + "u" + pageLanguage);
+    } catch (error) {
+      // console.error(error);
+    };
+  };
+
+  function updateListOfFilesFromJson(data) {
+    let fileMetaList = JSON.parse(data);
+    let result = ``;
+    let title_download, title_viewer;
+    if (pageLanguage == "fr") {
+      title_download = "Télécharger";
+      title_viewer = "Ouvrir dans un nouvel onglet"
+    } else {
+      title_download = "Download"
+      title_viewer = "Open in a new tab"
+    };
+    for (let i = 0; i < fileMetaList.length; i++) {
+      let element = fileMetaList[i];
+      // Assuming the keys you're interested in are 'key1' and 'key2'
+      if ('file_name' in element && 'view' in element && 'dnld' in element) {
+        result += `    <div class="d-flex p-0 file_choice_row">
+        <div class="d-flex justify-content-center align-items-center flex-shrink-0" style="width: 30px;">&#x1F5CE;</div>
+        <div class="flex-grow-1 file_name_div">`
+        if (element['view'].length > 0) {
+          result += `<a class="text_color file_name_long" href="${element['view']}" draggable="false" title="${title_viewer}" target="_blank">
+            ${element['file_name']}
+          </a>`
+        } else {
+          result += `<div class="file_name_long">
+            ${element['file_name']}
+          </div>`
+        }
+        result += `</div>
+        <div class="d-flex justify-content-center align-items-center flex-shrink-0" style="width: 40px;">
+          <a class="file_download_button" href="${element['dnld']}" draggable="false" title="${title_download}" target="_blank"> &#x2935;</a>
+        </div>
+        </div>`;
+      }
+    }
+    fileUploadList.innerHTML = result;
   };
 
 
@@ -345,19 +389,19 @@ export default function setupWsiFileUpload() {
       });
     };
 
-    function resetButtons(message) {
+    function resetInterface(message) {
       imageViewerInitialImage.src = message;
       imageViewerInitialImage.hidden = false;
       fileUploadSendAvatarBtn.disabled = false;
       imageViewerFileChooseBtn.disabled = false;
     };
     return {
-      resetButtons: resetButtons,
+      resetInterface: resetInterface,
     };
   };
 
   return {
-    wsiToFilesproAskForListOfFiles: wsiToFilesproAskForListOfFiles,
+    askForListOfFiles: askForListOfFiles,
     wsiToFilesproMessageReceived: wsiToFilesproMessageReceived,
   };
 };

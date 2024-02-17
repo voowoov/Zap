@@ -44,7 +44,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                     match text_data[0]:
                         case "s":
                             await self.frequency_limiting(10)
-                            # await self.wsi_search_received_message()
+                            await self.wsi_search_received_message()
                         case "f":
                             await self.frequency_limiting(20)
                             await self.wsi_filespro_received_message()
@@ -89,7 +89,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                 await self.close()
             num = (score << 8) | new_timer
             self.channel_name_abr = num
-            logger.debug(f"WSI Received: message: {self.message}, score: {score}")
+            logger.debug(f"WSI Received: score: {score}, message: {self.message}")
         except Exception as e:
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()

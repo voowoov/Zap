@@ -1,5 +1,6 @@
 # chat/views.py
 import logging
+import os
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
-from zap.apps.filespro.models import FilesproFile, FilesproFolder
 from zap.apps.users.mixins import SuperuserLoginRequiredMixin
 
 

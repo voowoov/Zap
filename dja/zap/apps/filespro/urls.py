@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.utils.translation import gettext_lazy as _
 
 from . import views
@@ -6,16 +6,19 @@ from . import views
 app_name = "filespro"
 
 urlpatterns = [
-    path("download/", views.DownloadFile.as_view(), name="download_file"),
-    path("image_viewer/<slug:slug_image>", views.image_viewer, name="image_viewer"),
     path(
-        "image_private/<slug:slug_image>",
-        views.image_private,
-        name="image_private",
+        _("download/<str:signed_url>/"),
+        views.DownloadFile.as_view(),
+        name="download_file",
     ),
     path(
-        "pdf_viewer/<slug:slug_pdf>",
-        views.pdf_viewer,
-        name="pdf_viewer",
+        _("image_viewer/<str:signed_url>/"),
+        views.image_viewer,
+        name="image_viewer",
+    ),
+    path(
+        _("file_viewer/<str:signed_url>/"),
+        views.file_viewer,
+        name="file_viewer",
     ),
 ]

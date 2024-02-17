@@ -6,18 +6,20 @@
 
 <main class="d-flex flex-fill">
   <section class="full_section text_color">
-    <div class="h-100 container-fluid">
+    <div class="h-100">
       <div class="h-100 d-flex gap-2">
         <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
           <textarea class="command-log" id="command-log"></textarea>
-          <textarea class="command-input" id="command-input" type="text" rows="2"></textarea>
+          <textarea class="command-input" id="command-input" spellcheck="false" type="text" rows="2"></textarea>
           <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
         </div>
 
-        <div class="m-0 p-0 d-flex flex-column align-items-start" style="width:250px;">
+        <div class="m-0 p-0 d-flex flex-column align-items-start" style="min-width:250px;">
           Shared files
-          <div class="fileUploadCtn border p-1" style="width:100%">
-            <div class="fileUploadList border"></div>
+          <div class="fileUploadCtn">
+            <div class="fileUploadList">
+
+            </div>
             <input class="fileUploadRealInput" type="file" hidden="hidden">
             <button class="fileUploadChooseBtn">Choose File</button>
             <div class="fileUploadChoiceTxt">No file chosen, yet.</div>
@@ -25,6 +27,7 @@
             <button class="fileUploadCancelBtn" disabled>Cancel</button>
             <div class="fileUploadLogTxt"></div>
           </div>
+
           Test
         </div>
 
@@ -85,38 +88,8 @@
     color: var(--color-text);
   }
 
-
-  #myProgress {
-    width: 100%;
-  }
-
-  #uploaded_files {
-    margin-top: 25px;
-    display: flex;
-  }
-
   label {
     font-weight: bold;
-  }
-
-  .file-icon i {
-    font-size: 60px;
-    color: rgb(0, 0, 0);
-  }
-
-  .file-details {
-    margin-top: -2px;
-    padding-left: 10px;
-    width: 100%;
-  }
-
-  .file-details p {
-    margin-bottom: -7px;
-  }
-
-  small {
-    margin-top: 0;
-    color: black;
   }
 </style>
 

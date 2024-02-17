@@ -239,11 +239,6 @@ function getCookie(cname) {
     });
   };
 })();
-// mouse wheel scroll horizontally
-
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -253,15 +248,7 @@ function getCookie(cname) {
 /////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////
-export function throttle(func, delay) {
-  let lastCall = 0;
-  return function(...args) {
-    const now = Date.now();
-    if (now - lastCall < delay) { return; }
-    lastCall = now;
-    return func.apply(this, args);
-  };
-}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //  close open bs dropdown menus with escape key
@@ -287,3 +274,12 @@ window.addEventListener('keydown', function(event) {
 /////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////
+export function throttle(func, delay) {
+  let lastCall = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastCall < delay) { return; }
+    lastCall = now;
+    return func.apply(this, args);
+  };
+}

@@ -2,13 +2,35 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-##
+# #
+#: templates/accounts/account_message.html:4
+#: templates/accounts/account_messages.html:4
+#: templates/accounts/account_pref_perso.html:4
+#: templates/accounts/account_pref_signin.html:4
+#: templates/accounts/account_pref_socio.html:4
+#: templates/accounts/account_summary.html:4
+#: templates/accounts/edit_address_cp.html:4 templates/articles/articles.html:4
+#: templates/base/cookies/cookie_opt.html:4 templates/base/home.html:4
+#: templates/base/tests.html:4 templates/basket/summary.html:4
+#: templates/chat/chat_lobby.html:4 templates/chat/chat_staff.html:4
+#: templates/chat/chat_video.html:4 templates/filespro/show_priv_image.html:4
+#: templates/legal/acceptable_use_policy.html:4
+#: templates/legal/cookie_policy.html:4 templates/legal/privacy_policy.html:4
+#: templates/legal/return_and_refund_policy.html:4
+#: templates/legal/terms_of_service.html:4 templates/monitor/monitor.html:4
+#: templates/search/search.html:4 templates/users/create_account_info.html:4
+#: templates/users/create_user.html:4
+#: templates/users/invite_to_activation_email.html:4
+#: templates/users/password_reset.html:4 templates/users/signin_0.html:4
+#: templates/users/signin_lev2.html:4
+#: templates/users/signin_password_reset_info.html:4 templates/xsys/xsys.html:4
+#: zap/apps/legal/urls.py:14
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 01:26-0500\n"
+"POT-Creation-Date: 2024-02-16 22:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,329 +40,731 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\templates\accounts\account_message.html:3
-msgid "Message"
+#: templates/accounts/account__nav-0.html:7
+msgid "My account"
 msgstr ""
 
-#: .\templates\accounts\account_message.html:7
-msgid "Message content"
-msgstr ""
-
-#: .\templates\accounts\account_message.html:14
-msgid "Back to messages"
-msgstr ""
-
-#: .\templates\accounts\account_message.html:20
-msgid "From:"
-msgstr ""
-
-#: .\templates\accounts\account_message.html:21
-msgid "Sent:"
-msgstr ""
-
-#: .\templates\accounts\account_messages.html:3
-#: .\templates\accounts\account_messages.html:7
-msgid "Messages"
-msgstr ""
-
-#: .\templates\accounts\account_messages.html:27
-msgid "From"
-msgstr ""
-
-#: .\templates\accounts\account_messages.html:28
-msgid "Subject"
-msgstr ""
-
-#: .\templates\accounts\account_messages.html:29
-msgid "Received"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:3
-msgid "Pref. Perso"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:13
-#: .\templates\accounts\account_pref_perso.html:109
-msgid "Personal info"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:17
-#: .\templates\accounts\account_pref_signin.html:17
-msgid "Cancel"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:19
-#: .\templates\accounts\account_pref_signin.html:19
-msgid "Save"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:29
-msgid "Account type"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:35
-msgid "Individual"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:41
-msgid "Company"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:48
-msgid "Company name"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:50
-msgid "Please enter your company name."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:60
-msgid "Contact info"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:64
-#: .\templates\accounts\account_pref_perso.html:70
-msgid "Email address"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:72
-msgid "Please enter your email address."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:80
-msgid "Verified email"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:83
-#: .\templates\accounts\account_pref_perso.html:89
-msgid "Phone number"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:91
-msgid "Please enter your phone number."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:99
-msgid "Verified phone"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:114
-#: .\templates\accounts\account_pref_perso.html:120
-msgid "First name"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:122
-msgid "Please enter your first name."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:126
-#: .\templates\accounts\account_pref_perso.html:132
-msgid "Last name"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:134
-msgid "Please enter your last name."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:138
-#: .\templates\accounts\account_pref_perso.html:144
-msgid "Street address"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:146
-msgid "Please enter your street address."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:150
-#: .\templates\accounts\account_pref_perso.html:156
-msgid "City"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:158
-msgid "Please enter your city."
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:162
-#: .\templates\accounts\account_pref_perso.html:168
-msgid "Postal code"
-msgstr ""
-
-#: .\templates\accounts\account_pref_perso.html:170
-msgid "Please enter your postal code."
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:3
-msgid "Pref. Sign-in"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:13
-msgid "Sign-in and security"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:29
-msgid "Change password"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:34
-#: .\templates\accounts\account_pref_signin.html:40
-msgid "Actual password"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:42
-msgid "Please enter your actual password."
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:46
-#: .\templates\accounts\account_pref_signin.html:52
-msgid "New password"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:54
-msgid "Please enter your new password."
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:58
-#: .\templates\accounts\account_pref_signin.html:64
-msgid "New password (repeat)"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:66
-msgid "Please enter your new password (repeat)."
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:76
-msgid "Sign-in preferences"
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:82
-msgid "Keep me signed-in on this device."
-msgstr ""
-
-#: .\templates\accounts\account_pref_signin.html:93
-#: .\templates\accounts\account_pref_signin.html:97
-msgid "Close my account"
-msgstr ""
-
-#: .\templates\accounts\account_summary.html:3
+#: templates/accounts/account__nav-0.html:23
+#: templates/accounts/account_summary.html:3
 msgid "Summary"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:11
+#: templates/accounts/account__nav-0.html:28
+#: templates/accounts/account_messages.html:3
+#: templates/accounts/account_messages.html:8
+msgid "Messages"
+msgstr ""
+
+#: templates/accounts/account__nav-0.html:33
+msgid "Preferences"
+msgstr ""
+
+#: templates/accounts/account__nav_pref.html:5
+msgid "Personal&nbsp;info"
+msgstr ""
+
+#: templates/accounts/account__nav_pref.html:9
+msgid "Social&nbsp;info"
+msgstr ""
+
+#: templates/accounts/account__nav_pref.html:13
+msgid "Sign&#8209;in&nbsp;and&nbsp;security"
+msgstr ""
+
+#: templates/accounts/account_message.html:3
+#: templates/filespro/show_priv_image.html:3
+msgid "Message"
+msgstr ""
+
+#: templates/accounts/account_message.html:8
+msgid "Message content"
+msgstr ""
+
+#: templates/accounts/account_message.html:15
+msgid "Back to messages"
+msgstr ""
+
+#: templates/accounts/account_message.html:21
+msgid "From:"
+msgstr ""
+
+#: templates/accounts/account_message.html:22
+msgid "Sent:"
+msgstr ""
+
+#: templates/accounts/account_messages.html:28
+msgid "From"
+msgstr ""
+
+#: templates/accounts/account_messages.html:29
+msgid "Subject"
+msgstr ""
+
+#: templates/accounts/account_messages.html:30
+msgid "Received"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:3
+msgid "Pref. Perso"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:14
+#: templates/accounts/account_pref_perso.html:110 zap/apps/users/admin.py:74
+#: zap/apps/users/admin.py:100
+msgid "Personal info"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:18
+#: templates/accounts/account_pref_signin.html:18
+#: templates/base/cookies/cookie_opt_modal.html:184
+#: templates/base/footers/footer_full.html:151
+msgid "Cancel"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:20
+#: templates/accounts/account_pref_signin.html:20
+msgid "Save"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:30
+msgid "Account type"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:36 zap/apps/accounts/models.py:43
+msgid "Individual"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:42
+#: templates/base/footers/footer_full.html:136
+msgid "Company"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:49
+msgid "Company name"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:51
+msgid "Please enter your company name."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:61
+msgid "Contact info"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:65
+#: templates/accounts/account_pref_perso.html:71
+msgid "Email address"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:73
+msgid "Please enter your email address."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:81
+msgid "Verified email"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:84
+#: templates/accounts/account_pref_perso.html:90
+msgid "Phone number"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:92
+msgid "Please enter your phone number."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:100
+msgid "Verified phone"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:115
+#: templates/accounts/account_pref_perso.html:121
+msgid "First name"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:123
+msgid "Please enter your first name."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:127
+#: templates/accounts/account_pref_perso.html:133
+msgid "Last name"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:135
+msgid "Please enter your last name."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:139
+#: templates/accounts/account_pref_perso.html:145
+msgid "Street address"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:147
+msgid "Please enter your street address."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:151
+#: templates/accounts/account_pref_perso.html:157
+msgid "City"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:159
+msgid "Please enter your city."
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:163
+#: templates/accounts/account_pref_perso.html:169
+msgid "Postal code"
+msgstr ""
+
+#: templates/accounts/account_pref_perso.html:171
+msgid "Please enter your postal code."
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:3
+msgid "Pref. Sign-in"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:14
+msgid "Sign-in and security"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:30
+msgid "Change password"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:35
+#: templates/accounts/account_pref_signin.html:41
+msgid "Actual password"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:43
+msgid "Please enter your actual password."
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:47
+#: templates/accounts/account_pref_signin.html:53
+msgid "New password"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:55
+msgid "Please enter your new password."
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:59
+#: templates/accounts/account_pref_signin.html:65
+msgid "New password (repeat)"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:67
+msgid "Please enter your new password (repeat)."
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:77
+msgid "Sign-in preferences"
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:82
+msgid "Keep me signed-in on this device."
+msgstr ""
+
+#: templates/accounts/account_pref_signin.html:94
+#: templates/accounts/account_pref_signin.html:98
+msgid "Close my account"
+msgstr ""
+
+#: templates/accounts/account_pref_socio.html:3
+msgid "Pref. Social"
+msgstr ""
+
+#: templates/accounts/account_summary.html:12
 msgid "Account Information"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:15
+#: templates/accounts/account_summary.html:16
 msgid "Account&nbsp;holder:"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:27
+#: templates/accounts/account_summary.html:28
 msgid "Account&nbsp;number:"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:35
+#: templates/accounts/account_summary.html:36
 msgid "Account balance"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:36
+#: templates/accounts/account_summary.html:37
 msgid "Currency in canadian dollars."
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:40
+#: templates/accounts/account_summary.html:41
 msgid "Deposited:"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:44
+#: templates/accounts/account_summary.html:45
 msgid "Amount due:"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:52
+#: templates/accounts/account_summary.html:53
 msgid "Invoices"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:58
-#: .\templates\accounts\account_summary.html:90
-#: .\templates\accounts\account_summary.html:124
+#: templates/accounts/account_summary.html:59
+#: templates/accounts/account_summary.html:91
+#: templates/accounts/account_summary.html:125
 msgid "Date"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:59
-#: .\templates\accounts\account_summary.html:91
-#: .\templates\accounts\account_summary.html:125
+#: templates/accounts/account_summary.html:60
+#: templates/accounts/account_summary.html:92
+#: templates/accounts/account_summary.html:126
 msgid "Details"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:60
+#: templates/accounts/account_summary.html:61
 msgid "Invoice"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:61
+#: templates/accounts/account_summary.html:62
 msgid "Ref.&nbsp;project"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:62
-#: .\templates\accounts\account_summary.html:94
-#: .\templates\accounts\account_summary.html:126
+#: templates/accounts/account_summary.html:63
+#: templates/accounts/account_summary.html:95
+#: templates/accounts/account_summary.html:127
 msgid "Status"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:63
-#: .\templates\accounts\account_summary.html:95
+#: templates/accounts/account_summary.html:64
+#: templates/accounts/account_summary.html:96
 msgid "Amount"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:84
+#: templates/accounts/account_summary.html:85
 msgid "Deposits"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:92
+#: templates/accounts/account_summary.html:93
 msgid "Receipt"
 msgstr ""
 
-#: .\templates\accounts\account_summary.html:93
+#: templates/accounts/account_summary.html:94
 msgid "Ref.&nbsp;invoice"
 msgstr ""
 
-#: .\templates\accounts\edit_address_cp.html:3
+#: templates/accounts/avatar.html:18
+msgid "Choose an image file from my computer for editing my avatar"
+msgstr ""
+
+#: templates/accounts/avatar.html:19
+msgid "Save my avatar image on the server"
+msgstr ""
+
+#: templates/accounts/edit_address_cp.html:3
 msgid "Edit Address"
 msgstr ""
 
-#: .\templates\base\cookies\cookie_opt.html:3
+#: templates/articles/article.html:43
+msgid "By"
+msgstr ""
+
+#: templates/articles/article.html:58
+msgid "Created: "
+msgstr ""
+
+#: templates/articles/article.html:60
+msgid "updated"
+msgstr ""
+
+#: templates/articles/articles.html:3 templates/base/navbars/navbar.html:79
+msgid "Articles"
+msgstr ""
+
+#: templates/base/cookies/cookie_banner.html:8
+msgid "Your privacy"
+msgstr ""
+
+#: templates/base/cookies/cookie_banner.html:21
+#: templates/base/cookies/cookie_opt_modal.html:32
+#: templates/base/footers/footer_full.html:146
+#: templates/legal/cookie_policy.html:3 templates/legal/legal__nav-0.html:15
+msgid "Cookie Policy"
+msgstr ""
+
+#: templates/base/cookies/cookie_banner.html:25
+#: templates/base/cookies/cookie_opt_modal.html:182
+msgid "Accept all cookies"
+msgstr ""
+
+#: templates/base/cookies/cookie_banner.html:30
+#: templates/base/cookies/cookie_opt.html:3
 msgid "Cookie settings"
 msgstr ""
 
-#: .\templates\base\navbars\navbar.html:98
+#: templates/base/cookies/cookie_opt_modal.html:9
+#: templates/base/footers/footer_full.html:147
+msgid "Cookie Settings"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:38
+msgid "Strictly Necessary"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:77
+msgid "Performance Cookies"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:107
+#: templates/base/cookies/cookie_opt_modal.html:139
+#: templates/base/cookies/cookie_opt_modal.html:175
+msgid "Cookie details"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:113
+msgid "Functional Cookies"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:145
+msgid "Targeting Cookies"
+msgstr ""
+
+#: templates/base/cookies/cookie_opt_modal.html:180
+msgid "Confirm my choices"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:18
+msgid "Mon-Fri"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:35
+msgid "Online support"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:52
+msgid "New York, USA"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:53
+msgid "NY 10012, US"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:61
+msgid "Connect with us on social media :"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:121
+msgid "Questions"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:122
+msgid "Help"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:126
+msgid "Products"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:129
+#: templates/base/footers/footer_full.html:130
+#: templates/base/footers/footer_full.html:131
+#: templates/base/footers/footer_full.html:132
+#: templates/base/footers/footer_full.html:154
+#: templates/base/footers/footer_full.html:155
+#: templates/base/footers/footer_full.html:156
+#: templates/base/footers/footer_full.html:157
+msgid "Lorem ipsum"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:139
+msgid "About"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:140
+msgid "Press"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:141
+msgid "Work Here"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:142
+msgid "Contact Us"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:143
+msgid "Legal"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:144
+#: templates/legal/legal__nav-0.html:13 templates/legal/privacy_policy.html:3
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/base/footers/footer_full.html:145
+#: templates/legal/legal__nav-0.html:11
+msgid "Terms of Service"
+msgstr ""
+
+#: templates/base/footers/footer_small.html:9
+msgid "All Rights Reserved."
+msgstr ""
+
+#: templates/base/footers/footer_small.html:10
+#: templates/users/create_user.html:33 templates/users/password_reset.html:33
+msgid "User Agreement"
+msgstr ""
+
+#: templates/base/footers/footer_small.html:11
+msgid "Privacy"
+msgstr ""
+
+#: templates/base/footers/footer_small.html:11
+#: templates/users/create_user.html:33 templates/users/password_reset.html:33
+msgid "and"
+msgstr ""
+
+#: templates/base/footers/footer_small.html:12
+msgid "Cookie"
+msgstr ""
+
+#: templates/base/home.html:3
 msgid "Home"
 msgstr ""
 
-#: .\templates\base\navbars\navbar.html:100
-msgid "Switch"
+#: templates/base/navbars/navbar.html:25 templates/base/navbars/navbar.html:43
+#: templates/base/navbars/navbar.html:50
+msgid "Something else here"
 msgstr ""
 
-#: .\templates\base\navbars\navbar.html:102
-msgid "Signup"
+#: templates/base/navbars/navbar.html:34
+msgid "Something else"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:73 templates/chat/chat_lobby.html:3
+#: templates/monitor/monitor.html:3
+msgid "Monitor"
+msgstr "Monitorer"
+
+#: templates/base/navbars/navbar.html:75
+msgid "Chat&nbsp;lobb"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:77
+msgid "Chat&nbsp;Staff"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:80 templates/base/tests.html:3
+#: templates/chat/chat_video.html:3
+msgid "Test"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:81
+msgid "Explore"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:82
+msgid "Services"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:83
+msgid "Quotes"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:105
+msgid "Scheduling"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:117
+#: templates/base/navbars/navbar.html:138
+#: templates/base/navbars/navbar.html:168 templates/users/signin_0.html:62
+#, fuzzy
+#| msgid "Signup"
+msgid "Sign in"
 msgstr "Inscription"
 
-#: .\templates\base\navbars\navbar.html:104
-msgid "Account"
+#: templates/base/navbars/navbar.html:130
+msgid "Messaging"
 msgstr ""
 
-#: .\templates\base\navbars\navbar.html:106
-msgid "Cmd"
+#: templates/base/navbars/navbar.html:135
+msgid "Chat lobby"
 msgstr ""
 
-#: .\templates\users\signin_password.html:13
+#: templates/base/navbars/navbar.html:161
 msgid "Welcome"
 msgstr "Bienvenue"
 
-#: .\templates\users\signin_switch.html:10
+#: templates/base/navbars/navbar.html:164
+msgid "Account summary"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:166
+#, fuzzy
+#| msgid "Signup"
+msgid "Sign out"
+msgstr "Inscription"
+
+#: templates/base/navbars/navbar.html:170 templates/users/create_user.html:12
+msgid "Create an account"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:178
+msgid "Language"
+msgstr ""
+
+#: templates/base/navbars/navbar.html:189
+msgid "Theme"
+msgstr ""
+
+#: templates/base/page_actions/footer_buttons.html:5
+msgid "Back to top"
+msgstr ""
+
+#: templates/basket/summary.html:3
+msgid "Basket Summary"
+msgstr ""
+
+#: templates/chat/chat_lobby.html:14 templates/monitor/monitor.html:14
+msgid "Send command"
+msgstr ""
+
+#: templates/chat/chat_staff.html:3
+msgid "Lobby"
+msgstr ""
+
+#: templates/chat/chat_staff.html:42
+msgid "Send chat"
+msgstr ""
+
+#: templates/legal/acceptable_use_policy.html:3
+#: templates/legal/legal__nav-0.html:17
+msgid "Acceptable Use Policy"
+msgstr ""
+
+#: templates/legal/legal__nav-0.html:19
+#: templates/legal/return_and_refund_policy.html:3
+msgid "Return and Refund Policy"
+msgstr ""
+
+#: templates/legal/terms_of_service.html:3
+msgid "Terms of service"
+msgstr ""
+
+#: templates/search/search.html:3
+msgid "Search"
+msgstr ""
+
+#: templates/users/create_account_info.html:3
+msgid "Create account info"
+msgstr ""
+
+#: templates/users/create_user.html:3
+msgid "Create user"
+msgstr ""
+
+#: templates/users/create_user.html:20 templates/users/password_reset.html:20
+#: templates/users/signin_0.html:52 templates/users/signin_lev2.html:43
+#: zap/apps/users/forms.py:45
+msgid "Password"
+msgstr ""
+
+#: templates/users/create_user.html:28 templates/users/password_reset.html:28
+msgid "Please enter your password."
+msgstr ""
+
+#: templates/users/create_user.html:32 templates/users/password_reset.html:32
+msgid "When you <strong>Register</strong>, you agree to our"
+msgstr ""
+
+#: templates/users/create_user.html:33 templates/users/password_reset.html:34
+msgid "aknowledge reading our"
+msgstr ""
+
+#: templates/users/create_user.html:34 templates/users/password_reset.html:34
+msgid "User Privacy Notice"
+msgstr ""
+
+#: templates/users/create_user.html:38 templates/users/password_reset.html:38
+msgid "Register"
+msgstr ""
+
+#: templates/users/invite_to_activation_email.html:3
+msgid "Invite"
+msgstr ""
+
+#: templates/users/password_reset.html:3
+#: templates/users/signin_password_reset_info.html:3
+msgid "Password reset"
+msgstr ""
+
+#: templates/users/password_reset.html:12
+msgid "Reset your password"
+msgstr ""
+
+#: templates/users/signin_0.html:3 templates/users/signin_lev2.html:3
+#, fuzzy
+#| msgid "Signup"
+msgid "Sign-in"
+msgstr "Inscription"
+
+#: templates/users/signin_0.html:16
+msgid "Sign in to your account"
+msgstr ""
+
+#: templates/users/signin_0.html:45 zap/apps/users/models.py:149
+msgid "email address"
+msgstr ""
+
+#: templates/users/signin_0.html:72
+msgid "Remember my email"
+msgstr ""
+
+#: templates/users/signin_0.html:81
+msgid "Stay&nbsp;"
+msgstr ""
+
+#: templates/users/signin_0.html:83
+msgid "signed in"
+msgstr ""
+
+#: templates/users/signin_0.html:89
+msgid "Uncheck if using a public device."
+msgstr ""
+
+#: templates/users/signin_0.html:122
+msgid "Create&nbspa&nbspnew&nbspaccount"
+msgstr ""
+
+#: templates/users/signin_0.html:125
+msgid "Reset&nbspmy&nbsppassword"
+msgstr ""
+
+#: templates/users/signin_lev2.html:16
+msgid "Enter your Zap account password to access this page."
+msgstr ""
+
+#: templates/users/signin_lev2.html:53
+msgid "Continue"
+msgstr ""
+
+#: templates/users/signin_password_reset_info.html:12
 msgid "Hello"
 msgstr "Bonjour"
 
-#: .\templates\users\signin_switch.html:37
-msgid "email"
-msgstr "courriel"
+#: templates/users/signin_password_reset_info.html:13
+msgid "Sign in to Zap or"
+msgstr ""
 
-#: .\zap\apps\accounts\forms.py:21
+#: templates/users/signin_password_reset_info.html:14
+msgid "create&nbspan&nbspaccount"
+msgstr ""
+
+#: templates/xsys/xsys.html:3
+msgid "cmd"
+msgstr ""
+
+#: zap/apps/accounts/forms.py:21
 #, python-format
 msgid ""
 "Unit number and Street address together must total less than %(value)s "
@@ -349,165 +773,288 @@ msgstr ""
 "Le numéro d'unité et l'address de rue doivent être ensemble moins de "
 "%(value)s caractères."
 
-#: .\zap\apps\accounts\models.py:149
+#: zap/apps/accounts/models.py:42
+msgid "Organisation"
+msgstr ""
+
+#: zap/apps/accounts/models.py:149
 msgid "Full Name"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:9
+#: zap/apps/accounts/urls.py:9
 msgid "account_summary/"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:10
+#: zap/apps/accounts/urls.py:11
 msgid "account_messages/"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:11
+#: zap/apps/accounts/urls.py:14
 msgid "account_message/<int:pk>"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:12
+#: zap/apps/accounts/urls.py:19
 msgid "account_pref_perso"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:13
+#: zap/apps/accounts/urls.py:24
+msgid "account_pref_socio"
+msgstr ""
+
+#: zap/apps/accounts/urls.py:29
 msgid "account_pref_signin"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:14
+#: zap/apps/accounts/urls.py:33
 msgid "download/<int:pk>"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:15
+#: zap/apps/accounts/urls.py:34
 msgid "project/"
 msgstr ""
 
-#: .\zap\apps\accounts\urls.py:16
+#: zap/apps/accounts/urls.py:35
 msgid "e"
 msgstr ""
 
-#: .\zap\apps\inventory\models.py:102
+#: zap/apps/articles/urls.py:9
+msgid "articles/"
+msgstr ""
+
+#: zap/apps/articles/urls.py:10
+msgid "article/<slug:article_slug>/"
+msgstr ""
+
+#: zap/apps/articles/urls.py:11
+msgid "author/<slug:author_slug>/"
+msgstr ""
+
+#: zap/apps/base/urls.py:17
+msgid "cookie_opt/"
+msgstr ""
+
+#: zap/apps/chat/urls.py:9
+msgid "chat_lobby/"
+msgstr ""
+
+#: zap/apps/chat/urls.py:10
+msgid "chat_staff/"
+msgstr ""
+
+#: zap/apps/chat/urls.py:11
+msgid "chat_video/"
+msgstr ""
+
+#: zap/apps/filespro/urls.py:10
+msgid "download/<str:signed_url>/"
+msgstr "télécharger/<str:signed_url>/"
+
+#: zap/apps/filespro/urls.py:15
+msgid "image_viewer/<str:signed_url>/"
+msgstr "visualisateur_image/<str:signed_url>/"
+
+#: zap/apps/filespro/urls.py:20
+msgid "file_viewer/<str:signed_url>/"
+msgstr "visualisateur_de_fichier/<str:signed_url>/"
+
+#: zap/apps/inventory/models.py:97
 msgid "categories"
 msgstr ""
 
-#: .\zap\apps\inventory\models.py:121
+#: zap/apps/inventory/models.py:114
 msgid "product_categories"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:7
-msgid "legal/terms-of-service"
+#: zap/apps/legal/urls.py:9
+msgid "terms-of-service"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:8
-msgid "legal/privacy-policy"
+#: zap/apps/legal/urls.py:10
+msgid "privacy-policy"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:9
-msgid "legal/cookie-policy"
+#: zap/apps/legal/urls.py:11
+msgid "cookie-policy"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:10
-msgid "legal/acceptable-use-policy"
+#: zap/apps/legal/urls.py:12
+msgid "acceptable-use-policy"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:11
-msgid "legal/return-and-refund-policy"
+#: zap/apps/legal/urls.py:13
+msgid "return-and-refund-policy"
 msgstr ""
 
-#: .\zap\apps\legal\urls.py:12
-msgid "legal/"
+#: zap/apps/monitor/urls.py:9
+msgid "monitor625453245/"
+msgstr "monitoreraYo"
+
+#: zap/apps/search/models.py:7
+msgid "language"
 msgstr ""
 
-#: .\zap\apps\users\models.py:27
+#: zap/apps/search/models.py:8
+msgid "title"
+msgstr ""
+
+#: zap/apps/search/models.py:9
+msgid "release_date"
+msgstr ""
+
+#: zap/apps/search/models.py:10
+msgid "vote"
+msgstr ""
+
+#: zap/apps/users/admin.py:89
+msgid "Permissions"
+msgstr ""
+
+#: zap/apps/users/models.py:31
 msgid "Mr."
 msgstr ""
 
-#: .\zap\apps\users\models.py:28
+#: zap/apps/users/models.py:32
 msgid "Ms."
 msgstr ""
 
-#: .\zap\apps\users\models.py:29
-msgid "Dr."
-msgstr ""
-
-#: .\zap\apps\users\models.py:30
-msgid "Prof."
-msgstr ""
-
-#: .\zap\apps\users\models.py:106
+#: zap/apps/users/models.py:123
 msgid "responsible of the account"
 msgstr ""
 
-#: .\zap\apps\users\models.py:108
+#: zap/apps/users/models.py:125
 msgid "Designates whether the user have write permission to the account"
 msgstr ""
 
-#: .\zap\apps\users\models.py:123
-msgid "email address"
-msgstr ""
-
-#: .\zap\apps\users\models.py:128
+#: zap/apps/users/models.py:154
 msgid "staff status"
 msgstr ""
 
-#: .\zap\apps\users\models.py:130
+#: zap/apps/users/models.py:156
 msgid "Designates whether the user can log into this admin site."
 msgstr ""
 
-#: .\zap\apps\users\models.py:133
+#: zap/apps/users/models.py:159
 msgid "active"
 msgstr ""
 
-#: .\zap\apps\users\models.py:136
-msgid ""
-"Designates whether this user should be treated as active. Unselect this "
-"instead of deleting accounts."
+#: zap/apps/users/models.py:162
+msgid "Designates whether this user should be treated as active and verified."
 msgstr ""
 
-#: .\zap\apps\users\models.py:139
+#: zap/apps/users/models.py:166
+msgid "account closed"
+msgstr ""
+
+#: zap/apps/users/models.py:168
+msgid "Designates whether the user account is closed."
+msgstr ""
+
+#: zap/apps/users/models.py:170
 msgid "date joined"
 msgstr ""
 
-#: .\zap\apps\users\models.py:149
+#: zap/apps/users/models.py:171
+msgid "date closed"
+msgstr ""
+
+#: zap/apps/users/models.py:183
 msgid "user"
 msgstr ""
 
-#: .\zap\apps\users\models.py:150
+#: zap/apps/users/models.py:184
 msgid "users"
 msgstr ""
 
-#: .\zap\apps\users\urls.py:10
-msgid "signin_switch/"
+#: zap/apps/users/urls.py:10
+#, fuzzy
+#| msgid "signin_switch/"
+msgid "signin_0/"
 msgstr "se_connecter_courriel"
 
-#: .\zap\apps\users\urls.py:11
-msgid "signin_password/"
-msgstr "se_connecter_mot_de_passe"
+#: zap/apps/users/urls.py:11
+msgid "Signin_Lev2/"
+msgstr ""
 
-#: .\zap\apps\users\urls.py:12
+#: zap/apps/users/urls.py:12
 msgid "logout/"
 msgstr ""
 
-#: .\zap\apps\users\urls.py:14
+#: zap/apps/users/urls.py:14
 msgid "create_an_account_info"
 msgstr ""
 
-#: .\zap\apps\users\urls.py:18
+#: zap/apps/users/urls.py:18
 msgid "create_an_account/<slug:uidb64>/<slug:token>"
 msgstr "ouvrir_un_compte/<slug:uidb64>/<slug:token>"
 
-#: .\zap\apps\users\urls.py:19
+#: zap/apps/users/urls.py:19
 #, fuzzy
 #| msgid "create_an_account/<slug:uidb64>/<slug:token>"
 msgid "password_reset/<slug:uidb64>/<slug:token>"
 msgstr "ouvrir_un_compte/<slug:uidb64>/<slug:token>"
 
-#: .\zap\settings.py:152
+#: zap/apps/users/urls.py:20
+msgid "password_reset"
+msgstr ""
+
+#: zap/apps/users/views.py:80
+msgid "This account was closed."
+msgstr ""
+
+#: zap/apps/users/views.py:83
+msgid "This account is awaiting email verification."
+msgstr ""
+
+#: zap/apps/users/views.py:115
+msgid "There was no match."
+msgstr ""
+
+#: zap/apps/users/views.py:159
+msgid "Incorrect password"
+msgstr ""
+
+#: zap/apps/users/views.py:198
+msgid "Your account was created."
+msgstr ""
+
+#: zap/apps/users/views.py:221
+msgid "This user already exists"
+msgstr ""
+
+#: zap/apps/users/views.py:228 zap/apps/users/views.py:280
+msgid "This activation link is invalid."
+msgstr ""
+
+#: zap/apps/users/views.py:257
+msgid "Your password reset is completed."
+msgstr ""
+
+#: zap/settings.py:238
 msgid "English"
 msgstr ""
 
-#: .\zap\settings.py:153
+#: zap/settings.py:239
 msgid "French"
 msgstr ""
+
+#: zap/urls-beta.py:40 zap/urls.py:41
+msgid "chat/"
+msgstr ""
+
+#~ msgid "download/"
+#~ msgstr "télécharger/"
+
+#~ msgid "image_viewer/"
+#~ msgstr "visualisateur_image/"
+
+#~ msgid "file_viewer/"
+#~ msgstr "visualisateur_de_fichier/"
+
+#~ msgid "email"
+#~ msgstr "courriel"
+
+#~ msgid "signin_password/"
+#~ msgstr "se_connecter_mot_de_passe"
 
 #~ msgid "eat my shorts"
 #~ msgstr "mange de la crotteéê^^çàü"

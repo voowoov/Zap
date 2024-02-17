@@ -40,7 +40,10 @@ function handleWsEvent(event) {
     case 'onopen':
       console.log('WebSocket is open');
       if (typeof fileUploadFunctions !== 'undefined') {
-        fileUploadFunctions.wsiToFilesproAskForListOfFiles();
+        fileUploadFunctions.askForListOfFiles();
+      };
+      if (typeof searchFunctions !== 'undefined') {
+        searchFunctions.makeSearchQuery();
       };
       break;
     case 'onclose':
@@ -58,7 +61,7 @@ function handleWsEvent(event) {
             case 's':
               // check if the module is loaded
               if (typeof searchFunctions !== 'undefined') {
-                searchFunctions.showSearchResults(message);
+                searchFunctions.wsiToSearchReceivedResult(message);
               };
             case 'f':
               if (typeof fileUploadFunctions !== 'undefined') {
@@ -78,8 +81,9 @@ let wsworker;
 let gsocket;
 let useSharedWorker = !!window.SharedWorker; // is supported
 
-export function wsiOpenSharedSocket() {
+export function wsiOpenOrAccessSharedSocket() {
   if (typeof wsworker === 'undefined') {
+    console.log("Opening web socket")
     if (useSharedWorker) {
       wsworker = new SharedWorker('/static/js/sharedWorker.js');
 
@@ -146,9 +150,7 @@ export function wsiSend(message) {
   } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
     gsocket.send(message);
   };
-  if (message.length < 100) {
-    console.log("WSI Sending: " + message);
-  };
+  message.length < 100 ? console.log("WSI Sending: " + message) : null;
 };
 
 export function wsiReconnect() {

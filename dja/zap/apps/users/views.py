@@ -21,8 +21,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.cache import never_cache
 from zap.apps.users.mixins import session_lev2_timestamp
-from zap.apps.users.tokens import create_user_token, password_reset_token
 from zap.apps.xsys.models import CookieOnServer
+from zap.apps.xsys.tokens import password_reset_token, user_token_generator
 
 logger = logging.getLogger(__name__)
 
@@ -222,7 +222,7 @@ class CreateAccount(View):
                 )
                 return False
             except:
-                if create_user_token.check_token(self.email, token):
+                if user_token_generator.check_token(self.email, token):
                     return True
         messages.add_message(
             request, messages.INFO, _("This activation link is invalid.")

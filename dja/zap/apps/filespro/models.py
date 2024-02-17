@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 
 from django.conf import settings
@@ -11,15 +12,25 @@ from django.utils.translation import gettext_lazy as _
 logger = logging.getLogger(__name__)
 
 private_storage = FileSystemStorage(
-    location=settings.PRIVATE_STORAGE_ROOT, base_url="/media_private"
+    location=settings.PRIVATE_STORAGE_ROOT, base_url=settings.PRIVATE_STORAGE_BASE_URL
 )
-
-FREQ_LIM_REFRESH_TIME = 240  # seconds
-FREQ_LIM_BYTES_PER_DEMAND = 10000  # cost of demand
 
 
 def uploadPathFunction(instance, filename):
-    return "uploads/" + get_random_string(12) + "." + filename.split(".")[-1]
+    file_name, extension = os.path.splitext(os.path.basename(instance.file_name))
+    extension = extension.lstrip(".")
+    return (
+        settings.PRIVATE_STORAGE_SUBFOLDER
+        + get_random_string(3)
+        + "-"
+        + file_name[:12]
+        + "."
+        + extension
+    )
+
+
+FREQ_LIM_REFRESH_TIME = 240  # seconds
+FREQ_LIM_BYTES_PER_DEMAND = 10000  # cost of demand
 
 
 class FilesproFolder(models.Model):
@@ -81,7 +92,7 @@ class FilesproFolder(models.Model):
 class FilesproFile(models.Model):
     filespro_folder = models.ForeignKey(FilesproFolder, on_delete=models.CASCADE)
     file = models.FileField(upload_to=uploadPathFunction, storage=private_storage)
-    file_name = models.CharField(max_length=50)
+    file_name = models.CharField(max_length=255)
     file_size = models.PositiveIntegerField()
 
     def delete(self, *args, **kwargs):  # makes delete the media file too

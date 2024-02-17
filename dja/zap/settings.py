@@ -165,6 +165,8 @@ MEDIA_ROOT = TOP_DIR / "media/"
 
 ###### Custom Config #######
 PRIVATE_STORAGE_ROOT = TOP_DIR / "priv_files"
+PRIVATE_STORAGE_BASE_URL = "/media_private/"
+PRIVATE_STORAGE_SUBFOLDER = "uploads/"
 STATIC_ROOT_DEV = TOP_DIR / "static"  # see urls.py
 
 ###### Database #######

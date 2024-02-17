@@ -12,11 +12,14 @@ from django.conf import settings
 from django.core.files import File
 from django.db import transaction
 from django.utils.crypto import get_random_string
+from django.utils.translation import activate, get_language
 from PIL import Image
+from zap.apps.filespro._functions import get_link_for_file_viewer_and_download
 
 from .models import FilesproFile, FilesproFolder
 
 logger = logging.getLogger(__name__)
+
 
 path_directory = settings.WSI_TMP_FILE_DIRECTORY
 ### the same must be in the js.
@@ -34,7 +37,7 @@ class WSIPrivFilesMixin:
         await self.init_filespro_folder()
         match self.message[0]:
             case "u":  # update list of files in filespro_folder
-                await self.send_folder_list()
+                await self.send_folder_list(self.message[1:])
             case "s":  # start the upload
                 if not self.filespro_transfer_underway:
                     await self.file_upload_demand(self.message[1:])
@@ -51,13 +54,21 @@ class WSIPrivFilesMixin:
                 logger.error(f"error: init_filespro_folder: {e}")
                 await self.close()
 
-    async def send_folder_list(self):
+    async def send_folder_list(self, language_code):
+        if language_code == "en" or language_code == "fr":
+            activate(language_code)
         try:
             data = await sync_to_async(list)(
                 FilesproFile.objects.filter(
                     filespro_folder_id=self.filespro_folder_id
                 ).values("file_name", "file")
             )
+            for d in data:
+                file_url = d.get("file")
+                urls = get_link_for_file_viewer_and_download(file_url)
+                d["view"] = urls["viewer_url"]  # Add into the dictionary
+                d["dnld"] = urls["download_url"]  # Add into the dictionary
+                del d["file"]
             data_json = json.dumps(data)
             await self.send("f" + self.tab_id + "u" + str(data_json))
         except Exception as e:
@@ -165,7 +176,7 @@ class WSIPrivFilesMixin:
             else:
                 raise ValueError(f"Message too long: {message}")
         except Exception as e:
-            logger.error(f"error: wsi file upload demand: {e}")
+            logger.error(f"error: file_upload_demand: {e}")
             await self.close()
 
     async def filespro_receive_bytes_chunk(self, bytes_data):
@@ -206,7 +217,6 @@ class WSIPrivFilesMixin:
                                 match self.upload_type:
                                     case "manual":
                                         await self.save_file_to_filespro_file()
-                                        await self.send_folder_list()
                                     case "avatar":
                                         if self.scope["user"].is_authenticated:
                                             await self.save_file_to_user_avatar()
@@ -228,7 +238,7 @@ class WSIPrivFilesMixin:
                             await self.send("f" + self.tab_id + "a")
 
         except Exception as e:
-            logger.error(f"error: wsi file upload receiving: {e}")
+            logger.error(f"error: filespro_receive_bytes_chunk: {e}")
             await self.close()
 
     async def save_file_to_filespro_file(self):
@@ -274,17 +284,21 @@ class WSIPrivFilesMixin:
         return False
 
     def is_valid_filename(self, filename):
-        # Check if filename starts with alphanumeric or underscore, followed by alphanumeric, underscore, hyphen, and contains only one dot
-        # Check if extension is alphanumeric
-        if not re.match(r"^\w[\w\s-]*\S\.\w+$", filename):
+        # Check total length
+        if len(filename) > 255:
             return False
-        if len(filename) > 50:
+        # Check extension length
+        parts = filename.split(".")
+        if len(parts) < 2 or len(parts[-1]) < 2 or len(parts[-1]) > 7:
             return False
-        # Check if extension is present and not too long
-        extension = Path(filename).suffix
-        if (
-            not extension or len(extension) - 1 < 3 or len(extension) - 1 > 5
-        ):  # Subtract 1 for the leading dot
+        # Check invalid characters
+        if re.search(r'[<>:"/\\|?*]', filename):
+            return False
+        # Check for trailing spaces or periods
+        if filename[-1] in [" ", "."]:
+            return False
+        # Check for non-printable characters
+        if any(ord(char) < 32 or 126 < ord(char) < 160 for char in filename):
             return False
         return True
 

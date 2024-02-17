@@ -116,9 +116,11 @@ import time
 def typesense_search_documents(query: str):
     try:
         if query == "":
-            query = "-"
+            _query = "-"
+        else:
+            _query = query
         search_parameters = {
-            "q": query,  # The search query
+            "q": _query,  # The search query
             "query_by": "title,language",  # The fields to search by
             "sort_by": "_text_match:desc,vote:desc",  # The sorting order
             "per_page": 10,  # The number of results per page
@@ -126,12 +128,18 @@ def typesense_search_documents(query: str):
         }
         results = client.collections["products"].documents.search(search_parameters)
         # A list of dictionaries containing the title and rating of each result
-        data = [
-            {"title": result["document"]["title"], "vote": result["document"]["vote"]}
-            for result in results["hits"]
-        ]
+        data = {
+            "q": query,
+            "r": [
+                {
+                    "title": result["document"]["title"],
+                    "vote": result["document"]["vote"],
+                }
+                for result in results["hits"]
+            ],
+        }
         # A JSON string representation of the data
-        json_data = json.dumps(data, indent=1)
+        json_data = json.dumps(data)
         return json_data
     except Exception as e:
         logger.error(f"error: typesense_search_documents: {e}")

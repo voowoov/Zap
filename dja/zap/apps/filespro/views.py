@@ -1,40 +1,30 @@
 import logging
-import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
+from zap.apps.filespro._functions import get_file_value_from_signed_url
 
 logger = logging.getLogger(__name__)
 
 
 class DownloadFile(LoginRequiredMixin, View):
-    def get(self, request):
-        try:
-            name = "Felisss.png"
-            response = HttpResponse()
-            response["Content-Disposition"] = 'attachment; filename="' + name + '"'
-            response["X-Accel-Redirect"] = "/media_private/Felis.png"
-            del response["Content-Type"]
-            del response["Accept-Ranges"]
-            del response["Set-Cookie"]
-            del response["Cache-Control"]
-            # response["Cache-Control"] = 'private, max-age=31536000'  # Cache for one year
-            del response["Expires"]
-
-        except Exception as e:
-            logger.error(f"error: DownloadFile: {e}")
+    def get(self, request, signed_url):
+        file_value = get_file_value_from_signed_url(signed_url)
+        response = HttpResponse()
+        response["Content-Disposition"] = (
+            'attachment; filename="' + file_value["base_name"][4:] + '"'
+        )
+        response["X-Content-Type-Options"] = "nosniff"
+        # response["Cache-Control"] = 'private, max-age=31536000'  # Cache for one year
+        response["X-Accel-Redirect"] = file_value["file_url"]
         return response
 
 
-def image_viewer(request, slug_image):
-    # if request.method == "POST":
-    #     if some_var == 'the_correct_value':
-    protected_uri = reverse(
-        "filespro:image_private", kwargs={"slug_image": "slug_image"}
-    )
+def image_viewer(request, signed_url):
+    protected_uri = reverse("filespro:file_viewer", kwargs={"signed_url": signed_url})
     file_name = "image name"
     return render(
         request,
@@ -43,17 +33,12 @@ def image_viewer(request, slug_image):
     )
 
 
-def image_private(request, slug_image):
-    # ... some logic to get the secret URL from the slug ...
-    response = HttpResponse()
-    response["Content-Type"] = "application/png"
-    response["X-Accel-Redirect"] = "/media_private/Felis.png"
-    return response
-
-
-def pdf_viewer(request, slug_pdf):
-    # ... some logic to get the secret URL from the slug ...
-    response = HttpResponse()
-    response["Content-Type"] = "application/pdf"
-    response["X-Accel-Redirect"] = "/media_private/photogrametry.pdf"
-    return response
+def file_viewer(request, signed_url):
+    file_value = get_file_value_from_signed_url(signed_url)
+    if file_value["content_type"]:
+        response = HttpResponse()
+        response["Content-Type"] = file_value["content_type"]
+        response["X-Accel-Redirect"] = file_value["file_url"]
+        return response
+    else:
+        return HttpResponse("Invalid request", status=400)

@@ -1,4 +1,4 @@
-import { wsiOpenSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
+import { wsiOpenOrAccessSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -8,18 +8,19 @@ import { throttle } from './base.js';
 export default function setupWsiSearch() {
   const pageLanguage = document.documentElement.lang;
 
-
   let screenWidthLg = 992; // Replace with your value
+  let navSearchStartTimer;
 
-  const navSearchTriggerBtn = document.querySelector('.btn_nav__search');
-  const navSearchMain = document.querySelector('.navSearchMain');
-  // Fill the div with HTML code
+  /////////////////////////////////////////////////////////////////////////////////
+  //  HTML code for search
+  /////////////////////////////////////////////////////////////////////////////////
   let navSearchPlaceHolder;
   if (pageLanguage == "fr") {
     navSearchPlaceHolder = "Rechercher";
   } else {
     navSearchPlaceHolder = "Search";
   };
+  const navSearchMain = document.querySelector('.navSearchMain');
   navSearchMain.innerHTML = `
   <div class="d-flex flex-column align-items-center text_color">
     <div class="navSearchBoxDiv0">
@@ -49,18 +50,20 @@ export default function setupWsiSearch() {
     </div>
     <div class="navSearchResDiv0">
     </div>
-  </div>
-`;
-  // For each one, get a second level of elements by class name within the iteration
+  </div>`;
+
+  const navSearchTriggerBtn = document.querySelector('.btn_nav__search');
   const navSearchInputTxt = navSearchMain.querySelector('.navSearchInputTxt');
   const navSearchIconLoupe = navSearchMain.querySelector('.navSearchIconLoupe');
   const navSearchBtnClearX = navSearchMain.querySelector('.navSearchBtnClearX');
   const navSearchBtnEnter = navSearchMain.querySelector('.navSearchBtnEnter');
   const navSearchBtnBack = navSearchMain.querySelector('.navSearchBtnBack');
-  const navSearchBoxDiv0 = navSearchMain.querySelector('.navSearchBoxDiv0');
   const navSearchBoxDiv2 = navSearchMain.querySelector('.navSearchBoxDiv2');
   const navSearchResDiv0 = navSearchMain.querySelector('.navSearchResDiv0');
 
+  /////////////////////////////////////////////////////////////////////////////////
+  //  Hide and Show search controls and results
+  /////////////////////////////////////////////////////////////////////////////////
   function showSearchControl() {
     navSearchIconLoupe.style.display = "block";
     navSearchBoxDiv2.style.marginLeft = '0';
@@ -72,12 +75,17 @@ export default function setupWsiSearch() {
     };
     navSearchInputTxt.focus();
     navSearchTriggerBtn.setAttribute('aria-expanded', 'true');
+
     // hide the main page scroll bar under a certain screen width
     if (window.innerWidth < 620) {
       document.body.style.overflowY = 'hidden';
     };
-    wsiOpenSharedSocket();
-    sendWSnavSearchMessage();
+    // Unhide navSearchBtnClearX if there is text inside the input field
+    if (navSearchInputTxt.value !== "") {
+      navSearchBtnClearX.style.display = "flex";
+    }
+    wsiOpenOrAccessSharedSocket();
+    searchQuery()
   }
 
   function hideSearchControl() {
@@ -94,106 +102,76 @@ export default function setupWsiSearch() {
     document.body.style.overflowY = 'auto';
   };
 
-  let activatedSearchResults = false;
-
-  function activateSearchBox() {
-    activatedSearchResults = true;
-    showSearchControl();
-
+  /////////////////////////////////////////////////////////////////////////////////
+  //  Event listeners
+  /////////////////////////////////////////////////////////////////////////////////
+  function handleInputTextChange(event) {
     // Unhide navSearchBtnClearX if there is text inside the input field
-    if (navSearchInputTxt.value !== "") {
+    if (this.value !== "") {
       navSearchBtnClearX.style.display = "flex";
-    }
-
-    function deactivateSearchBox() {
-      activatedSearchResults = false;
-      navSearchInputTxt.removeEventListener('input', handleInputTextChange);
-      navSearchBtnClearX.removeEventListener('mousedown', handlePreventXbuttonFocusLoss);
-      navSearchBtnClearX.removeEventListener('mouseup', handleClickOnXbutton);
-      navSearchMain.removeEventListener('mousedown', handlePreventLeavingInput);
-      navSearchMain.removeEventListener('wheel', handleScrollingFromMainCtn);
-      document.removeEventListener('mousedown', handleClickedOutside);
-      document.removeEventListener('keydown', handleEscapeKeydown);
-      navSearchBtnBack.removeEventListener('click', handleBackButtonClick);
-      navSearchTriggerBtn.removeEventListener('click', handleSearchTriggerBtnClick);
-      hideSearchControl();
-    }
-
-    function handleInputTextChange(event) {
-      // Unhide navSearchBtnClearX if there is text inside the input field
-      if (this.value !== "") {
-        navSearchBtnClearX.style.display = "flex";
-      } else {
-        // Hide navSearchBtnClearX if the input field is empty
-        navSearchBtnClearX.style.display = "none";
-      };
-      sendWSnavSearchMessage();
-    }
-    navSearchInputTxt.addEventListener('input', handleInputTextChange);
-
-    function handlePreventXbuttonFocusLoss(event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    navSearchBtnClearX.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
-
-    function handleClickOnXbutton(event) {
-      navSearchInputTxt.value = "";
-      navSearchInputTxt.focus();
+    } else {
+      // Hide navSearchBtnClearX if the input field is empty
       navSearchBtnClearX.style.display = "none";
-      sendWSnavSearchMessage();
     };
-    navSearchBtnClearX.addEventListener('mouseup', handleClickOnXbutton);
+    searchQuery();
+  }
+  navSearchInputTxt.addEventListener('input', handleInputTextChange);
 
-    function handlePreventLeavingInput(event) {
-      if (event.target !== navSearchInputTxt) {
-        event.preventDefault();
-      };
-    };
-    navSearchMain.addEventListener('mousedown', handlePreventLeavingInput);
+  function handlePreventXbuttonFocusLoss(event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  navSearchBtnClearX.addEventListener('mousedown', handlePreventXbuttonFocusLoss);
 
-    function handleScrollingFromMainCtn(event) {
-      let delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
-      navSearchResDiv0.scrollTop -= (delta * 30);
-      event.preventDefault();
-    }
-    navSearchMain.addEventListener('wheel', handleScrollingFromMainCtn);
-
-    function handleClickedOutside(event) {
-      let clickedOnScrollbar = document.documentElement.clientWidth <= event.clientX;
-      if (!clickedOnScrollbar &&
-        !navSearchMain.contains(event.target) &&
-        !navSearchResDiv0.contains(event.target) &&
-        !navSearchTriggerBtn.contains(event.target)) {
-        // The click occurred outside of both elements
-        deactivateSearchBox();
-      };
-    };
-    document.addEventListener('mousedown', handleClickedOutside);
-
-    function handleEscapeKeydown(event) {
-      if (event.key === 'Escape') {
-        deactivateSearchBox();
-      };
-    };
-    document.addEventListener('keydown', handleEscapeKeydown);
-
-    function handleBackButtonClick(event) {
-      deactivateSearchBox();
-    };
-    navSearchBtnBack.addEventListener("click", throttle(handleBackButtonClick, 1000));
-
-    function handleSearchTriggerBtnClick(event) {
-      if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'true') {
-        deactivateSearchBox();
-      };
-    };
-    navSearchTriggerBtn.addEventListener("click", throttle(handleSearchTriggerBtnClick, 1000));
+  function handleClickOnXbutton(event) {
+    navSearchInputTxt.value = "";
+    navSearchInputTxt.focus();
+    navSearchBtnClearX.style.display = "none";
+    searchQuery();
   };
+  navSearchBtnClearX.addEventListener('mouseup', handleClickOnXbutton);
+
+  function handlePreventLeavingInput(event) {
+    if (event.target !== navSearchInputTxt) {
+      event.preventDefault();
+    };
+  };
+  navSearchMain.addEventListener('mousedown', handlePreventLeavingInput);
+
+  function handleScrollingFromMainCtn(event) {
+    let delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+    navSearchResDiv0.scrollTop -= (delta * 30);
+    event.preventDefault();
+  }
+  navSearchMain.addEventListener('wheel', handleScrollingFromMainCtn);
+
+  function handleClickedOutside(event) {
+    let clickedOnScrollbar = document.documentElement.clientWidth <= event.clientX;
+    if (!clickedOnScrollbar &&
+      !navSearchMain.contains(event.target) &&
+      !navSearchResDiv0.contains(event.target) &&
+      !navSearchTriggerBtn.contains(event.target)) {
+      // The click occurred outside of both elements
+      hideSearchControl();
+    };
+  };
+  document.addEventListener('mousedown', handleClickedOutside);
+
+  function handleEscapeKeydown(event) {
+    if (event.key === 'Escape') {
+      hideSearchControl();
+    };
+  };
+  document.addEventListener('keydown', handleEscapeKeydown);
+
+  function handleBackButtonClick(event) {
+    hideSearchControl();
+  };
+  navSearchBtnBack.addEventListener("click", throttle(handleBackButtonClick, 1000));
 
   navSearchInputTxt.addEventListener("mousedown", function() {
-    if (!activatedSearchResults) {
-      activateSearchBox();
+    if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
+      showSearchControl();
     };
   });
 
@@ -203,13 +181,16 @@ export default function setupWsiSearch() {
 
   navSearchTriggerBtn.addEventListener('click', function() {
     if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'false') {
-      if (!activatedSearchResults) {
-        activateSearchBox();
-      };
+      showSearchControl();
+    } else if (navSearchTriggerBtn.getAttribute('aria-expanded') === 'true') {
+      hideSearchControl();
     };
   });
 
+  /////////////////////////////////////////////////////////////////////////////////
   // Change the display based on windows width
+  /////////////////////////////////////////////////////////////////////////////////
+
   function setSearchBoxDisplayPerScreenWidth() {
     if (window.matchMedia('(min-width: ' + screenWidthLg + 'px)').matches) {
       navSearchMain.style.display = "block";
@@ -228,41 +209,68 @@ export default function setupWsiSearch() {
     setSearchBoxDisplayPerScreenWidth();
   });
 
+  /////////////////////////////////////////////////////////////////////////////////
+  //  Show results from received data
+  /////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-  // /////////////////////////////////////////////////////////////////////////////////
-  // //  Nav Search websocket
-  // /////////////////////////////////////////////////////////////////////////////////
-  let navSearchStartTimer;
-
-  function showSearchResults(jsonObject) {
-    navSearchStartTimer = performance.now();
-    let jsonArray = JSON.parse(jsonObject);
+  function showSearchResults(fullDict) {
+    let query = fullDict["q"];
+    let resultArray = fullDict["r"];
     let ul = document.createElement("ul");
-    for (let i = 0; i < jsonArray.length; i++) {
-      // Create a list item element
+    // ul.innerHTML = query
+    for (let i = 0; i < resultArray.length; i++) {
       let li = document.createElement("li");
-      // Set the content of the list item to the name and age of each person
-      li.innerHTML = jsonArray[i].title + " (" + jsonArray[i].vote + ")";
-      // Append the list item to the list
+      li.innerHTML = resultArray[i].title + " (" + resultArray[i].vote + ")";
       ul.appendChild(li);
     };
     navSearchResDiv0.innerHTML = "";
     navSearchResDiv0.appendChild(ul);
-
-    let timeDiff = performance.now() - navSearchStartTimer;
-    console.log(`${timeDiff} ms.`);
+    // console.log("show")
   };
 
-  function searchToWsiSendQuery() {
-    navSearchStartTimer = performance.now();
+  /////////////////////////////////////////////////////////////////////////////////
+  //    previous search remembering to avoid sending a query
+  /////////////////////////////////////////////////////////////////////////////////
 
-    wsiSend('s' + wsiCurrentTabId + navSearchInputTxt.value);
+  let previousSearches = []; // array of dicts
+
+  function getPreviousSearchResult(query) {
+    let index = previousSearches.findIndex(dict => dict["q"] === query);
+    if (index !== -1) {
+      return previousSearches[index]
+    } else {
+      return null;
+    }
   }
 
-  const sendWSnavSearchMessage = debounce_search(searchToWsiSendQuery, 400);
+  function setPreviousSearchResult(jsonObject) {
+    let dict = JSON.parse(jsonObject);
+    let query = dict["q"];
+    if (!previousSearches.some(dict => dict["q"] === query)) {
+      // Add newElement at index 1 and push the others to the right, keep element 0
+      previousSearches.splice(1, 0, dict);
+      if (previousSearches.length > 50) {
+        array.pop();
+      }
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //    send search query logic
+  /////////////////////////////////////////////////////////////////////////////////
+
+  function makeSearchQuery() {
+    let query = navSearchInputTxt.value;
+    let existingSearch = getPreviousSearchResult(query);
+    if (existingSearch == null) {
+      navSearchStartTimer = performance.now();
+      wsiSend('s' + wsiCurrentTabId + query);
+    } else {
+      showSearchResults(existingSearch);
+    }
+  }
+
+  const searchQuery = debounce_search(makeSearchQuery, 400);
 
   function debounce_search(func, delay) {
     let lastCallTime = 0;
@@ -286,7 +294,21 @@ export default function setupWsiSearch() {
       };
     };
   };
+
+  function wsiToSearchReceivedResult(jsonObject) {
+    setPreviousSearchResult(jsonObject);
+    showSearchResults(JSON.parse(jsonObject));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //    exported functions (through the main function)
+  /////////////////////////////////////////////////////////////////////////////////
   return {
-    showSearchResults: showSearchResults
+    makeSearchQuery: makeSearchQuery,
+    wsiToSearchReceivedResult: wsiToSearchReceivedResult
   };
 };
+
+/////////////////////////////////////////////////////////////////////////////////
+//    
+/////////////////////////////////////////////////////////////////////////////////

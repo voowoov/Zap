@@ -58,22 +58,21 @@ services:
     #     - POSTGRES_USER=${POSTGRESQL_USER}
     #     - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
 
-    # typesense:
-    #   image: typesense/typesense:0.26.0.rc19 # port 8108
-    #   volumes:
-    #     - ./typesense:/data
-    #   command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
-    #
-  celery:
-    restart: always
-    build: ./dja/
-    command: celery -A zap worker -l info
-    env_file:
-      - .env
-    depends_on:
-      - redis
+  typesense:
+    image: typesense/typesense:0.26.0.rc19 # port 8108
     volumes:
-      - ./dja/:/usr/src/app/
+      - ./typesense:/data
+    command: --data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors
+    # celery:
+    #   restart: always
+    #   build: ./dja/
+    #   command: celery -A zap worker -l info
+    #   env_file:
+    #     - .env
+    #   depends_on:
+    #     - redis
+    #   volumes:
+    #     - ./dja/:/usr/src/app/
     # celery-beat:
     #   restart: always
     #   build: ./dja/
