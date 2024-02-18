@@ -15,11 +15,7 @@ export default function setupWsiSearch() {
   //  HTML code for search
   /////////////////////////////////////////////////////////////////////////////////
   let navSearchPlaceHolder;
-  if (pageLanguage == "fr") {
-    navSearchPlaceHolder = "Rechercher";
-  } else {
-    navSearchPlaceHolder = "Search";
-  };
+  navSearchPlaceHolder = pageLanguage == "fr" ? "Rechercher" : "Search"
   const navSearchMain = document.querySelector('.navSearchMain');
   navSearchMain.innerHTML = `
   <div class="d-flex flex-column align-items-center text_color">

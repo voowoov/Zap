@@ -1,29 +1,49 @@
 {% extends 'main.html' %}
 {% load i18n %} {% load static %}
-{% block title %}{% trans "Monitor" %}{% endblock %}
+{% block title %}{% trans "Chat Lobby" %}{% endblock %}
 {% block desc %}{% trans "" %}{% endblock %}
 {% block content %}
 
 <main class="d-flex flex-fill">
   <section class="full_section text_color">
-    <div class="h-100 container-fluid">
-      <div class="h-100 d-flex gap-2">
-        <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
-          <textarea class="command-log" id="command-log"></textarea>
-          <textarea class="command-input" id="command-input" type="text" rows="2"></textarea>
-          <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4">
+          1 of 3
         </div>
-
-        <div class="d-flex flex-column align-items-start" style="width:250px;">
+        <div class="col-4">
+          <div class="chatCtn">
+            <div class="chatStream">
+              <div class="chatMessageArea">
+                <div class="chatMessage">
+                  <div class="chatText">
+                    asfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf
+                    dafasfasdf dafasfasdf daf.
+                    asfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf
+                    dafasfasdf dafasfasdf daf.
+                  </div>
+                </div>
+                <div class="chatAvatar">
+                  AA
+                </div>
+              </div>
+            </div>
+            <div class="chatInputArea">
+              <textarea class="chatTextInput" spellcheck="false"
+                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+              <button class="chatSendButton">{% trans "Send" %}</button>
+            </div>
+          </div>
         </div>
-
-        <div class="d-flex flex-column align-items-start" style="width:250px;">
+        <div class="col-4">
+          3 of 3
         </div>
       </div>
     </div>
   </section>
 
 </main>
+
 
 
 {% endblock %}

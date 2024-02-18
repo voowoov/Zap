@@ -12,7 +12,6 @@ export default function setupWsiFileUpload() {
   console.log('filespro module enabled');
   const pageLanguage = document.documentElement.lang;
 
-
   /////////////////////////////////////////////////////////////////////////////////
   // could be already open
   /////////////////////////////////////////////////////////////////////////////////
@@ -72,11 +71,7 @@ export default function setupWsiFileUpload() {
     fileUploadCancelBtn.addEventListener('click', throttle(function() {
       if (transferUnderway) {
         transferUnderway = false
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u2716' + " Envoie du fichier cancellé. ");
-        } else {
-          fileUploadLog('\u2716' + " Sending file was canceled. ");
-        }
+        fileUploadLog('\u2716 ' + (pageLanguage == "fr" ? "Envoie du fichier cancellé." : "Sending file was canceled."));
         fileUploadChooseBtn.disabled = false;
         fileUploadSendBtn.disabled = false;
         fileUploadCancelBtn.disabled = false;
@@ -102,38 +97,26 @@ export default function setupWsiFileUpload() {
         fileUploadChoiceTxt.innerHTML = fileA.name;
         fileUploadSendBtn.disabled = false;
         fileUploadCancelBtn.disabled = false;
-        if (pageLanguage == "fr") {
-          fileUploadLog('\uD83D\uDCC4' + " Fichier sélectionné. ");
-        } else {
-          fileUploadLog('\uD83D\uDCC4' + " File selected. ");
-        };
+        fileUploadLog('\uD83D\uDCC4 ' + (pageLanguage == "fr" ? "Fichier sélectionné." : "File selected."));
       };
     } else {
-      if (pageLanguage == "fr") {
-        fileUploadChoiceTxt.innerHTML = 'Pas de fichier choisi.';
-      } else {
-        fileUploadChoiceTxt.innerHTML = 'No file chosen, yet.';
-      };
+      fileUploadChoiceTxt.innerHTML = pageLanguage == "fr" ? "Pas de fichier choisi." : "No file chosen, yet!.";
+      fileUploadChooseBtn.disabled = false;
+      fileUploadSendBtn.disabled = true;
+      fileUploadCancelBtn.disabled = true;
     };
   };
+  if (fileUploadRealInput) { updateFileUploadChoiceTxt(); }
 
   function validate_file() {
     if (isValidFilename(fileA.name)) {
       if (fileA.size < fileMaxSize) {
         return true;
       } else {
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Le fichier est trop large.');
-        } else {
-          fileUploadLog('\u26A0' + ' File size is too large.');
-        };
+        fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Le fichier est trop large." : "File size is too large."));
       };
     } else {
-      if (pageLanguage == "fr") {
-        fileUploadLog('\u26A0' + ' Nom de fichier invalide.');
-      } else {
-        fileUploadLog('\u26A0' + ' Invalid file name.');
-      };
+      fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Nom de fichier invalide." : "Invalid file name."));
     };
     return false;
   };
@@ -157,32 +140,16 @@ export default function setupWsiFileUpload() {
   function errorFileUpload(strError) {
     switch (strError) {
       case 'file already exists':
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Le fichier est déjà partagé.');
-        } else {
-          fileUploadLog('\u26A0' + ' The file is already shared.');
-        };
+        fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Le fichier est déjà partagé." : "The file is already shared."));
         break;
       case 'insufficient remaining space':
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Espace insuffisant.');
-        } else {
-          fileUploadLog('\u26A0' + ' Insufficient space.');
-        };
+        fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Espace insuffisant." : "Insufficient space."));
         break;
       case 'wait a cooldown period':
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u26A0' + ' Veuillez essayer plus tard.');
-        } else {
-          fileUploadLog('\u26A0' + ' Please try again later.');
-        };
+        fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Veuillez essayer plus tard." : "Please try again later."));
         break;
       default:
-        if (pageLanguage == "fr") {
-          fileUploadLog('Erreur en envoyant le fichier.');
-        } else {
-          fileUploadLog('Error while sending file.');
-        };
+        fileUploadLog('\u26A0 ' + (pageLanguage == "fr" ? "Erreur en envoyant le fichier." : "Error while sending file."));
     }
     if (fileUploadSendBtn) {
       fileUploadChooseBtn.disabled = false;
@@ -196,9 +163,6 @@ export default function setupWsiFileUpload() {
     if (fileUploadSendBtn) {
       fileUploadRealInput.value = "";
       updateFileUploadChoiceTxt();
-      fileUploadChooseBtn.disabled = false;
-      fileUploadSendBtn.disabled = true;
-      fileUploadCancelBtn.disabled = true;
     };
     filePortionStep = 0;
     transferUnderway = false;
@@ -224,11 +188,7 @@ export default function setupWsiFileUpload() {
         let chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
         let chunkId = 0; // Start with the first chunk
         let percentage = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
-        if (pageLanguage == "fr") {
-          fileUploadLog('\u231B' + " Envoie du fichier en cours.  " + percentage);
-        } else {
-          fileUploadLog('\u231B' + " Sending file in progress.  " + percentage);
-        };
+        fileUploadLog('\u231B ' + (pageLanguage == "fr" ? "Envoie du fichier en cours." : "Sending file in progress."));
 
         function readNextChunk() {
           return new Promise((resolve, reject) => {
@@ -293,12 +253,7 @@ export default function setupWsiFileUpload() {
   function receivedConfirmationSuccessfull(message) {
     if (avatar) { avatar.resetInterface(message) };
     if (fileUploadList) { askForListOfFiles() };
-
-    if (pageLanguage == "fr") {
-      fileUploadLog('\u2713' + " Envoie réeussi de: " + fileUploadName);
-    } else {
-      fileUploadLog('\u2713' + " Sent successfully: " + fileUploadName);
-    };
+    fileUploadLog('\u2713 ' + (pageLanguage == "fr" ? "Envoie réeussi de: " : "Sent successfully: ") + fileUploadName);
     clearSelectionFileUpload();
   };
 
@@ -392,7 +347,6 @@ export default function setupWsiFileUpload() {
     function resetInterface(message) {
       imageViewerInitialImage.src = message;
       imageViewerInitialImage.hidden = false;
-      fileUploadSendAvatarBtn.disabled = false;
       imageViewerFileChooseBtn.disabled = false;
     };
     return {

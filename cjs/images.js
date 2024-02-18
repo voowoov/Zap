@@ -215,17 +215,16 @@
       });
 
       imageViewerFileRealInput.onchange = function(e) {
-        let file = e.target.files[0];
-        if (file.type.startsWith('image/')) {
-          img.src = URL.createObjectURL(file);
-          imageViewerInitialImage.hidden = true;
-          fileUploadSendAvatarBtn.disabled = false;
-          if (document.documentElement.lang == "fr") {
-            fileUploadLogTxt.innerHTML = '\uD83E\uDD1A' + ' Centrer et zoomer votre avatar.';
-          } else {
-            fileUploadLogTxt.innerHTML = '\uD83E\uDD1A' + ' Center and scale your avatar.';
+        if (imageViewerFileRealInput.value !== '') {
+          let file = e.target.files[0];
+          if (file.type.startsWith('image/')) {
+            img.src = URL.createObjectURL(file);
+            imageViewerInitialImage.hidden = true;
+            fileUploadSendAvatarBtn.disabled = false;
+            fileUploadLogTxt.innerHTML = '\uD83E\uDD1A ' + (document.documentElement.lang == "fr" ? "Veuillez centrer et zoomer votre avatar avant de le sauvegarder." : "Please center and scale your avatar before saving it.");
           };
-        };
+          imageViewerFileRealInput.value = "";
+        }
       };
     };
   };
