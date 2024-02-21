@@ -42,7 +42,7 @@ class Article(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
     image_main = models.ImageField(upload_to=uploadPathFunction, null=True, blank=True)
     image_tumbnail = models.ImageField(
-        upload_to=uploadPathFunction, max_length=500, null=True, blank=True
+        upload_to=uploadPathFunction, null=True, blank=True
     )
 
     def __str__(self):
