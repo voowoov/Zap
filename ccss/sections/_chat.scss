@@ -1,21 +1,149 @@
-.chatCtn {
-  // width: 100%;
-  height: 300px;
+@use '../components/custom' as *;
+@use '../components/mixins' as *;
+.chat_section {
+  @include gradientBg;
+  padding: 6px;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.chatNav {
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chatLobbyBtn {
+  align-self: flex-start;
+  color: inherit;
+  // width: 200px;
+  background: rgb(158, 134, 0);
+  border-radius: 10px;
+  padding: 6px 30px;
+  text-align: start;
+  // text-align: center;
+  // font-size: 1.1rem;
+  margin: 6px;
+}
+
+.chatMain {
+  padding: 0;
+  flex-grow: 1;
+  display: flex;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//    Block windows
+/////////////////////////////////////////////////////////////////////////////////
+.chatBlockArea {
+  flex: 0 1 400px;
   padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
+}
+
+.chatWindow {
+  margin: 6px;
+  padding: 0;
+  display: inline-flex;
+  flex-direction: column;
   background-color: rgb(0, 0, 0);
+  border: 2px solid #616161;
+  border-radius: 7px;
+}
+
+.chatWindowBlockParti {
+  flex: 1 1 100px;
+  @extend .chatWindow;
+  // //// needs to be set by js
+  // min-height: 100px;
+  // max-height: 200px;
+}
+
+.chatWindowBlockFiles {
+  flex: 1 1 100px;
+  @extend .chatWindow;
+  // //// needs to be set by js
+  // min-height: 100px;
+  // max-height: 300px;
+}
+
+.chatBlockRow {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.chatBlockTitle {
+  @extend .chatBlockRow;
+  background: rgb(97, 94, 64);
+  border-bottom: 2px solid gray;
+  height: 40px;
+}
+
+.chatBlockContent {
+  display: inline-flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.chatParticipantRow {
+  @extend .chatBlockRow;
+  // min-height: 4ch;
+  background: rgb(54, 53, 41);
+  border: 1px solid rgb(68, 68, 47);
+  cursor: pointer;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//    Text messages window
+/////////////////////////////////////////////////////////////////////////////////
+.chatWindowTexto {
+  flex: 0 1 500px;
+  // max-height: max-content;
+  @extend .chatWindow;
+  padding: 0;
+  justify-content: flex-start;
 }
 
 .chatStream {
-  width: 100%;
-  height: 100%;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: flex-end;
-  overflow-y: auto;
+  flex: 1 1 100px;
+  padding-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.chatScrollbar {
+  scrollbar-color: rgb(68, 33, 39) rgb(60, 92, 102);
+  /* Set the color of the scrollbar for Safari */
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #914242;
+    border-radius: 10px;
+  }
+}
+
+.chatMessageRow {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 8px 0px;
+  margin: 12px 0px;
+  margin-right: 15px;
+  cursor: default;
+}
+
+.chatMessageArea0 {
+  display: flex;
+  flex-direction: column;
 }
 
 .chatMessageArea {
@@ -24,28 +152,49 @@
   align-items: center;
 }
 
-.chatMessage {
-  background-color: rgb(63, 57, 57);
-  border-radius: 10px;
-  display: flex;
-  justify-content: end;
-  align-items: center;
+.chatMessDesc {
+  margin-bottom: 4px;
+}
+
+.chatMessName {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.chatMessTime {
+  font-size: 0.85rem;
+  margin-left: 4px;
+  white-space: nowrap;
 }
 
 .chatAvatar {
-  background-color: rgb(121, 91, 91);
+  margin: 3px 10px;
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid #71c6dd;
+  img {
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 .chatInputArea {
   width: 100%;
   display: flex;
-  justify-content: end;
-  align-items: end;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 12px 12px;
+  padding-right: 6px;
 }
 
 .chatTextInput {
+  margin-right: 6px;
+  padding: 10px;
   flex-grow: 1;
-  background-color: rgb(63, 57, 57);
+  background-color: rgb(24, 24, 24);
   border-radius: 10px;
   overflow-y: auto;
   max-height: 150px;
@@ -55,13 +204,128 @@
   resize: none;
 }
 
-.chatSendButton {
-  width: 50px;
-  line-height: 1.5;
-  /* Add any additional styles for the text here */
+.chatSendArea {
+  width: 100%;
+  padding-left: 12px;
+  padding-right: 6px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 2px solid #616161;
+  border-bottom: 2px solid #616161;
+}
+
+.chatSendBtn {
+  color: inherit;
+  background: blue;
+  flex-basis: 150px;
+  border-radius: 20px;
+  text-align: center;
+  padding: 4px 20px;
+  display: inline-block;
+  margin: 12px 6px;
+  &:disabled {
+    background-color: #7e7e7e;
+    color: #222222;
+  }
+}
+
+.chatActionBtn {
+  color: inherit;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+  margin: 4px;
+  border-color: #424242;
+  &:active {
+    border-color: #272727;
+  }
+}
+
+.chatActionEmoji {
+  padding: 6px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px;
+}
+
+.chatActionOptions {
+  margin: 0 40px;
 }
 
 .chatText {
   line-height: 1.5;
-  /* Add any additional styles for the text here */
+}
+
+.chatDateSeparator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  // width: 100%;
+  margin: 12px 0px;
+  /* Ensures the h1 element takes up the full width of its parent */
+  &:before,
+  &:after {
+    content: "";
+    flex-grow: 1;
+    background: linear-gradient(to left, transparent, #b95d5d, transparent);
+    height: 1px;
+    margin: 0 10px;
+  }
+  cursor: default;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//    Call window
+/////////////////////////////////////////////////////////////////////////////////
+.chatWindowCalls {
+  @extend .chatWindow;
+  flex: 0 2 400px;
+  height: 200px;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//    Lobby
+/////////////////////////////////////////////////////////////////////////////////
+.chatOffCanvas {
+  margin-top: $navBarHeight;
+  margin-bottom: $footerSmallHeight;
+  @include gradientBg;
+  padding: 6px;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.chatWindowLobbyForm {
+  flex: 0 1 500px;
+  @extend .chatWindow;
+  padding: 0;
+  justify-content: flex-start;
+}
+
+.chatLobbyFormContent {
+  padding: 12px;
+  & input {
+    margin-bottom: 7px;
+  }
+}
+
+.chatLobbyFormBtn {
+  margin-bottom: 7px;
+  color: inherit;
+  background: blue;
+  flex-basis: 200px;
+  border-radius: 6px;
+  padding: 5px 14px;
+  // display: inline-block;
+  &:disabled {
+    background-color: #7e7e7e;
+    color: inherit;
+  }
 }

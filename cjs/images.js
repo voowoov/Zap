@@ -23,6 +23,11 @@
     canvas.parentNode.appendChild(canvasTop);
     let ctx2 = canvasTop.getContext('2d');
 
+    ///// variables to prevent redraw if identical
+    let oldCamera = { x: 0, y: 0 };
+    let oldScaleZ = 0;
+    let colorSelectNew = true;
+
     let img = new Image;
     if (protectedUri) {
       img.src = protectedUri;
@@ -37,7 +42,7 @@
       canvas.addEventListener('touchend', onPointerUp);
       canvas.addEventListener('mousemove', onPointerMove);
       canvas.addEventListener('touchmove', onPointerMove);
-      canvas.addEventListener('wheel', onWheel);
+      canvas.addEventListener('wheel', throttleWheel(onWheel, 60));
       canvas.addEventListener('contextmenu', event => event.preventDefault());
       requestAnimationFrame(draw);
       initImageInfo();
@@ -59,6 +64,7 @@
         x: canvas2X,
         y: canvas2Y
       };
+
       limitingDimensionIsX = canvas_width / img.width < canvas_height / img.height ? true : false;
       scaleZ = limitingDimensionIsX ? canvas_width / img.width : canvas_height / img.height;
       MAX_SCALE = scaleZ * 20;
@@ -72,31 +78,33 @@
     });
 
     function draw() {
-      canvas.width = canvas_width;
-      canvas.height = canvas_height;
-      limitcamera();
-      ctx.fillStyle = 'rgb(145, 145, 145)'; // background color
-      ctx.fillRect(0, 0, canvas_width, canvas_height);
-      // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
-      ctx.translate(canvas2X, canvas2Y);
-      ctx.scale(scaleZ, scaleZ);
-      ctx.translate(-canvas2X + camera.x, -canvas2Y + camera.y);
-      ctx.drawImage(img, -img2X, -img2Y);
+      if (oldCamera.x != camera.x || oldCamera.y != camera.y || oldScaleZ != scaleZ || colorSelectNew) {
+        canvas.width = canvas_width;
+        canvas.height = canvas_height;
+        limitcamera();
+        ctx.fillStyle = 'rgb(145, 145, 145)'; // background color
+        ctx.fillRect(0, 0, canvas_width, canvas_height);
+        // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
+        ctx.translate(canvas2X, canvas2Y);
+        ctx.scale(scaleZ, scaleZ);
+        ctx.translate(-canvas2X + camera.x, -canvas2Y + camera.y);
+        ctx.drawImage(img, -img2X, -img2Y);
 
-      ctx2.fillRect(0, 0, canvas_width, canvas_height);
-      ctx2.translate(canvas2X, canvas2Y);
-      ctx2.scale(scaleZ, scaleZ);
-      ctx2.translate(-canvas2X + camera.x, -canvas2Y + camera.y);
-      update_top_canvas();
+        update_top_canvas();
 
+        oldCamera.x = camera.x;
+        oldCamera.y = camera.y;
+        oldScaleZ = scaleZ;
+        colorSelectNew = false;
+      }
     };
 
     //  custom limit camera off image edges
     function limitcamera(e) {
-      camera.x = Math.max(camera.x, canvas2X - (canvas2X / scaleZ + img2X - 10));
-      camera.x = Math.min(camera.x, canvas2X + (canvas2X / scaleZ + img2X - 10));
-      camera.y = Math.max(camera.y, canvas2Y - (canvas2Y / scaleZ + img2Y - 10));
-      camera.y = Math.min(camera.y, canvas2Y + (canvas2Y / scaleZ + img2Y - 10));
+      camera.x = Math.max(camera.x, canvas2X - (canvas2X / scaleZ + img2X));
+      camera.x = Math.min(camera.x, canvas2X + (canvas2X / scaleZ + img2X));
+      camera.y = Math.max(camera.y, canvas2Y - (canvas2Y / scaleZ + img2Y));
+      camera.y = Math.min(camera.y, canvas2Y + (canvas2Y / scaleZ + img2Y));
     };
 
 
@@ -125,8 +133,8 @@
     }
 
     function onPointerMove(e) {
-      calculatePointer(e);
       if (isDragging) {
+        calculatePointer(e);
         camera.x += (pointerX - lastX) / scaleZ;
         camera.y += (pointerY - lastY) / scaleZ;
         lastX = pointerX;
@@ -135,14 +143,15 @@
       };
       ///// pinch scaling
       if (e.type == "touchmove" && e.touches.length == 2) {
+        calculatePointer(e);
         // This is distance squared, but no need for an expensive sqrt as it's only used in ratio
         adjustZoom(e, null, distPinch / initialPinchDistance);
         requestAnimationFrame(draw);
       }
     };
 
-    function onWheel(e) {
-      adjustZoom(e, e.deltaY * SCROLL_SENSITIVITY), null;
+    function onWheel(e, delta) {
+      adjustZoom(e, delta * SCROLL_SENSITIVITY), null;
       requestAnimationFrame(draw);
     };
 
@@ -279,7 +288,7 @@
         Colori.appendChild(imageB);
         imageInfo.appendChild(Colori);
         canvas.addEventListener('mousemove', function(e) { setImageData(e); });
-        canvas.addEventListener('wheel', function(e) { setImageData(e); });
+        canvas.addEventListener('wheel', function(e) { setTimeout(() => { setImageData(e); }, 50); });
         canvas.addEventListener('touchstart', function(e) { setImageData(e, true); });
         canvas.addEventListener('touchmove', function(e) { setImageData(e); });
         canvas.addEventListener('mousedown', function(e) { setColorRef(e); });
@@ -302,6 +311,7 @@
             outOfRangeImageData();
           }
         }
+
         document.body.addEventListener('mouseleave', function() {
           outOfRangeImageData();
         });
@@ -329,6 +339,7 @@
             } else {
               colorRef[0] = -1000;
             }
+            colorSelectNew = true;
             requestAnimationFrame(draw);
           }
         }
@@ -344,9 +355,9 @@
       let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       let noise_color, noise_alpha;
       for (let i = 0; i < imageData.data.length; i += 4) {
-        noise_color = Math.floor(Math.random() * 256);
-        noise_alpha = Math.floor(128 + Math.random() * 128);
         if (imageData.data[i] > (colorRef[0] - colorRange) && imageData.data[i] < (colorRef[0] + colorRange) && imageData.data[i + 1] > (colorRef[1] - colorRange) && imageData.data[i + 1] < (colorRef[1] + colorRange) && imageData.data[i + 2] > (colorRef[2] - colorRange) && imageData.data[i + 2] < (colorRef[2] + colorRange)) {
+          noise_color = Math.floor(Math.random() * 256);
+          noise_alpha = Math.floor(128 + Math.random() * 128);
           imageData.data[i] = noise_color; // Red
           imageData.data[i + 1] = noise_color; // Green
           imageData.data[i + 2] = noise_color; // Blue
@@ -358,3 +369,34 @@
     }
   };
 })();
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//  Throttle wheel keeps track of the delta of the wheel in case of throttle
+/////////////////////////////////////////////////////////////////////////////////
+
+function throttleWheel(func, limit) {
+  let lastFunc;
+  let lastRan;
+  let delta = 0;
+  let lastEvent;
+
+  return function(event) {
+    if (!lastRan) {
+      func.apply(this, [event, delta]);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function() {
+        if ((Date.now() - lastRan) >= limit) {
+          func.apply(this, [lastEvent, delta]);
+          delta = 0;
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
+
+      delta += event.deltaY; // Accumulate wheel move events
+      lastEvent = event; // Store the last event
+    }
+  }
+}

@@ -23,12 +23,12 @@
 }
 
 .login_inp-error {
-  background-color: rgb(240, 231, 231);
+  // background-color: rgb(240, 231, 231);
   border: 0.05rem solid rgb(218, 0, 0);
   border-radius: 0.6rem;
   &:focus {
     border: 0.05rem solid rgb(0, 0, 0);
-    background-color: white;
+    // background-color: white;
   }
 }
 

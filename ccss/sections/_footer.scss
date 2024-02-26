@@ -96,7 +96,7 @@
 // STYLE THE COPYRIGHT  CONTENT 
 .footer-small {
   background-color: var(--color-nav-bg);
-  height: 45px;
+  height: $footerSmallHeight;
   display: flex;
   align-items: center;
   &__copyright {

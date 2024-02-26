@@ -9,6 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from zap.apps.users.models import User
 
 
+class ChatUser(models.Model):
+    chat_host_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="host_user"
+    )
+
+
 class ChatSession(models.Model):
     chat_host_id = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="host_user"

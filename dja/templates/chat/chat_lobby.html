@@ -4,45 +4,176 @@
 {% block desc %}{% trans "" %}{% endblock %}
 {% block content %}
 
-<main class="d-flex flex-fill">
-  <section class="full_section text_color">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-4">
-          1 of 3
+<div class="offcanvas offcanvas-start chatOffCanvas text_color" style="width:450px;" tabindex="-1" id="chatOffcanvasId"
+  aria-labelledby="chatOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="chatOffcanvasLabel">{% trans "Chat Lobby" %}</h5>
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="mb-2">
+      {% trans "To register, please" %}
+      <a href="{% url 'users:signin_0' %}">{% trans "sign in" %}</a>
+      {% trans "if you have a user account or otherwise fill the following form bellow to identify you for the purpose of using this chat application." %}
+    </div>
+    <div class="chatWindowLobbyForm">
+      <div class="chatBlockTitle">{% trans "Guest user form" %}</div>
+      <div class="chatLobbyFormContent">
+        <div class="form-floating">
+          <input type="text" class="form-control" maxlength="45" id="chatNameAndTitle" placeholder="Name and titles">
+          <label for="chatNameAndTitle">{% trans "Name and titles" %}</label>
         </div>
-        <div class="col-4">
-          <div class="chatCtn">
-            <div class="chatStream">
-              <div class="chatMessageArea">
-                <div class="chatMessage">
-                  <div class="chatText">
-                    asfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf
-                    dafasfasdf dafasfasdf daf.
-                    asfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf dafasfasdf
-                    dafasfasdf dafasfasdf daf.
-                  </div>
-                </div>
-                <div class="chatAvatar">
-                  AA
-                </div>
-              </div>
-            </div>
-            <div class="chatInputArea">
-              <textarea class="chatTextInput" spellcheck="false"
-                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-              <button class="chatSendButton">{% trans "Send" %}</button>
+        <div class="form-floating">
+          <input type="text" class="form-control" maxlength="50" id="chatProRole" placeholder="Professionnal role">
+          <label for="chatProRole">{% trans "Professionnal role" %}</label>
+        </div>
+        <button class="chatLobbyFormBtn" disabled>{% trans "Create user" %}</button>
+        <div class="">
+          &#9888;<a data-bs-toggle="collapse" href="#chatPrudCollapse" role="button" aria-expanded="false"
+            aria-controls="chatPrudCollapse"> {% trans "Use on a private device only." %}</a>
+          <div class="collapse" id="chatPrudCollapse">
+            <div class="card card-body">
+              {% trans "This application saves a sessionid cookie on this device which allows it to access your guest user capabilities that could be exposed to anyone using this device." %}
             </div>
           </div>
-        </div>
-        <div class="col-4">
-          3 of 3
+          <div>
+            {% trans "Note: Once created, this secure guest user and its chat history will be available from this device and browser." %}
+            {% trans "However, they will become unavailable if you ever sign in with a normal user account or clear your browsing data. Also, they will be deleted 14 days after the last call or text message was sent." %}
+          </div>
         </div>
       </div>
     </div>
-  </section>
+    <div>
+      Welcome User.
+    </div>
+    <div class="chatWindowBlockParti">
+      <div class="chatBlockTitle">{% trans "Available chat sessions" %}</div>
+      <div class="chatBlockContent chatScrollbar">
+        <div class="chatParticipantRow">
+          ASdf
+        </div>
+        <div class="chatParticipantRow">
+          ASdf
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="chat_section text_color">
+  <div class="chatNav">
+    <button class="chatLobbyBtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#chatOffcanvasId"
+      aria-controls="chatOffcanvasId">
+      &#x2329;&#x2329; &nbsp; {% trans "Lobby" %}
+    </button>
+  </div>
+  <div class="chatMain">
+    <div class="chatBlockArea">
+      <div class="chatWindowBlockParti">
+        <div class="chatBlockTitle">{% trans "Session participants" %}</div>
+        <div class="chatBlockContent chatScrollbar">
+          <div class="chatParticipantRow">
+            ASdf
+          </div>
+          <div class="chatParticipantRow">
+            ASdf
+          </div>
+          <div class="chatParticipantRow">
+            ASdf
+          </div>
+        </div>
+      </div>
+      <div class="chatWindowBlockFiles">
+        <div class="chatBlockTitle">{% trans "Shared files" %}</div>
+        <div>
+          Files
+        </div>
+      </div>
+    </div>
+    <div class="chatWindowTexto">
+      <div class="chatBlockTitle">{% trans "Text messages" %}</div>
+      <div class="chatInputArea">
+        <textarea class="chatTextInput chatScrollbar" spellcheck="false" placeholder="{% trans "Write a message ..." %}"
+          oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+        <button class="chatActionBtn mb-2">&#9650;&#9660;</button>
+      </div>
+      <div class="chatSendArea">
+        <div class="dropdown me-auto">
+          <button class="chatActionBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">&#x1F600;</button>
+          <div class="dropdown-menu ">
+            <div class="chatActionEmoji">
+              <button class="chatActionBtn chatAddEmoji">&#128512;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128516;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128517;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128521;</button>
+              <button class="chatActionBtn chatAddEmoji">&#x1F44B;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128079;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128076;</button>
+              <button class="chatActionBtn chatAddEmoji">&#128077;</button>
+            </div>
+          </div>
+        </div>
+        <button class="chatSendBtn" disabled>&#x2708; &nbsp; {% trans "Send" %}</button>
+        <div class="dropdown">
+          <button class="chatActionBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">&hellip;</button>
+          <div class="dropdown-menu dropdown-menu-end">
+            <div class="chatActionOptions">
+              sfd
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chatStream chatScrollbar">
+        <div class="chatMessageRow">
+          <div class="chatAvatar">
+            <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
+          </div>
+          <div class="chatMessageArea0">
+            <div class="chatMessDesc">
+              <span class="chatMessName">Etienne Robert</span> &#183; <span class="chatMessTime">2:10
+                PM</span>
+            </div>
+            <div class="chatMessageArea">
+              <div class="chatText">
+                asfasdf dafasfasdf &#x1F600; dafassss ssdf dafasfasdf dafassss ssdf dafasfasdf
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chatMessageRow">
+          <div class="chatAvatar">
+            <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
+          </div>
+          <div class="chatMessageArea0">
+            <div class="chatMessDesc">
+              <span class="chatMessName">Etienne Robert</span> &#183; <span class="chatMessTime">2:10
+                PM</span>
+            </div>
+            <div class="chatMessageArea">
+              <div class="chatText">
+                dafasfasdf dafasfasdf daf.
+                asfasdf dafasfasdf &#x1F600; dafas
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chatDateSeparator">
+          20 Avril 2024
+        </div>
+
+      </div>
+    </div>
+    <div class="chatWindowCalls">
+      <div class="chatBlockTitle">{% trans "Calls" %}</div>
+    </div>
+  </div>
+
+  </div>
 
 </main>
+{% include 'base/footers/footer_small.html' %}
 
 
 

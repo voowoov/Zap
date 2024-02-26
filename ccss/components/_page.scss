@@ -7,6 +7,10 @@
   border: 0.05rem solid white;
 }
 
+.mainNoOverflow {
+  height: calc(100vh - $navBarHeight - $footerSmallHeight);
+}
+
 .horizontal_separator_full {
   display: flex;
   flex-direction: row;

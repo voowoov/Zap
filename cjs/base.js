@@ -21,8 +21,7 @@
       break;
     case "Auto":
       document.getElementById("jsddnavthemeauto").classList.add("disabled");
-      break;
-    case "":
+    case "Auto" || "":
       if (!window.matchMedia) {
         return false;
       } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -40,6 +39,8 @@
     document.querySelectorAll('.Logo1Dark').forEach(function(element) {
       element.style.display = 'block';
     });
+    //// for bootstrap theme
+    document.body.dataset.bsTheme = 'dark';
   }
 })();
 
