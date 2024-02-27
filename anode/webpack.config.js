@@ -25,6 +25,7 @@ module.exports = (env, argv) => [
       mainscript: [jsc_dir + 'base.js', jsc_dir + 'wsi.js', jsc_dir + 'search.js', jsc_dir + 'filespro.js', jsc_dir + 'chat.js'],
       imagescript: [jsc_dir + 'images.js'],
       sharedWorker: [jsc_dir + 'sharedWorker.js'],
+      pow_worker: [jsc_dir + 'pow_worker.js'],
     },
     output: { path: jsc_out_path, filename: jsc_filename },
     plugins: argv.mode === prod_mode ? [plugin_jsobfuscator, plugin_compression_norma, ] : [],

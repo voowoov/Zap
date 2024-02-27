@@ -3,13 +3,16 @@ import time
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from zap.apps.filespro._wsi_functions import WSIPrivFilesMixin
-from zap.apps.search._wsi_functions import WSISearchMixin
+from zap.apps.chat._wsi_functions import WsiChatMixin
+from zap.apps.filespro._wsi_functions import WsiFilesproMixin
+from zap.apps.search._wsi_functions import WsiSearchMixin
 
 logger = logging.getLogger(__name__)
 
 
-class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
+class WsiConsumer(
+    AsyncWebsocketConsumer, WsiFilesproMixin, WsiSearchMixin, WsiChatMixin
+):
     async def connect(self):
         self.channel_name_abr = None
         self.filespro_folder_id = None
@@ -39,20 +42,20 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                 #    - [2:]  the rest is the message itself
                 ##############################################################
                 if len(text_data) >= 2:
-                    self.tab_id = text_data[1]
-                    self.message = text_data[2:]
                     match text_data[0]:
                         case "s":
                             await self.frequency_limiting(10)
-                            # await self.wsi_search_received_message()
+                            # await self.wsi_search_received_message(text_data)
                         case "f":
                             await self.frequency_limiting(20)
-                            await self.wsi_filespro_received_message()
+                            await self.wsi_filespro_received_message(text_data)
+                        case "c":
+                            await self.frequency_limiting(20)
+                            await self.wsi_chat_received_message(text_data)
                         case _:
                             raise ValueError(
                                 f"unexpected prefix letter: {text_data[0]}"
                             )
-                    self.message = None
             elif bytes_data:
                 ### Handle binary message
                 if len(bytes_data) > 6 and hasattr(self, "file_portion_array"):
@@ -89,7 +92,7 @@ class WsiConsumer(AsyncWebsocketConsumer, WSIPrivFilesMixin, WSISearchMixin):
                 await self.close()
             num = (score << 8) | new_timer
             self.channel_name_abr = num
-            logger.debug(f"WSI Received: score: {score}, message: {self.message}")
+            logger.debug(f"WSI Received: score: {score}")
         except Exception as e:
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()

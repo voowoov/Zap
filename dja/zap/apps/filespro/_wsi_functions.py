@@ -31,20 +31,20 @@ max_file_size = 10000000
 expected_duration_rate = 0.000005  ### s/byte
 
 
-class WSIPrivFilesMixin:
+class WsiFilesproMixin:
 
-    async def wsi_filespro_received_message(self):
+    async def wsi_filespro_received_message(self, message):
         await self.init_filespro_folder()
-        match self.message[0]:
+        match message[2]:
             case "u":  # update list of files in filespro_folder
-                await self.send_folder_list(self.message[1:])
+                await self.send_folder_list(message)
             case "s":  # start the upload
                 if not self.filespro_transfer_underway:
-                    await self.file_upload_demand(self.message[1:])
+                    await self.file_upload_demand(message)
                 else:
                     raise ValueError("File upload demand during underway transfer.")
             case "c":  # cancel the upload
-                await self.cancel_file_upload(self.message[1:])
+                await self.cancel_file_upload(message)
 
     async def init_filespro_folder(self):
         if not self.filespro_folder_id:
@@ -54,7 +54,9 @@ class WSIPrivFilesMixin:
                 logger.error(f"error: init_filespro_folder: {e}")
                 await self.close()
 
-    async def send_folder_list(self, language_code):
+    async def send_folder_list(self, message):
+        # the message is pageLanguage
+        language_code = message[3:]
         if language_code == "en" or language_code == "fr":
             activate(language_code)
         try:
@@ -70,7 +72,7 @@ class WSIPrivFilesMixin:
                 d["dnld"] = urls["download_url"]  # Add into the dictionary
                 del d["file"]
             data_json = json.dumps(data)
-            await self.send("f" + self.tab_id + "u" + str(data_json))
+            await self.send("f" + message[1] + "u" + str(data_json))
         except Exception as e:
             logger.error(f"error: send_folder_list: {e}")
             await self.close()
@@ -80,6 +82,7 @@ class WSIPrivFilesMixin:
             if self.filespro_transfer_underway:
                 await self.update_file_tranfer_freq_limiting()
                 await self.delete_tmp_files()
+                await self.clear_filespro_varibles()
                 self.filespro_transfer_underway = False
 
         except Exception as e:
@@ -106,10 +109,28 @@ class WSIPrivFilesMixin:
             logger.error(f"error: delete_tmp_files: {e}")
             await self.close()
 
+    async def clear_filespro_varibles(self):
+        try:
+            del self.upload_type
+            del self.tab_id
+            del self.file_name
+            del self.file_size
+            del self.file_portion_step
+            del self.file_portion_array
+            del self.file_nb_chunks
+            del self.chunk_bool_array
+            del self.path_tmp_name
+            del self.path_full
+            del self.chunk_id
+        except Exception as e:
+            logger.error(f"error: clear_filespro_varibles: {e}")
+            await self.close()
+
     async def file_upload_demand(self, message):
         try:
             if len(message) < 200:
-                data = json.loads(message)
+                tab_id = message[1]
+                data = json.loads(message[3:])
                 self.upload_type = data["upload_type"]
                 file_name = data["file_name"]
                 file_size = data["file_size"]
@@ -120,15 +141,13 @@ class WSIPrivFilesMixin:
                 if file_size > remaining_store[0]:
                     is_valid = False
                     await self.send(
-                        "f" + self.tab_id + "e" + "insufficient remaining space"
+                        "f" + message[1] + "e" + "insufficient remaining space"
                     )
                     return False
                 else:
                     if file_size > remaining_store[0] - remaining_store[1]:
                         is_valid = False
-                        await self.send(
-                            "f" + self.tab_id + "e" + "wait a cooldown period"
-                        )
+                        await self.send("f" + tab_id + "e" + "wait a cooldown period")
                         return False
                 match self.upload_type:
                     case "manual":
@@ -139,9 +158,7 @@ class WSIPrivFilesMixin:
                             ).exists
                         )():
                             is_valid = False
-                            await self.send(
-                                "f" + self.tab_id + "e" + "file already exists"
-                            )
+                            await self.send("f" + tab_id + "e" + "file already exists")
                     case "avatar":
                         if not self.scope["user"].is_authenticated:
                             raise ValueError("User not authenticated.")
@@ -151,8 +168,9 @@ class WSIPrivFilesMixin:
                         raise ValueError("Inadequate upload_type: " + self.upload_type)
                 if not self.is_valid_filename(file_name):
                     is_valid = False
-                    await self.send("f" + self.tab_id + "e" + "invalid file name")
-                if is_valid and self.tab_id:
+                    await self.send("f" + tab_id + "e" + "invalid file name")
+                if is_valid:
+                    self.tab_id = tab_id
                     self.filespro_transfer_underway = True
                     self.file_name = file_name
                     self.file_size = file_size
@@ -222,11 +240,12 @@ class WSIPrivFilesMixin:
                                             await self.save_file_to_user_avatar()
                                     case _:
                                         raise ValueError(f"unexpected upload_type")
-                                await self.delete_tmp_files()
-                                self.filespro_transfer_underway = False
                                 logger.info(
                                     f"wsi file upload of {self.file_name} finished"
                                 )
+                                await self.delete_tmp_files()
+                                await self.clear_filespro_varibles()
+                                self.filespro_transfer_underway = False
                         ### ask for next partial file's serie of chunks
                         else:
                             self.chunk_id = 0  # to calculate bytes transfered at cancel

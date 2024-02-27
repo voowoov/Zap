@@ -1,4 +1,4 @@
-import { wsiOpenOrAccessSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
+import { wsiOpenSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ export default function setupWsiSearch() {
     if (navSearchInputTxt.value !== "") {
       navSearchBtnClearX.style.display = "flex";
     }
-    wsiOpenOrAccessSharedSocket();
+    wsiOpenSharedSocket();
     searchQuery()
   }
 
@@ -291,7 +291,7 @@ export default function setupWsiSearch() {
     };
   };
 
-  function wsiToSearchReceivedResult(jsonObject) {
+  function wsiToSearchMessageReceived(jsonObject) {
     setPreviousSearchResult(jsonObject);
     showSearchResults(JSON.parse(jsonObject));
   }
@@ -301,7 +301,7 @@ export default function setupWsiSearch() {
   /////////////////////////////////////////////////////////////////////////////////
   return {
     makeSearchQuery: makeSearchQuery,
-    wsiToSearchReceivedResult: wsiToSearchReceivedResult
+    wsiToSearchMessageReceived: wsiToSearchMessageReceived
   };
 };
 

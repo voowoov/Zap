@@ -40,6 +40,9 @@
   {% if show_cookie_banner %} {% include 'base/cookies/cookie_banner.html' %} {% endif %}
 
   {% tz_detect %}
+  {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.3.1/sha256.min.js"
+    integrity="sha512-qw5xqZrce8QejL/YnoVvHaXggvfJK3bP2rczgxPSL+JhACfJhOU6gG+/c1LFyRxIpwaF8pZlfwUXLIK+5EEiKA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endcomment %}
   <script src="{% static 'js/mainscript.js' %}"></script>
 
   {% comment %}

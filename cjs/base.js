@@ -203,7 +203,8 @@ function getCookie(cname) {
   const navbarSwipeMenu = document.querySelector('.navlinkbarswipe');
   if (navbarSwipeMenu) {
     navbarSwipeMenu.addEventListener("wheel", event => {
-      event.preventDefault();
+      // event.stopPropagation();
+      // event.preventDefault();
       navbarSwipeMenu.scrollLeft += event.deltaY / 5;
     });
 

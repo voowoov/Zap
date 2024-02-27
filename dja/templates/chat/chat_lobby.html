@@ -11,11 +11,11 @@
     <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <div class="mb-2">
+    <p>
       {% trans "To register, please" %}
       <a href="{% url 'users:signin_0' %}">{% trans "sign in" %}</a>
       {% trans "if you have a user account or otherwise fill the following form bellow to identify you for the purpose of using this chat application." %}
-    </div>
+    </p>
     <div class="chatWindowLobbyForm">
       <div class="chatBlockTitle">{% trans "Guest user form" %}</div>
       <div class="chatLobbyFormContent">
@@ -33,12 +33,12 @@
             aria-controls="chatPrudCollapse"> {% trans "Use on a private device only." %}</a>
           <div class="collapse" id="chatPrudCollapse">
             <div class="card card-body">
-              {% trans "This application saves a sessionid cookie on this device which allows it to access your guest user capabilities that could be exposed to anyone using this device." %}
+              {% trans "This application saves a sessionid cookie on this device which allows it to access your guest user history and utilities, that could be exposed to anyone else using this device." %}
             </div>
           </div>
           <div>
-            {% trans "Note: Once created, this secure guest user and its chat history will be available from this device and browser." %}
-            {% trans "However, they will become unavailable if you ever sign in with a normal user account or clear your browsing data. Also, they will be deleted 14 days after the last call or text message was sent." %}
+            {% trans "Guest user history and utilities will be available from this device and browser." %}
+            {% trans "However, they will become unavailable if you sign in with a user account or clear your browsing data. Also, they will be deleted automatically 14 days after sending your last chat request." %}
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
   <div class="chatMain">
     <div class="chatBlockArea">
       <div class="chatWindowBlockParti">
-        <div class="chatBlockTitle">{% trans "Session participants" %}</div>
+        <div class="chatBlockTitle">{% trans "Chat session participants" %}</div>
         <div class="chatBlockContent chatScrollbar">
           <div class="chatParticipantRow">
             ASdf

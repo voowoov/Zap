@@ -1,5 +1,6 @@
 import setupWsiSearch from './search.js';
 import setupWsiFileUpload from './filespro.js';
+import setupWsiChat from './chat.js';
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -10,11 +11,18 @@ if (document.querySelector('.navSearchMain')) {
 };
 
 /////////////////////////////////////////////////////////////////////////////////
-//    check whether to load filespro
+//    check whether to load chat
 /////////////////////////////////////////////////////////////////////////////////
 if (document.querySelector('.fileUploadSendBtn') ||
   document.querySelector('.fileUploadSendAvatarBtn')) {
   var fileUploadFunctions = setupWsiFileUpload(); // keep at var so it goes in the module top level
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+//    check whether to load filespro
+/////////////////////////////////////////////////////////////////////////////////
+if (document.querySelector('.chatNav')) {
+  var chatFunctions = setupWsiChat(); // keep at var so it goes in the module top level
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -39,11 +47,14 @@ function handleWsEvent(event) {
   switch (event.type) {
     case 'onopen':
       console.log('WebSocket is open');
+      if (typeof searchFunctions !== 'undefined') {
+        searchFunctions.makeSearchQuery();
+      };
       if (typeof fileUploadFunctions !== 'undefined') {
         fileUploadFunctions.askForListOfFiles();
       };
-      if (typeof searchFunctions !== 'undefined') {
-        searchFunctions.makeSearchQuery();
+      if (typeof chatFunctions !== 'undefined') {
+        chatFunctions.askForListOfSessions();
       };
       break;
     case 'onclose':
@@ -61,11 +72,15 @@ function handleWsEvent(event) {
             case 's':
               // check if the module is loaded
               if (typeof searchFunctions !== 'undefined') {
-                searchFunctions.wsiToSearchReceivedResult(message);
+                searchFunctions.wsiToSearchMessageReceived(message);
               };
             case 'f':
               if (typeof fileUploadFunctions !== 'undefined') {
                 fileUploadFunctions.wsiToFilesproMessageReceived(message);
+              };
+            case 'c':
+              if (typeof chatFunctions !== 'undefined') {
+                chatFunctions.wsiToChatMessageReceived(message);
               };
           };
         };
@@ -81,7 +96,7 @@ let wsworker;
 let gsocket;
 let useSharedWorker = !!window.SharedWorker; // is supported
 
-export function wsiOpenOrAccessSharedSocket() {
+export function wsiOpenSharedSocket() {
   if (typeof wsworker === 'undefined') {
     console.log("Opening web socket")
     if (useSharedWorker) {

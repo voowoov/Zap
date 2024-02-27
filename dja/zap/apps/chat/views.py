@@ -4,6 +4,7 @@ import logging
 from django.shortcuts import redirect, render
 from django.views import View
 from zap.apps.chat.objects import ListStaffChat
+from zap.apps.xsys._functions import pow_challenge, pow_verify
 
 logger = logging.getLogger(__name__)
 

@@ -5,14 +5,14 @@ import zap.apps.search._typesense as ts
 logger = logging.getLogger(__name__)
 
 
-class WSISearchMixin:
+class WsiSearchMixin:
 
-    async def wsi_search_received_message(self):
+    async def wsi_search_received_message(self, message):
         try:
-            if len(self.message) > 50:
-                raise ValueError(f"Message too long: {self.message}")
+            if len(message) > 52:
+                raise ValueError(f"Message too long: {message}")
             await self.send(
-                "s" + self.tab_id + ts.typesense_search_documents(self.message)
+                "s" + message[1] + ts.typesense_search_documents(message[2:])
             )
         except Exception as e:
             logger.error(f"error: wsi_search_received_message: {e}")

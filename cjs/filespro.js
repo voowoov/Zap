@@ -1,4 +1,4 @@
-import { wsiOpenOrAccessSharedSocket } from './wsi.js';
+import { wsiOpenSharedSocket } from './wsi.js';
 import { wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
@@ -16,15 +16,14 @@ export default function setupWsiFileUpload() {
   // could be already open
   /////////////////////////////////////////////////////////////////////////////////
   setTimeout(function() {
-    wsiOpenOrAccessSharedSocket();
-    if (fileUploadList) { askForListOfFiles(); }
+    wsiOpenSharedSocket();
   }, 0);
 
-  const fileChunkSize = 1990; // Size of chunks
-  const fileMaxNbChunks = 100;
+  const fileChunkSize = 1990; // Size of each chunk (in bytes)
+  const fileMaxNbChunks = 100; // chunks per batch
   const fileMaxSize = 10000000;
 
-  const filePartialSize = fileChunkSize * fileMaxNbChunks; // Size of chunks
+  const filePartialSize = fileChunkSize * fileMaxNbChunks; // in bytes
   let transferUnderway = false
   let filePortionStep = 0;
   let filePortionsArray = [];
@@ -188,7 +187,7 @@ export default function setupWsiFileUpload() {
         let chunksNb = Math.ceil(filePortionsArray[filePortionStep][2] / fileChunkSize); // Number of chunks
         let chunkId = 0; // Start with the first chunk
         let percentage = Math.floor(filePortionStep / filePortionsArray.length * 100).toString() + ' %';
-        fileUploadLog('\u231B ' + (pageLanguage == "fr" ? "Envoie du fichier en cours." : "Sending file in progress."));
+        fileUploadLog('\u231B ' + (pageLanguage == "fr" ? "Envoie du fichier en cours." : "Sending file in progress.") + " " + percentage);
 
         function readNextChunk() {
           return new Promise((resolve, reject) => {
@@ -261,7 +260,7 @@ export default function setupWsiFileUpload() {
     try {
       wsiSend('f' + wsiCurrentTabId + "u" + pageLanguage);
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     };
   };
 
