@@ -6,10 +6,11 @@ import os
 import re
 import struct
 from pathlib import Path
-from django.core.cache import cache
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.files import File
 from django.db import transaction
 from django.utils.crypto import get_random_string
@@ -17,7 +18,10 @@ from django.utils.translation import activate, get_language
 from PIL import Image
 from zap.apps.filespro._functions import get_link_for_file_viewer_and_download
 
-from .models import ChatGuestUser, ChatSession
+UserModel = get_user_model()
+
+
+from .models import ChatSession
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +30,7 @@ class WsiChatMixin:
 
     async def wsi_chat_received_message(self, message):
         await self.init_chat()
-        match message[0]:
+        match message[2]:
             case "u":  # update list of files in filespro_folder
                 await self.send_sessions_list(message)
         #     case "s":  # start the upload
@@ -46,7 +50,9 @@ class WsiChatMixin:
         #         logger.error(f"error: init_filespro_folder: {e}")
         #         await self.close()
 
-    async def send_sessions_list(self, language_code):
+    async def send_sessions_list(self, message):
+        tab_id = message[1]
+        language_code = message[3:]
         if language_code == "en" or language_code == "fr":
             activate(language_code)
         try:
@@ -76,3 +82,30 @@ class WsiChatMixin:
         except Exception as e:
             logger.error(f"error: send_sessions_list: {e}")
             await self.close()
+
+
+def set_default_chat_available_sessions():
+    try:
+        email = "a@a.com"  # Replace with the desired email address
+        user = UserModel.objects.get(email=email)
+        session_name_en = "Zap - business relationships"
+        session_name_fr = "Zap - relations d'affaires"
+        json_en = {
+            "user": {
+                "session_name": session_name_en,
+                "name": user.name,
+                "role": user.role,
+            },
+        }
+        json_fr = json_en.replace(session_name_en, session_name_fr)
+        cache.set("default_chat_available_sessions_en", json_en)
+        cache.set("default_chat_available_sessions_fr", json_fr)
+    except Exception as e:
+        logger.error(f"error: get_default_chat_available_sessions: {e}")
+
+
+def get_default_chat_available_sessions():
+    try:
+        return cache.get("default_chat_available_sessions", [])
+    except Exception as e:
+        logger.error(f"error: get_default_chat_available_sessions: {e}")

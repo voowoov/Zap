@@ -4,10 +4,10 @@ from django.contrib.auth import get_user_model
 UserModel = get_user_model()
 
 from .models import (
-    Account,
     AddressCpProject,
     AddressCpUser,
     AddressUPS,
+    ClientAccount,
     Deposit,
     Invoice,
     Mailmessage,
@@ -30,7 +30,6 @@ class UserAdmin(admin.TabularInline):
         "email",
         "first_name",
         "last_name",
-        "is_responsible",
         "is_active",
     )
     readonly_fields = fields
@@ -42,7 +41,7 @@ class AddressCpProjectAdmin(admin.TabularInline):
     show_change_link = True
 
 
-@admin.register(Account)
+@admin.register(ClientAccount)
 class AccountAdmin(admin.ModelAdmin):
     inlines = [
         UserAdmin,

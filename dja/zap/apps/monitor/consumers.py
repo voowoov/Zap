@@ -58,7 +58,11 @@ class MonitorConsumer(WebsocketConsumer):
                             if len(words) > 1:
                                 self.send(self.run_celery_task(words[1], words[2:]))
                         case _:
-                            self.send("unknown command")
+                            self.send(self.scope["session"].get_expiry_date())
+                            if self.scope["session"].get_expiry_date() > datetime.now():
+                                self.send("True")
+                            self.send(self.scope["session"].get_expiry_age())
+                            self.send("unknown " + text_data)
                 elif bytes_data:
                     pass
             else:

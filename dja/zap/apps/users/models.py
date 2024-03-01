@@ -10,7 +10,7 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
-from zap.apps.accounts.models import Account, Param
+from zap.apps.accounts.models import ClientAccount, Param, PhoneNumbers
 from zap.apps.filespro.models import FilesproFolder
 
 logger = logging.getLogger(__name__)
@@ -25,14 +25,6 @@ for i in range(0, len(listtemp)):
     if listtemp[i][:3] not in ["Can", "US/"]:
         timezone_not_canada.append((listtemp[i], listtemp[i]))
 TIMEZONE_CHOICES = timezone_canada + timezone_not_canada
-# TIMEZONE_CHOICES = [(listtemp[i], _(listtemp[i])) for i in range(0, len(listtemp))]
-NAME_PREFIX_CHOICES = [
-    ("A", ""),
-    ("B", _("Mr.")),
-    ("C", _("Ms.")),
-    ("E", "Dr."),
-    ("F", "Prof."),
-]
 
 
 def uploadPathFunctionAvatar(instance, filename):
@@ -42,40 +34,46 @@ def uploadPathFunctionAvatar(instance, filename):
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, email, password, account, create_account, **extra_fields):
+    def _create_user(
+        self, email, password, client_account, create_client_account, **extra_fields
+    ):
         if not email:
             raise ValueError("Users must have an email address")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.password = make_password(password)
         user.filespro_folder = FilesproFolder.create(10000000)
-        if create_account:
+        if create_client_account:
             with transaction.atomic():
                 param = Param.objects.first()
-                new_acc_num = param.last_account_number + 1
-                param.last_account_number = new_acc_num
+                new_acc_num = param.last_client_account_number + 1
+                param.last_client_account_number = new_acc_num
                 param.save()
-                s = Account(account_number=new_acc_num)
+                s = ClientAccount(account_number=new_acc_num)
                 s.save()
-                user.account = s
+                user.client_account = s
                 user.save(using=self._db)
         else:
-            user.account = account
+            user.client_account = client_account
             user.save(using=self._db)
         return user
 
-    def create_user(self, email=None, password=None, account=None, **extra_fields):
+    def create_user(
+        self, email=None, password=None, client_account=None, **extra_fields
+    ):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        if account:
-            create_account = False
+        if client_account:
+            create_client_account = False
         else:
-            create_account = True
+            create_client_account = True
         return self._create_user(
-            email, password, account, create_account, **extra_fields
+            email, password, client_account, create_client_account, **extra_fields
         )
 
-    def create_superuser(self, email=None, password=None, account=None, **extra_fields):
+    def create_superuser(
+        self, email=None, password=None, client_account=None, **extra_fields
+    ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -85,7 +83,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(
-            email, password, account, create_account=True, **extra_fields
+            email, password, client_account, create_client_account=True, **extra_fields
         )
 
     def with_perm(
@@ -117,34 +115,25 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    #########  Added fields    #####################
-    account = models.ForeignKey(Account, on_delete=models.PROTECT, blank=True)
-    is_responsible = models.BooleanField(
-        _("responsible of the account"),
-        default=False,
-        help_text=_("Designates whether the user have write permission to the account"),
+
+    client_account = models.ForeignKey(
+        ClientAccount, on_delete=models.PROTECT, blank=True
     )
-    prefix_title = models.CharField(
-        max_length=1, default="A", choices=NAME_PREFIX_CHOICES
-    )
+
     first_name = models.CharField(max_length=20, blank=True)
-    middle_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
-    suffix_title = models.CharField(max_length=15, blank=True)
-    phone = models.CharField(max_length=10, blank=True)
-    phone_ext = models.CharField(max_length=4, blank=True)
-    verified_phone_date = models.DateTimeField(blank=True, null=True)
+    role_en = models.CharField(_("role"), max_length=150, blank=True)
+    role_fr = models.CharField(_("role"), max_length=150, blank=True)
     avatar = models.ImageField(
         upload_to=uploadPathFunctionAvatar, null=True, blank=True
     )
-    social_name = models.CharField(max_length=255, blank=True)
-    social_desc = models.CharField(max_length=255, blank=True)
-    log = models.TextField(blank=True)
+    phone_numbers = models.ManyToManyField(PhoneNumbers, blank=True)
+    is_closed = models.BooleanField(_("closed"), default=False)
+
     filespro_folder = models.ForeignKey(
         FilesproFolder, on_delete=models.PROTECT, blank=True
     )
 
-    ######### Original fields  #####################
     email = models.EmailField(
         verbose_name=_("email address"),
         max_length=35,
@@ -162,16 +151,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             "Designates whether this user should be treated as active and verified."
         ),
     )
-    is_closed = models.BooleanField(
-        _("account closed"),
-        default=False,
-        help_text=_("Designates whether the user account is closed."),
-    )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
-    date_closed = models.DateTimeField(_("date closed"), blank=True, null=True)
-    time_zone = models.CharField(
-        max_length=32, default="Auto", choices=TIMEZONE_CHOICES
-    )
 
     objects = UserManager()
 
@@ -186,25 +166,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
-
-    def get_full_name(self):
-        """
-        Return the first_name plus the last_name, with a space in between.
-        """
-        full_name = self.email
-        return full_name.strip()
-
-    def get_short_name(self):
-        """Return the short name for the user."""
-        return self.email
-
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        """Send an email to this user."""
-        # send_mail(subject, message, from_email, [self.email], **kwargs)
-
-    def add_log(self, text):
-        logger.debug(f"User: add_log: {self.log}")
-        self.log += (
-            datetime.datetime.now().strftime("%y-%m-%d %H:%M") + " " + text + "\n"
-        )
-        self.save()

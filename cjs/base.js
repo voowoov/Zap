@@ -206,7 +206,7 @@ function getCookie(cname) {
       // event.stopPropagation();
       // event.preventDefault();
       navbarSwipeMenu.scrollLeft += event.deltaY / 5;
-    });
+    }, { passive: true });
 
     // mouse click-drag-release scroll horizontally
     navbarSwipeMenu.addEventListener("mousedown", event => {

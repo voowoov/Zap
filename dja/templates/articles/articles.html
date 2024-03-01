@@ -12,24 +12,23 @@
     window.scroll(0, 0);
   });
 </script>
-<main class="d-flex flex-fill">
-  <section class="" style="width:100%">
-    <div class="p-3 container-fluid">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
+<main class="mainHLessFooter ">
+  <section class="home_section container-fluid">
 
-        {% comment %} bootstrap spinner mixed with htmx id and class {% endcomment %}
-        <div id="my-indicator" class=" htmx-indicator spinner-border spinner_style" role="status">
-          <span class="sr-only"></span>
-        </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
 
-        {% include 'articles/articles_page_htmx.html' %}
-
+      {% comment %} bootstrap spinner mixed with htmx id and class {% endcomment %}
+      <div id="my-indicator" class=" htmx-indicator spinner-border spinner_style" role="status">
+        <span class="sr-only"></span>
       </div>
+
+      {% include 'articles/articles_page_htmx.html' %}
+
     </div>
   </section>
 </main>
-
 {% comment %} {% include 'base/footers/footer_small.html' %} {% endcomment %}
 {% include 'base/footers/footer_small.html' %}
+
 
 {% endblock %}

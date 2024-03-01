@@ -6,23 +6,18 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from zap.apps.filespro.models import FilesproFolder
 from zap.apps.users.models import User
-
-
-class ChatGuestUser(models.Model):
-    sessionid = models.CharField(
-        max_length=255, null=True, blank=True
-    )  # ChatGuestUser_id is also in the session data of the client
-    name = models.CharField(max_length=255, null=True, blank=True)
-    role = models.CharField(max_length=255, null=True, blank=True)
 
 
 class ChatSession(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host_user")
     users = models.ManyToManyField(User, blank=True)
-    guests = models.ManyToManyField(ChatGuestUser, blank=True)
 
-    last_updated = models.DateTimeField(default=timezone.now)
+    filespro_folder = models.ForeignKey(
+        FilesproFolder, on_delete=models.PROTECT, blank=True
+    )
+
     ####### Conversation #######
     ### 3 ASCII characters for the [day after 2023-01-01 0h UTC-0], [minute of the day], [milliseconds of minute]
     ### 1 ASCII characters for the participant number (0 to ...) staff is 0

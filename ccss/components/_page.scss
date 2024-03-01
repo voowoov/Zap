@@ -1,4 +1,31 @@
 @use '../components/custom' as *;
+@use '../components/mixins' as *;
+body {
+  overflow: hidden;
+}
+
+.mainHLessFooter {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - $navBarHeight - $footerSmallHeight);
+  display: flex;
+  flex-direction: column;
+}
+
+.mainHFull {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - $navBarHeight);
+  display: flex;
+  flex-direction: column;
+}
+
+.home_section {
+  @include gradientBg;
+  padding: 1rem 0.5rem;
+  flex-grow: 1;
+}
+
 .pagetop_message {
   position: sticky;
   top: $navBarHeight;

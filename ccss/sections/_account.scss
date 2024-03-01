@@ -2,12 +2,8 @@
 @use '../components/mixins' as *;
 .account_section {
   @include gradientBg;
-  padding: 3rem 0rem 1.5rem 0rem;
-  width: 100%;
-  & .container-fluid {
-    padding: 0;
-    margin: 0;
-  }
+  padding: 1rem 0.5rem;
+  flex-grow: 1;
 }
 
 .account_nav_text {

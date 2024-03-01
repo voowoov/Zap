@@ -4,55 +4,53 @@
 {% block desc %}{% trans "" %}{% endblock %}
 {% block content %}
 
-<main class="d-flex flex-fill">
-  <section class="full_section text_color">
-    <div class="h-100">
-      <div class="h-100 d-flex gap-2">
-        <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
-          <textarea class="command-log" id="command-log"></textarea>
-          <textarea class="command-input" id="command-input" spellcheck="false" type="text" rows="2"></textarea>
-          <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
-        </div>
+<main class="mainHFull">
+  <section class="home_section">
+    <div class="h-100 d-flex gap-2">
+      <div class="d-flex flex-column flex-grow-1 gap-1" style="min-width:300px;">
+        <textarea class="command-log" id="command-log"></textarea>
+        <textarea class="command-input" id="command-input" spellcheck="false" type="text" rows="2"></textarea>
+        <button class="command-submit" id="command-submit">{% trans "Send command" %}</button>
+      </div>
 
-        <div class="m-0 p-0 d-flex flex-column align-items-start" style="min-width:250px;">
-          Shared files
-          <div class="fileUploadCtn">
-            <div class="fileUploadList">
+      <div class="m-0 p-0 d-flex flex-column align-items-start" style="min-width:250px;">
+        Shared files
+        <div class="fileUploadCtn">
+          <div class="fileUploadList">
 
-            </div>
-            <input class="fileUploadRealInput" type="file" hidden="hidden">
-            <button class="fileUploadChooseBtn">{% trans "Choose a file from my computer" %}</button>
-            <div class="fileUploadChoiceTxt"></div>
-            <button class="fileUploadSendBtn">{% trans "Send the file on the server" %}</button>
-            <button class="fileUploadCancelBtn">{% trans "Cancel" %}</button>
-            <div class="fileUploadLogTxt"></div>
           </div>
-
-          Test
+          <input class="fileUploadRealInput" type="file" hidden="hidden">
+          <button class="fileUploadChooseBtn">{% trans "Choose a file from my computer" %}</button>
+          <div class="fileUploadChoiceTxt"></div>
+          <button class="fileUploadSendBtn">{% trans "Send the file on the server" %}</button>
+          <button class="fileUploadCancelBtn">{% trans "Cancel" %}</button>
+          <div class="fileUploadLogTxt"></div>
         </div>
 
-        <div class="d-flex flex-column align-items-start" style="width:250px;">
-          Typesense
-          <button class='monitorSendCommand'>movies_fixture_to_db</button>
-          <button class='monitorSendCommand'>delete_all_movies_from_db</button>
-          <button class='monitorSendCommand'>typesense_delete_a_collection</button>
-          <button class='monitorSendCommand'>typesense_create_a_collection</button>
-          <button class='monitorSendCommand'>typesense_import_documents</button>
-          <button class='monitorSendCommand'>typesense_test_count_documents</button>
-          <button class='monitorSendCommand'>typesense_add_single_document</button>
-          Websocket tests
-          <label> Packet size<input type="text" value="1024" id="wstestsize" style="width:100px;"></label>
-          <label> Repetitions<input type="text" value="5" id="wstestrepetitions" style="width:100px;"></label>
-          <label> Delay ms<input type="text" value="500" id="wstestdelay" style="width:100px;"></label>
-          <button class='monitorFunction'>sendPacketBurstJS</button>
-          <button class='monitorFunction'>connectAndDisconnectJS</button>
-          <button class='monitorSendCommand'>close_connection_in_django</button>
-          <button class='monitorFunction'>sendBinaryMessage</button>
-          Ajax tests
-          <button class='monitorFunction'>showMyObjectList</button>
-          <button class='monitorFunction'>sendAjaxRequest</button>
+        Test
+      </div>
 
-        </div>
+      <div class="d-flex flex-column align-items-start" style="width:250px;">
+        Typesense
+        <button class='monitorSendCommand'>movies_fixture_to_db</button>
+        <button class='monitorSendCommand'>delete_all_movies_from_db</button>
+        <button class='monitorSendCommand'>typesense_delete_a_collection</button>
+        <button class='monitorSendCommand'>typesense_create_a_collection</button>
+        <button class='monitorSendCommand'>typesense_import_documents</button>
+        <button class='monitorSendCommand'>typesense_test_count_documents</button>
+        <button class='monitorSendCommand'>typesense_add_single_document</button>
+        Websocket tests
+        <label> Packet size<input type="text" value="1024" id="wstestsize" style="width:100px;"></label>
+        <label> Repetitions<input type="text" value="5" id="wstestrepetitions" style="width:100px;"></label>
+        <label> Delay ms<input type="text" value="500" id="wstestdelay" style="width:100px;"></label>
+        <button class='monitorFunction'>sendPacketBurstJS</button>
+        <button class='monitorFunction'>connectAndDisconnectJS</button>
+        <button class='monitorSendCommand'>close_connection_in_django</button>
+        <button class='monitorFunction'>sendBinaryMessage</button>
+        Ajax tests
+        <button class='monitorFunction'>showMyObjectList</button>
+        <button class='monitorFunction'>sendAjaxRequest</button>
+
       </div>
     </div>
   </section>

@@ -1,13 +1,13 @@
 import datetime
+import logging
 import subprocess  # to run .bat .sh files
 from time import sleep
-import logging
 
 from dateutil import tz
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from zap.apps.accounts.models import Account, AddressCpProject, AddressUPS, Param
+from zap.apps.accounts.models import AddressCpProject, AddressUPS, Param
 from zap.apps.articles.forms import ArticleForm, AuthorForm, ImageContentForm
 from zap.apps.articles.models import Article, Author, ImageContent
 from zap.apps.users.models import User
@@ -30,15 +30,16 @@ class Command(BaseCommand):
 
         # fill initial data in database
         if Param.objects.all().count() == 0:
-            param = Param(last_account_number=500)
+            param = Param(last_client_account_number=500)
             param.save()
 
         superuser = User.objects.create_superuser(
             email="a@a.com",
             password="p",
             first_name="Etienne",
-            social_name="Etienne",
-            social_desc="staff",
+            last_name="Robert",
+            role_en="Organizer in chief at Zap",
+            role_fr="Organiseur en chef à Zap",
         )
 
         user = User.objects.create_user(
@@ -48,13 +49,12 @@ class Command(BaseCommand):
         )
         user.last_name = "lennon"
         user.is_staff = True
-        user.is_responsible = True
-        user.social_name = "John Lennon"
-        user.social_desc = "staff 2"
+        user.role_en = "staff at Zap"
+        user.role_fr = "staff at Zap"
         user.save()
 
         addresscp = AddressCpProject.objects.create(
-            account=user.account,
+            client_account=user.client_account,
             name="John Lennon",
             unit_number="35",
             add_info="Les Beatles Inc.",
@@ -65,7 +65,7 @@ class Command(BaseCommand):
             country="CA",
         )
         addressups = AddressUPS.objects.create(
-            account=user.account,
+            client_account=user.client_account,
             name="John Lennon",
             address_1="8185 Richelieu Ave.",
             address_2="apt 1",

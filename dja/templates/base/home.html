@@ -3,20 +3,15 @@
 {% block title %}{% trans "Home" %}{% endblock %}
 {% block desc %}{% trans "" %}{% endblock %}
 {% block content %}
-<main class="d-flex flex-fill">
-  <!-- /////////////////////////////////////////////////////////////////////////////////////////////////
-                                    Home  
-/////////////////////////////////////////////////////////////////////////////////////////////////////-->
-  <section class="home_section section_min-height">
-    <div class="container-fluid">
-      <div class="row align-items-center text-white">
-        <!-- START THE CONTENT FOR THE INTRO -->
-      </div>
+<main class="mainHFull">
+  <section class="home_section">
+    <div class="text-white">
+      <h1>{% trans "Welcome" %}</h1>
     </div>
-    {% include 'base/footers/footer_full.html' %}
   </section>
+  {% include 'base/footers/footer_full.html' %}
+  {% include 'base/footers/footer_small.html' %}
 </main>
 
-{% include 'base/footers/footer_small.html' %}
 
 {% endblock %}

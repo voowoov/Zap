@@ -2,8 +2,7 @@
 @use '../components/mixins' as *;
 .chat_section {
   @include gradientBg;
-  padding: 6px;
-  width: 100%;
+  padding: 0.7rem 0.5rem;
   display: inline-flex;
   flex-direction: column;
   flex-grow: 1;

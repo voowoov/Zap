@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class DownloadFile(LoginRequiredMixin, View):
     def get(self, request, pk):
         try:
-            path = request.user.account.invoices.get(pk=pk).invoice_pdr.path
+            path = request.user.client_account.invoices.get(pk=pk).invoice_pdr.path
             response = FileResponse(open(path, "rb"), as_attachment=True)
         except Exception as e:
             logger.error(f"error: DownloadFile: {e}")
@@ -49,7 +49,7 @@ class AccountSummary(LoginRequiredMixin, View):
     def this_render(self, request):
         user = request.user
         try:
-            account = user.account
+            account = user.client_account
             invoices = account.invoices.all()
             ctx = {"user": user, "account": account, "invoices": invoices}
             return render(request, "accounts/account_summary.html", ctx)
@@ -91,7 +91,7 @@ class AccountPrefPerso(LoginRequiredMixin, View):
 
     def this_render(self, request):
         user = request.user
-        account = user.account
+        account = user.client_account
         invoices = account.invoices.all()
         ctx = {"email": user.email, "account": account, "invoices": invoices}
         return render(request, "accounts/account_pref_perso.html", ctx)
@@ -106,7 +106,7 @@ class AccountPrefSocio(LoginRequiredMixin, View):
 
     def this_render(self, request):
         user = request.user
-        account = user.account
+        account = user.client_account
         invoices = account.invoices.all()
         ctx = {"email": user.email, "account": account, "invoices": invoices}
         return render(request, "accounts/account_pref_socio.html", ctx)
@@ -121,7 +121,7 @@ class AccountPrefSignin(LoginRequiredMixin, View):
 
     def this_render(self, request):
         user = request.user
-        account = user.account
+        account = user.client_account
         invoices = account.invoices.all()
         ctx = {"email": user.email, "account": account, "invoices": invoices}
         return render(request, "accounts/account_pref_signin.html", ctx)
@@ -132,7 +132,7 @@ class EditAddressCpProject(View):
     form = AddressCpProjectForm()
 
     def get(self, request):
-        address = request.user.account.addresscpproject_set.first()
+        address = request.user.client_account.addresscpproject_set.first()
         if address:
             self.form = AddressCpProjectForm(instance=address)
         return self.this_render(request)

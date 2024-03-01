@@ -1,6 +1,6 @@
 {% load static %}{% load i18n %}
 <div class="">
-  Avatar
+  {% trans "My photo or avatar" %}
 </div>
 <div class="image_viewer_canvas_container">
   <div class="image_viewer_mask">
@@ -20,7 +20,7 @@
 <div class="fileUploadLogTxt">.</div>
 
 <div class="">
-  <div> Note: Avatar images are saved at a resolution of 205&nbsp;x&nbsp;205&nbsp;pixels.</div>
+  <div> {% trans "Note: Avatar images are saved at a resolution of 205&nbsp;x&nbsp;205&nbsp;pixels." %}</div>
 </div>
 
 {% csrf_token %}

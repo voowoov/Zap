@@ -1,6 +1,6 @@
 import datetime
-import os
 import logging
+import os
 
 from django.conf import settings
 from django.db import models
@@ -13,6 +13,10 @@ logger = logging.getLogger(__name__)
 
 def uploadPathFunction(instance, filename):
     return os.path.join("HG5GPD8/%s/" % get_random_string(8), filename)
+
+
+def uploadPathFunctionAvatar(instance, filename):
+    return "avatars/%s" % get_random_string(8) + ".png"
 
 
 STATUS_CHOICES = [
@@ -49,7 +53,7 @@ COUNTRY_CHOICES = [
 ]
 
 
-class Account(models.Model):
+class ClientAccount(models.Model):
 
     account_number = models.CharField(max_length=9, unique=True)
     account_type = models.CharField(
@@ -69,11 +73,7 @@ class Account(models.Model):
     projects = models.ManyToManyField("Project", blank=True)
 
     def __str__(self):
-        user_responsible = self.user_set.filter(is_responsible=True)
-        if user_responsible:
-            return f"{user_responsible[0].email}"
-        else:
-            return f"{self.account_number}"
+        return self.account_number
 
     def add_log(self, text):
         logger.debug(f"Account log: {self.log}")
@@ -129,7 +129,7 @@ class Deposit(models.Model):
 
 
 class Param(models.Model):
-    last_account_number = models.IntegerField(default=300000100)
+    last_client_account_number = models.IntegerField(default=300000100)
 
 
 class Mailmessage(models.Model):
@@ -179,15 +179,17 @@ class AddressCp(models.Model):
 
 
 class AddressCpUser(AddressCp):
-    account = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    client_account = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
 
 class AddressCpProject(AddressCp):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    client_account = models.ForeignKey(ClientAccount, on_delete=models.CASCADE)
 
 
 class AddressUPS(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    client_account = models.ForeignKey(ClientAccount, on_delete=models.CASCADE)
     name = models.CharField(max_length=35)  #
     #  Recipient's street address
     address_1 = models.CharField(max_length=35, blank=True)
@@ -215,3 +217,10 @@ class AddressUPS(models.Model):
         address += self.get_country_display()
 
         return address.upper()
+
+
+class PhoneNumbers(models.Model):
+
+    description = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255, unique=True)
+    is_verified = models.BooleanField(default=False)

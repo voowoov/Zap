@@ -1,25 +1,24 @@
 {% load i18n %} {% load l10n %} {% load static %} {% load my_filters %}
 {% for article in articles %}
-<div class="col" {% if forloop.last and articles.number < articles.paginator.num_pages %} hx-trigger="revealed"
-  hx-get="{% url 'articles:articles' %}?page={{ articles.number|add:1 }}" hx-swap="afterend"
-  hx-indicator="#my-indicator" {% endif %}>
-  <div class="card">
-    <a href="{% url 'articles:article' article.article_slug %}">
-      <img class="card-img-top"
-        src="{% if article.image_tumbnail.url is not None %} {{ article.image_tumbnail.url }} {% else %} {% static 'images/default/article_image_thumbnail.png' %} {% endif %}"
-        alt="Card image cap" style="">
-      <div class="card-body">
-        {% get_current_language as LANGUAGE_CODE %}
-        {% if LANGUAGE_CODE == 'en' %}
-        <h5 class="card-title">{{ article.title_en }}</h5>
-        <h6 class="card-text">{{ article.subtitle_en }}</h6>
-        {% else %}
-        <h5 class="card-title">{{ article.title_fr }}</h5>
-        <h6 class="card-text">{{ article.subtitle_fr }}</h6>
-        {% endif %}
-        <div class="card-text">{{ article.updated_at|custom_time_since|capfirst }}</div>
-      </div>
-    </a>
-  </div>
+<div class="card">
+  <a href="{% url 'articles:article' article.article_slug %}">
+    <img class="card-img-top"
+      src="{% if article.image_tumbnail.url is not None %} {{ article.image_tumbnail.url }} {% else %} {% static 'images/default/article_image_thumbnail.png' %} {% endif %}"
+      alt="Card image cap" style="">
+    <div class="card-body">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% if LANGUAGE_CODE == 'en' %}
+      <h5 class="card-title">{{ article.title_en }}</h5>
+      <h6 class="card-text">{{ article.subtitle_en }}</h6>
+      {% else %}
+      <h5 class="card-title">{{ article.title_fr }}</h5>
+      <h6 class="card-text">{{ article.subtitle_fr }}</h6>
+      {% endif %}
+      <div class="card-text">{{ article.updated_at|custom_time_since|capfirst }}</div>
+    </div>
+  </a>
 </div>
 {% endfor %}
+<div hx-trigger="intersect once" hx-get="{% url 'articles:articles' %}?page={{ articles.number|add:1 }}"
+  hx-swap="outerHTML" hx-indicator="#my-indicator">&nbsp;
+</div>

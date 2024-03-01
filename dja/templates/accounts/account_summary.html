@@ -14,19 +14,6 @@
 <div class="p-0 ps-3 m-2">
   <div class="p-0 m-2 d-flex flex-wrap">
     <span class="p-0 m-0 text-end" style="width:120px;">{% trans "Account&nbsp;holder:" %}</span>
-    <span class="ms-3">
-      <div class="p-0 m-0 text-start">{{user.firstname}} {{user.lastname}}</div>
-      {% if user.account_type == 'O' %}
-      <div class="p-0 m-0 text-start">{{user.organisationName}}</div>
-      {%endif%}
-      <div class="p-0 m-0 text-start">{{user.address.street}}</div>
-      <div class="p-0 m-0 text-start">{{user.address.city}} {{user.address.province}} {{user.address.code}}
-      </div>
-    </span>
-  </div>
-  <div class="p-0 m-2 d-flex flex-wrap">
-    <span class="p-0 m-0 text-end" style="width:120px;">{% trans "Account&nbsp;number:" %}</span>
-    <span class="p-0 m-0 ms-3 text-start">{{user.account_number}}</span>
   </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,5 +128,4 @@
   </div>
 </div>
 {% include "accounts/account__nav-1.html" %}
-{% include 'base/footers/footer_small.html' %}
 {% endblock %}

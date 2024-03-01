@@ -106,10 +106,10 @@ class Signin_0(View):
                     cookie_on_server.save()
                     response.set_cookie("cos_id", cookie_on_server.cos_id, 1000000)
                     # Change the timezone
-                    time_zone = request.user.time_zone
-                    if time_zone != "Auto":
-                        timezone.activate(zoneinfo.ZoneInfo(time_zone))
-                    response.set_cookie("time_zone", time_zone, 1000000)
+                    # time_zone = request.user.time_zone
+                    # if time_zone != "Auto":
+                    #     timezone.activate(zoneinfo.ZoneInfo(time_zone))
+                    # response.set_cookie("time_zone", time_zone, 1000000)
                     return response
             else:
                 self.warning_message = _("There was no match.")

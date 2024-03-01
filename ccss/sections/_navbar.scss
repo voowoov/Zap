@@ -11,7 +11,6 @@ $screenwidth_xxl: 1400px;
   height: $navBarHeight !important;
   background: var(--color-nav-bg);
   // prevent dragging and selecting
-  user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
   -moz-user-select: none;
@@ -112,7 +111,7 @@ $screenwidth_xxl: 1400px;
 }
 
 .navlinkbarswipe {
-  z-index: 100;
+  overscroll-behavior: contain;
   display: flex;
   align-items: center;
   max-width: fit-content;
@@ -424,9 +423,7 @@ $searchborderselectcolor: #5900ff;
   width: 100%;
   background-color: var(--color-nav-bg);
   border-radius: 5px;
-  // Scrollable :
-  height: auto;
-  overflow-x: hidden;
+  overflow-y: auto;
   max-height: calc(100vh - $navBarHeight - 10px);
   @media screen and (min-width: $screenwidth_sm) and (max-width: calc($screenwidth_lg - 0.1px)) {
     max-height: calc(100vh - $navBarHeight - 62px);

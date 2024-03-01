@@ -1,8 +1,7 @@
 import time
 
 from django.core.paginator import EmptyPage, Paginator
-from django.http import ( HttpResponseBadRequest,
-)
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 
@@ -13,7 +12,8 @@ class AuthorPage(View):
     def get(self, request, author_slug):
         author = get_object_or_404(Author, author_slug=author_slug)
         return render(request, "articles/author.html", {"author": author})
-            
+
+
 class ListOfArticles(View):
 
     def get(self, request):
@@ -27,10 +27,11 @@ class ListOfArticles(View):
         except EmptyPage:
             page = p.page(1)
         if self.request.htmx:
-            time.sleep(.2)
-            return render(request, "articles/articles_page_htmx.html", {'articles': page})
-        return render(request, "articles/articles.html", {'articles': page})
-            
+            return render(
+                request, "articles/articles_page_htmx.html", {"articles": page}
+            )
+        return render(request, "articles/articles.html", {"articles": page})
+
 
 class ArticlePage(View):
     def get(self, request, article_slug):

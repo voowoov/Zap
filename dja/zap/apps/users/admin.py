@@ -11,7 +11,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from zap.apps.accounts.models import Account, AddressCpUser
+from zap.apps.accounts.models import AddressCpUser
 from zap.apps.users.models import Param, User
 from zap.apps.users.tasks import send_email_password_reset_task
 
@@ -44,18 +44,17 @@ class AddressCpUserAdmin(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    inlines = [
-        AddressCpUserAdmin,
-    ]
+    # inlines = [
+    #     AddressCpUserAdmin,
+    # ]
 
-    actions = [send_email_password_reset]
-    ### The forms to add and change user instances
-    form = UserChangeForm
-    add_form = UserCreationForm
+    # actions = [send_email_password_reset]
+    # ### The forms to add and change user instances
+    # form = UserChangeForm
+    # add_form = UserCreationForm
 
-    ### The fields to be used in displaying the User model.
-    ### These override the definitions on the base UserAdmin
-    ### that reference specific fields on auth.User model.
+    raw_id_fields = ("client_account",)
+
     fieldsets = (
         (
             None,
@@ -63,10 +62,9 @@ class UserAdmin(BaseUserAdmin):
                 "fields": (
                     "email",
                     "password",
-                    "account",
-                    "is_responsible",
                     "is_active",
-                    "filespro_folder",
+                    "is_closed",
+                    "client_account",
                 )
             },
         ),
@@ -74,13 +72,10 @@ class UserAdmin(BaseUserAdmin):
             _("Personal info"),
             {
                 "fields": (
-                    "prefix_title",
                     "first_name",
-                    "middle_name",
                     "last_name",
-                    "social_name",
-                    "suffix_title",
-                    "time_zone",
+                    "role_en",
+                    "role_fr",
                     "avatar",
                 )
             },
@@ -88,27 +83,6 @@ class UserAdmin(BaseUserAdmin):
         (
             _("Permissions"),
             {"fields": ("is_superuser", "is_staff", "user_permissions", "groups")},
-        ),
-    )
-    ### My custom fieldsets for staff, see get_fieldsets addon below too
-    fieldsets_staff = (
-        (
-            None,
-            {"fields": ("email", "password", "account", "is_responsible", "is_active")},
-        ),
-        (
-            _("Personal info"),
-            {
-                "fields": (
-                    "prefix_title",
-                    "first_name",
-                    "middle_name",
-                    "last_name",
-                    "suffix_title",
-                    "time_zone",
-                    "avatar",
-                )
-            },
         ),
     )
     add_fieldsets = (
@@ -125,12 +99,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email",)
     ordering = ("email",)
     filter_horizontal = ()
-
-    ###  my custom addon for staffs
-    def get_fieldsets(self, request, obj=None):
-        if not request.user.is_superuser:
-            return self.fieldsets_staff
-        return super().get_fieldsets(request, obj)
 
 
 admin.site.register(Param)

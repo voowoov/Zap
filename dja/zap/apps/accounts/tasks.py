@@ -3,13 +3,15 @@ from django.conf import settings
 from django.core import mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from zap.apps.accounts.models import Account
+from zap.apps.accounts.models import ClientAccount
 
 
 @shared_task(name="send_mass_email_promo_task")
 def send_mass_email_promo_task():
 
-    all_accounts = list(Account.objects.all().values_list("user__email", "first_name"))
+    all_accounts = list(
+        ClientAccount.objects.all().values_list("user__email", "first_name")
+    )
 
     subject = "Zap account - promo"
     from_email = "Zap <" + settings.EMAIL_HOST_USER + ">"
@@ -22,7 +24,9 @@ def send_mass_email_promo_task():
             "first_name": account[1],
         }
         text_content = get_template("accounts/emails/promo_email_1.txt").render(context)
-        html_content = get_template("accounts/emails/promo_email_1.html").render(context)
+        html_content = get_template("accounts/emails/promo_email_1.html").render(
+            context
+        )
         message = EmailMultiAlternatives(subject, text_content, from_email, [to])
         message.attach_alternative(html_content, "text/html")
         messages.append(message)

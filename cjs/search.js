@@ -137,9 +137,8 @@ export default function setupWsiSearch() {
   function handleScrollingFromMainCtn(event) {
     let delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
     navSearchResDiv0.scrollTop -= (delta * 30);
-    event.preventDefault();
   }
-  navSearchMain.addEventListener('wheel', handleScrollingFromMainCtn);
+  navSearchMain.addEventListener('wheel', handleScrollingFromMainCtn, { passive: true });
 
   function handleClickedOutside(event) {
     let clickedOnScrollbar = document.documentElement.clientWidth <= event.clientX;
