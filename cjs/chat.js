@@ -1,4 +1,4 @@
-import { wsiOpenSharedSocket } from './wsi.js';
+import { wsiOpenWS } from './wsi.js';
 import { wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
@@ -15,7 +15,7 @@ export default function setupWsiChat() {
   // open the wsi socket or access the open one
   /////////////////////////////////////////////////////////////////////////////////
   setTimeout(function() {
-    wsiOpenSharedSocket();
+    wsiOpenWS();
   }, 0);
 
   const fileUploadCancelBtn = document.querySelector('.fileUploadCancelBtn');

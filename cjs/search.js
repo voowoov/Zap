@@ -1,4 +1,4 @@
-import { wsiOpenSharedSocket, wsiSend, wsiCurrentTabId } from './wsi.js';
+import { wsiOpenWS, wsiSend, wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -80,8 +80,8 @@ export default function setupWsiSearch() {
     if (navSearchInputTxt.value !== "") {
       navSearchBtnClearX.style.display = "flex";
     }
-    wsiOpenSharedSocket();
-    searchQuery()
+    wsiOpenWS();
+    searchQuery();
   }
 
   function hideSearchControl() {

@@ -3,6 +3,7 @@ import time
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.utils import timezone
 from zap.apps.chat._wsi_functions import WsiChatMixin
 from zap.apps.filespro._wsi_functions import WsiFilesproMixin
 from zap.apps.search._wsi_functions import WsiSearchMixin
@@ -14,9 +15,13 @@ class WsiConsumer(
     AsyncWebsocketConsumer, WsiFilesproMixin, WsiSearchMixin, WsiChatMixin
 ):
     async def connect(self):
+        # test
         self.channel_name_abr = None
         self.filespro_folder_id = None
         self.filespro_transfer_underway = False
+        self.scope["session"]["channel_name"] = self.channel_name
+        self.scope["session"].modified = True
+        sync_to_async(self.scope["session"].save)()
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -45,7 +50,18 @@ class WsiConsumer(
                     match text_data[0]:
                         case "s":
                             await self.frequency_limiting(10)
-                            # await self.wsi_search_received_message(text_data)
+
+                            # if self.scope["session"].get_expiry_date() > timezone.now():
+                            print(self.scope["session"].get_expiry_date())
+                            print(self.scope["user"].is_authenticated)
+                            print(
+                                "**************",
+                                self.scope["session"].session_key,
+                                self.scope["session"].get_expiry_date(),
+                                self.channel_name,
+                                self.scope["user"].is_authenticated,
+                            )
+
                         case "f":
                             await self.frequency_limiting(20)
                             await self.wsi_filespro_received_message(text_data)
@@ -96,3 +112,7 @@ class WsiConsumer(
         except Exception as e:
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()
+
+    # Receive message from room group
+    async def external_message(self, event):
+        await self.send(event["message"])

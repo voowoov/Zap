@@ -1,4 +1,4 @@
-import { wsiOpenSharedSocket } from './wsi.js';
+import { wsiOpenWS } from './wsi.js';
 import { wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
@@ -16,7 +16,7 @@ export default function setupWsiFileUpload() {
   // could be already open
   /////////////////////////////////////////////////////////////////////////////////
   setTimeout(function() {
-    wsiOpenSharedSocket();
+    wsiOpenWS();
   }, 0);
 
   const fileChunkSize = 1990; // Size of each chunk (in bytes)

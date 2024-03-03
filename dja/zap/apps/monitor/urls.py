@@ -13,8 +13,8 @@ urlpatterns = [
         name="MyAjaxReceiveTestView",
     ),
     path(
-        "PrivMonitorScript/",
-        views.PrivMonitorScript.as_view(),
-        name="PrivMonitorScript",
+        "MonitorScript/",
+        views.MonitorScript.as_view(),
+        name="MonitorScript",
     ),
 ]

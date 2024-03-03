@@ -75,6 +75,7 @@ class Signin_0(View):
             remember_email = self.form.cleaned_data["remember_email"]
             stay_signed_in = self.form.cleaned_data["stay_signed_in"]
             user = authenticate(request, email=email, password=password)
+            print(request.session.session_key)
             if user is not None:
                 if user.is_closed:
                     self.warning_message = _("This account was closed.")
@@ -296,5 +297,7 @@ class PasswordResetInfo(View):
 
 @login_required
 def logoutUser(request):
+    print(request.session.session_key)
+    print(request.session.get("channel_name", "error"))
     logout(request)
     return redirect("base:home")

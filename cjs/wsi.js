@@ -2,7 +2,9 @@ import setupWsiSearch from './search.js';
 import setupWsiFileUpload from './filespro.js';
 import setupWsiChat from './chat.js';
 
-
+// setTimeout(function() {
+//   wsiOpenWS();
+// }, 0);
 /////////////////////////////////////////////////////////////////////////////////
 //    check whether to load search
 /////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,13 @@ if (document.querySelector('.chatNav')) {
 /////////////////////////////////////////////////////////////////////////////////
 //    wsi
 /////////////////////////////////////////////////////////////////////////////////
+const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+  window.location.host + '/wsi/';
+let wsworker;
+let gsocket;
+let useSharedWorker = !!window.SharedWorker; // is supported
+let wsOpenedByMe = false;
+
 // localStorage of the browser is used to store the last tabId in a single char
 // get the next wsiCurrentTabId in storage, single character
 export let wsiCurrentTabId = localStorage.getItem('wsiCurrentTabId');
@@ -46,21 +55,27 @@ if (wsiCurrentTabId !== null) {
 function handleWsEvent(event) {
   switch (event.type) {
     case 'onopen':
-      console.log('WebSocket is open');
-      if (typeof searchFunctions !== 'undefined') {
-        searchFunctions.makeSearchQuery();
-      };
-      if (typeof fileUploadFunctions !== 'undefined') {
-        fileUploadFunctions.askForListOfFiles();
-      };
-      if (typeof chatFunctions !== 'undefined') {
-        chatFunctions.askForListOfSessions();
-      };
-      break;
+      if (wsOpenedByMe) {
+        wsOpenedByMe = false;
+        console.log('WebSocket is open');
+        ///// does the following for every tab /////
+        if (typeof searchFunctions !== 'undefined') {
+          searchFunctions.makeSearchQuery();
+        };
+        if (typeof fileUploadFunctions !== 'undefined') {
+          fileUploadFunctions.askForListOfFiles();
+        };
+        if (typeof chatFunctions !== 'undefined') {
+          chatFunctions.askForListOfSessions();
+        };
+        break;
+      }
     case 'onclose':
+      removeWS()
       console.log('WebSocket is closed');
       break;
     case 'onerror':
+      removeWS()
       console.log('WebSocket encountered an error');
       break;
     case 'onmessage':
@@ -90,41 +105,44 @@ function handleWsEvent(event) {
   };
 };
 
-const websocketUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
-  window.location.host + '/wsi/';
-let wsworker;
-let gsocket;
-let useSharedWorker = !!window.SharedWorker; // is supported
+function removeWS() {
+  if (typeof wsworker !== 'undefined') {
+    wsworker.port.postMessage({
+      command: 'removePort'
+    });
+    wsworker = undefined;
+  }
+  if (typeof gsocket !== 'undefined') {
+    gsocket.close();
+    gsocket = undefined;
+  }
+}
 
-export function wsiOpenSharedSocket() {
-  if (typeof wsworker === 'undefined') {
-    console.log("Opening web socket")
+export function wsiOpenWS() {
+  if (typeof wsworker === 'undefined' && typeof gsocket === 'undefined') {
     if (useSharedWorker) {
+      console.log("Worker: Opening WS", "url: ", websocketUrl)
       wsworker = new SharedWorker('/static/js/sharedWorker.js');
-
       wsworker.port.onmessage = function(e) {
         handleWsEvent(e.data);
       };
-
       wsworker.port.start();
-
       wsworker.port.postMessage({
         command: 'connect',
         url: websocketUrl
       });
+      wsOpenedByMe = true;
     } else {
+      console.log("Fallback Opening WS", "url: ", websocketUrl)
       initiateWebsocketFallback();
+      wsOpenedByMe = true;
     };
-    window.addEventListener('beforeunload', function() {
-      if (useSharedWorker) {
-        wsworker.port.postMessage({
-          command: 'removePort'
-        });
-      } else {
-        gsocket.close();
-      };
-    });
-  };
+    if (wsOpenedByMe) {
+      window.addEventListener('beforeunload', function() {
+        removeWS();
+      });
+    }
+  }
 };
 
 function initiateWebsocketFallback() {
@@ -157,15 +175,16 @@ function initiateWebsocketFallback() {
 };
 
 export function wsiSend(message) {
-  if (useSharedWorker) {
+  if (typeof wsworker !== 'undefined') {
     wsworker.port.postMessage({
       command: 'send',
       message: message
     });
-  } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
+    message.length < 100 ? console.log("Worker: Sending: " + message) : null;
+  } else if (typeof gsocket !== 'undefined' && gsocket.readyState === WebSocket.OPEN) {
     gsocket.send(message);
+    message.length < 100 ? console.log("Fallback: Sending: " + message) : null;
   };
-  message.length < 100 ? console.log("WSI Sending: " + message) : null;
 };
 
 export function wsiReconnect() {
@@ -175,8 +194,7 @@ export function wsiReconnect() {
       url: websocketUrl
     });
   } else if (gsocket && gsocket.readyState === WebSocket.OPEN) {
-    gsocket.close();
-    gsocket = null;
+    removeWS();
     initiateWebsocketFallback();
   };
 };

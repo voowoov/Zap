@@ -15,7 +15,7 @@
 
       <div class="m-0 p-0 d-flex flex-column align-items-start" style="min-width:250px;">
         Shared files
-        <div class="fileUploadCtn">
+        {% comment %} <div class="fileUploadCtn">
           <div class="fileUploadList">
 
           </div>
@@ -25,7 +25,7 @@
           <button class="fileUploadSendBtn">{% trans "Send the file on the server" %}</button>
           <button class="fileUploadCancelBtn">{% trans "Cancel" %}</button>
           <div class="fileUploadLogTxt"></div>
-        </div>
+        </div> {% endcomment %}
 
         Test
       </div>
@@ -61,7 +61,7 @@
 {% url 'monitor:MyAjaxReceiveTestView' as my_url_send_request %}
 {{ my_url_send_request|json_script:"myURLsendRequest" }}
 
-<script src="{% url 'monitor:PrivMonitorScript' %}"></script>
+<script src="{% url 'monitor:MonitorScript' %}"></script>
 
 <style>
   .command-log {

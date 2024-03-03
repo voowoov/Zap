@@ -282,6 +282,11 @@ LOGGING = {
         "handlers": ["console", "file"],  # Use both console and file handlers
         "level": "DEBUG",  # Set the desired log level (e.g., INFO, DEBUG, etc.)
     },
+    "loggers": {
+        "asyncio": {
+            "level": "WARNING",
+        },
+    },
 }
 
 ###### Elasticsearch ########

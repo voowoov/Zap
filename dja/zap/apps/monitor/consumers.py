@@ -4,6 +4,7 @@ import os
 import threading
 from datetime import datetime
 
+import channels.layers
 import zap.apps.chat.objects as chat
 import zap.apps.search._typesense as ts
 from asgiref.sync import async_to_sync
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class MonitorConsumer(WebsocketConsumer):
     def connect(self):
+        # self.channel_name = "monitor"
         if self.scope["user"].is_superuser:
             self.room_group_name = "monitor293ejoqi"
             self.accept()
@@ -58,11 +60,18 @@ class MonitorConsumer(WebsocketConsumer):
                             if len(words) > 1:
                                 self.send(self.run_celery_task(words[1], words[2:]))
                         case _:
-                            self.send(self.scope["session"].get_expiry_date())
-                            if self.scope["session"].get_expiry_date() > datetime.now():
-                                self.send("True")
-                            self.send(self.scope["session"].get_expiry_age())
-                            self.send("unknown " + text_data)
+                            pass
+                            # channel_layer = get_channel_layer()
+                            # async_to_sync(channel_layer.send)(
+                            #     words[0],
+                            #     {
+                            #         "type": "external.message",
+                            #         "message": "single channel message",
+                            #     },
+                            # )
+                            #
+                            # self.send(self.scope["session"].get_expiry_age())
+                            # self.send("unknown " + text_data)
                 elif bytes_data:
                     pass
             else:

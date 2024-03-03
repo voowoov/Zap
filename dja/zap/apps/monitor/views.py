@@ -38,7 +38,7 @@ class StaffMonitor(SuperuserLoginRequiredMixin, View):
             return redirect("base:home")
 
 
-class PrivMonitorScript(View):
+class MonitorScript(View):
     def get(self, request):
         if request.user.is_superuser:
             response = HttpResponse()
