@@ -1,5 +1,5 @@
 import { wsiOpenWS } from './wsi.js';
-import { wsiSend } from './wsi.js';
+import { wsiOpenSend, wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 

@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import re
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -224,8 +225,8 @@ def home(request):
 
 
 def cookie_opt(request):
-    cookie_pref = request.session.get("cookie_pref", "")
-    if cookie_pref:
+    cookie_pref = request.COOKIES.get("cookie_pref", "")
+    if cookie_pref and re.match(r"^[01]{3}$", cookie_pref) is not None:
         context = {
             "choice_settings": [
                 bool(int(cookie_pref[0])),

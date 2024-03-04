@@ -1,5 +1,5 @@
 import { wsiOpenWS } from './wsi.js';
-import { wsiSend } from './wsi.js';
+import { wsiOpenSend, wsiSend } from './wsi.js';
 import { wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
@@ -12,11 +12,9 @@ export default function setupWsiFileUpload() {
   console.log('filespro module enabled');
   const pageLanguage = document.documentElement.lang;
 
-  /////////////////////////////////////////////////////////////////////////////////
-  // could be already open
-  /////////////////////////////////////////////////////////////////////////////////
   setTimeout(function() {
-    wsiOpenWS();
+    // wsiOpenWS();
+    askForListOfFiles();
   }, 0);
 
   const fileChunkSize = 1990; // Size of each chunk (in bytes)
@@ -177,7 +175,7 @@ export default function setupWsiFileUpload() {
       filePortionStep = 0;
       filePortionsArray = dividePortionsArray();
       transferUnderway = true;
-      wsiSend('f' + wsiCurrentTabId + 's' + JSON.stringify({ upload_type: upload_type, file_name: fileA.name, file_size: fileA.size }));
+      wsiOpenSend('f' + wsiCurrentTabId + 's' + JSON.stringify({ upload_type: upload_type, file_name: fileA.name, file_size: fileA.size }));
     };
   };
 
@@ -258,7 +256,7 @@ export default function setupWsiFileUpload() {
 
   function askForListOfFiles() {
     try {
-      wsiSend('f' + wsiCurrentTabId + "u" + pageLanguage);
+      wsiOpenSend('f' + wsiCurrentTabId + "u" + pageLanguage);
     } catch (error) {
       console.error(error);
     };

@@ -2,6 +2,7 @@ import logging
 import time
 
 from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils import timezone
 from zap.apps.chat._wsi_functions import WsiChatMixin
@@ -15,13 +16,14 @@ class WsiConsumer(
     AsyncWebsocketConsumer, WsiFilesproMixin, WsiSearchMixin, WsiChatMixin
 ):
     async def connect(self):
-        # test
         self.channel_name_abr = None
         self.filespro_folder_id = None
         self.filespro_transfer_underway = False
+
+        ##### save the channel_name in session data for closing connection on login and logout
         self.scope["session"]["channel_name"] = self.channel_name
-        self.scope["session"].modified = True
-        sync_to_async(self.scope["session"].save)()
+        await self.save_session()  # requires a database write
+
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -50,24 +52,17 @@ class WsiConsumer(
                     match text_data[0]:
                         case "s":
                             await self.frequency_limiting(10)
-
-                            # if self.scope["session"].get_expiry_date() > timezone.now():
-                            print(self.scope["session"].get_expiry_date())
-                            print(self.scope["user"].is_authenticated)
-                            print(
-                                "**************",
-                                self.scope["session"].session_key,
-                                self.scope["session"].get_expiry_date(),
-                                self.channel_name,
-                                self.scope["user"].is_authenticated,
-                            )
-
+                            if await self.verify_session():
+                                # await self.wsi_search_received_message(text_data)
+                                pass
                         case "f":
                             await self.frequency_limiting(20)
-                            await self.wsi_filespro_received_message(text_data)
+                            if await self.verify_and_authenticate():
+                                await self.wsi_filespro_received_message(text_data)
                         case "c":
                             await self.frequency_limiting(20)
-                            await self.wsi_chat_received_message(text_data)
+                            if await self.verify_and_authenticate():
+                                await self.wsi_chat_received_message(text_data)
                         case _:
                             raise ValueError(
                                 f"unexpected prefix letter: {text_data[0]}"
@@ -85,6 +80,10 @@ class WsiConsumer(
         except Exception as e:
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()
+
+    @database_sync_to_async
+    def save_session(self):
+        self.scope["session"].save()
 
     async def frequency_limiting(self, thenthseconds):
         try:
@@ -113,6 +112,28 @@ class WsiConsumer(
             logger.error(f"error: wsi message receiving: {e}")
             await self.close()
 
-    # Receive message from room group
+    async def verify_and_authenticate(self):
+        if (
+            self.scope["session"].get_expiry_date() > timezone.now()
+            and self.scope["user"].is_authenticated
+        ):
+            return True
+        logger.debug(f"warning: failed verify_and_authenticate")
+        await self.close()
+        return False
+
+    async def verify_session(self):
+        if self.scope["session"].get_expiry_date() > timezone.now():
+            return True
+        logger.debug(f"warning: failed verify_and_authenticate")
+        await self.close()
+        return False
+
+    # Receive message channel_layer
     async def external_message(self, event):
         await self.send(event["message"])
+
+    # Receive message channel_layer
+    async def close_channel(self, event):
+        await self.send("r")  # reconnect/refresh
+        await self.close()

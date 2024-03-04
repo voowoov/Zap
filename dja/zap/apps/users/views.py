@@ -1,6 +1,8 @@
 import logging
 import zoneinfo
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib import messages
 from django.contrib.auth import (
     authenticate,
@@ -10,6 +12,7 @@ from django.contrib.auth import (
     password_validation,
 )
 from django.contrib.auth.decorators import login_required
+from django.contrib.sessions.models import Session
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -75,7 +78,6 @@ class Signin_0(View):
             remember_email = self.form.cleaned_data["remember_email"]
             stay_signed_in = self.form.cleaned_data["stay_signed_in"]
             user = authenticate(request, email=email, password=password)
-            print(request.session.session_key)
             if user is not None:
                 if user.is_closed:
                     self.warning_message = _("This account was closed.")
@@ -84,7 +86,7 @@ class Signin_0(View):
                         "This account is awaiting email verification."
                     )
                 else:
-                    login(request, user)
+                    do_login(request, user)
                     if stay_signed_in:
                         request.session.set_expiry(1000000)
                     else:
@@ -297,7 +299,23 @@ class PasswordResetInfo(View):
 
 @login_required
 def logoutUser(request):
-    print(request.session.session_key)
-    print(request.session.get("channel_name", "error"))
-    logout(request)
+    do_logout(request)
     return redirect("base:home")
+
+
+def do_login(request, user):
+    ### close the current wsi channel.
+    close_wsi_channel(request)
+    login(request, user)
+
+
+def do_logout(request):
+    close_wsi_channel(request)
+    logout(request)
+
+
+def close_wsi_channel(request):
+    channel_name = request.session.get("channel_name", "")
+    if channel_name:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.send)(channel_name, {"type": "close.channel"})

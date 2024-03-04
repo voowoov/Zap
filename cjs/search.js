@@ -1,4 +1,4 @@
-import { wsiOpenWS, wsiSend, wsiCurrentTabId } from './wsi.js';
+import { wsiOpenWS, wsiOpenSend, wsiSend, wsiCurrentTabId } from './wsi.js';
 import { throttle } from './base.js';
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,6 @@ export default function setupWsiSearch() {
     if (navSearchInputTxt.value !== "") {
       navSearchBtnClearX.style.display = "flex";
     }
-    wsiOpenWS();
     searchQuery();
   }
 
@@ -259,7 +258,7 @@ export default function setupWsiSearch() {
     let existingSearch = getPreviousSearchResult(query);
     if (existingSearch == null) {
       navSearchStartTimer = performance.now();
-      wsiSend('s' + wsiCurrentTabId + query);
+      wsiOpenSend('s' + wsiCurrentTabId + query);
     } else {
       showSearchResults(existingSearch);
     }

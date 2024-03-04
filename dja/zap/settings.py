@@ -90,7 +90,7 @@ MIDDLEWARE = [
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "tz_detect.middleware.TimezoneMiddleware",
     "zap.apps.xsys.middleware.TimezoneMiddleware",
-    "zap.apps.xsys.middleware.CookieSettingsMiddleware",
+    # "zap.apps.xsys.middleware.CookieSettingsMiddleware",
     # "django_hosts.middleware.HostsResponseMiddleware",
     "django.contrib.sites.middleware.CurrentSiteMiddleware",  # adds request.site.domain
     "django_htmx.middleware.HtmxMiddleware",

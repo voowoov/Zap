@@ -236,8 +236,7 @@ class WsiFilesproMixin:
                                     case "manual":
                                         await self.save_file_to_filespro_file()
                                     case "avatar":
-                                        if self.scope["user"].is_authenticated:
-                                            await self.save_file_to_user_avatar()
+                                        await self.save_file_to_user_avatar()
                                     case _:
                                         raise ValueError(f"unexpected upload_type")
                                 logger.info(

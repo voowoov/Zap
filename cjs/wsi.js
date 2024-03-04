@@ -36,6 +36,7 @@ let wsworker;
 let gsocket;
 let useSharedWorker = !!window.SharedWorker; // is supported
 let wsOpenedByMe = false;
+let messagesToBeSent = [];
 
 // localStorage of the browser is used to store the last tabId in a single char
 // get the next wsiCurrentTabId in storage, single character
@@ -58,16 +59,17 @@ function handleWsEvent(event) {
       if (wsOpenedByMe) {
         wsOpenedByMe = false;
         console.log('WebSocket is open');
+        sendMessagesToBeSentAtOpen();
         ///// does the following for every tab /////
-        if (typeof searchFunctions !== 'undefined') {
-          searchFunctions.makeSearchQuery();
-        };
-        if (typeof fileUploadFunctions !== 'undefined') {
-          fileUploadFunctions.askForListOfFiles();
-        };
-        if (typeof chatFunctions !== 'undefined') {
-          chatFunctions.askForListOfSessions();
-        };
+        // if (typeof searchFunctions !== 'undefined') {
+        //   searchFunctions.makeSearchQuery();
+        // };
+        // if (typeof fileUploadFunctions !== 'undefined') {
+        //   fileUploadFunctions.askForListOfFiles();
+        // };
+        // if (typeof chatFunctions !== 'undefined') {
+        //   chatFunctions.askForListOfSessions();
+        // };
         break;
       }
     case 'onclose':
@@ -80,6 +82,7 @@ function handleWsEvent(event) {
       break;
     case 'onmessage':
       console.log('WSI Received message:', event.data);
+      ////// messages for the current tab
       if (event.data.length > 2) {
         let message = event.data.substring(2);
         if (event.data[1] == wsiCurrentTabId) {
@@ -89,19 +92,63 @@ function handleWsEvent(event) {
               if (typeof searchFunctions !== 'undefined') {
                 searchFunctions.wsiToSearchMessageReceived(message);
               };
+              break;
             case 'f':
               if (typeof fileUploadFunctions !== 'undefined') {
                 fileUploadFunctions.wsiToFilesproMessageReceived(message);
               };
+              break;
             case 'c':
               if (typeof chatFunctions !== 'undefined') {
                 chatFunctions.wsiToChatMessageReceived(message);
               };
+              break;
           };
         };
-      };
+      }
+      ////// messages for all tabs
+      if (event.data.length > 0) {
+        switch (event.data[0]) {
+          case 'r':
+            setTimeout(function() {
+              ///// refreh the page
+              location.reload();
+            }, 200);
+            // window.alert("refresh required");
+            break;
+        }
+      }
       break;
     default:
+  };
+};
+
+function initiateWebsocketFallback() {
+  gsocket = new WebSocket(websocketUrl);
+
+  gsocket.onopen = function() {
+    handleWsEvent({
+      type: 'onopen'
+    });
+  };
+
+  gsocket.onmessage = function(e) {
+    handleWsEvent({
+      type: 'onmessage',
+      data: e.data
+    });
+  };
+
+  gsocket.onerror = function() {
+    handleWsEvent({
+      type: 'onerror'
+    });
+  };
+
+  gsocket.onclose = function() {
+    handleWsEvent({
+      type: 'onclose'
+    });
   };
 };
 
@@ -145,34 +192,25 @@ export function wsiOpenWS() {
   }
 };
 
-function initiateWebsocketFallback() {
-  gsocket = new WebSocket(websocketUrl);
-
-  gsocket.onopen = function() {
-    handleWsEvent({
-      type: 'onopen'
-    });
-  };
-
-  gsocket.onmessage = function(e) {
-    handleWsEvent({
-      type: 'onmessage',
-      data: e.data
-    });
-  };
-
-  gsocket.onerror = function() {
-    handleWsEvent({
-      type: 'onerror'
-    });
-  };
-
-  gsocket.onclose = function() {
-    handleWsEvent({
-      type: 'onclose'
-    });
-  };
+export function wsiOpenSend(message) {
+  if (typeof wsworker === 'undefined' && typeof gsocket === 'undefined') {
+    // store the message for later
+    messagesToBeSent.unshift(message);
+    if (messagesToBeSent.length > 3) {
+      messagesToBeSent.pop();
+    }
+    wsiOpenWS();
+  } else {
+    wsiSend(message);
+  }
 };
+
+function sendMessagesToBeSentAtOpen() {
+  for (var i = 0; i < messagesToBeSent.length; i++) {
+    wsiSend(messagesToBeSent[i]);
+  }
+  messagesToBeSent.length = 0;
+}
 
 export function wsiSend(message) {
   if (typeof wsworker !== 'undefined') {

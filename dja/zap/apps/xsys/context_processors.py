@@ -1,9 +1,11 @@
 from django.core.cache import cache
 from django.urls import resolve
+import re
 
 
 def cookie_pref(request):
-    if request.session.get("cookie_pref", ""):
+    cookie_pref = request.COOKIES.get("cookie_pref", "")
+    if cookie_pref and re.match(r"^[01]{3}$", cookie_pref) is not None:
         return {"show_cookie_banner": False}
     else:  # missing cookie_pref
         if resolve(request.path_info).app_name == "legal":

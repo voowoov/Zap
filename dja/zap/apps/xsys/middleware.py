@@ -22,26 +22,26 @@ class TimezoneMiddleware:
         return self.get_response(request)
 
 
-class CookieSettingsMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+# class CookieSettingsMiddleware:
+#     def __init__(self, get_response):
+#         self.get_response = get_response
 
-    def __call__(self, request):
-        #  transfer of cookie_pref info from browser cookie to session variable
-        cookie_pref_session = request.session.get("cookie_pref", "")
-        cookie_pref_cookie = request.COOKIES.get("cookie_pref", "")
-        if cookie_pref_session != cookie_pref_cookie:
-            if len(cookie_pref_cookie) == 3:
-                # check whether a string is binary string or not
-                valid = True
-                for char in cookie_pref_cookie:
-                    if not (char == "0" or char == "1"):
-                        valid = False
-                        break
-                if valid:
-                    request.session["cookie_pref"] = cookie_pref_cookie
-                else:
-                    request.session["cookie_pref"] = ""
-            else:
-                request.session["cookie_pref"] = ""
-        return self.get_response(request)
+#     def __call__(self, request):
+#         #  transfer of cookie_pref info from browser cookie to session variable
+#         cookie_pref_session = request.session.get("cookie_pref", "")
+#         cookie_pref_cookie = request.COOKIES.get("cookie_pref", "")
+#         if cookie_pref_session != cookie_pref_cookie:
+#             if len(cookie_pref_cookie) == 3:
+#                 # check whether a string is binary string or not
+#                 valid = True
+#                 for char in cookie_pref_cookie:
+#                     if not (char == "0" or char == "1"):
+#                         valid = False
+#                         break
+#                 if valid:
+#                     request.session["cookie_pref"] = cookie_pref_cookie
+#                 else:
+#                     request.session["cookie_pref"] = ""
+#             else:
+#                 request.session["cookie_pref"] = ""
+#         return self.get_response(request)
