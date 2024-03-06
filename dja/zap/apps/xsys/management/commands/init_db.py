@@ -7,7 +7,7 @@ from dateutil import tz
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from zap.apps.accounts.models import AddressCpProject, AddressUPS, Param
+from zap.apps.accounts.models import AddressCpProject, AddressUPS, ClientAccount, Param
 from zap.apps.articles.forms import ArticleForm, AuthorForm, ImageContentForm
 from zap.apps.articles.models import Article, Author, ImageContent
 from zap.apps.users.models import User
@@ -28,33 +28,37 @@ class Command(BaseCommand):
 
         call_command("compilemessages")
 
-        # fill initial data in database
+        ### Create Param table
         if Param.objects.all().count() == 0:
             param = Param(last_client_account_number=500)
             param.save()
 
+        ### Create a Superuser
+        client_account = ClientAccount.create_client_account()
         superuser = User.objects.create_superuser(
             email="a@a.com",
             password="p",
+            client_account=client_account,
             first_name="Etienne",
             last_name="Robert",
             role_en="Organizer in chief at Zap",
             role_fr="Organiseur en chef à Zap",
         )
 
+        ### Create a Staff
         user = User.objects.create_user(
             email="e@e.com",
             password="p",
             first_name="John",
+            last_name="lennon",
+            is_staff=True,
+            role_en="staff at Zap",
+            role_fr="staff at Zap",
         )
-        user.last_name = "lennon"
-        user.is_staff = True
-        user.role_en = "staff at Zap"
-        user.role_fr = "staff at Zap"
-        user.save()
 
+        ### Create an addressCp
         addresscp = AddressCpProject.objects.create(
-            client_account=user.client_account,
+            client_account=superuser.client_account,
             name="John Lennon",
             unit_number="35",
             add_info="Les Beatles Inc.",
@@ -65,7 +69,7 @@ class Command(BaseCommand):
             country="CA",
         )
         addressups = AddressUPS.objects.create(
-            client_account=user.client_account,
+            client_account=superuser.client_account,
             name="John Lennon",
             address_1="8185 Richelieu Ave.",
             address_2="apt 1",

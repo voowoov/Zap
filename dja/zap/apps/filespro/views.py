@@ -15,7 +15,7 @@ class DownloadFile(LoginRequiredMixin, View):
         file_value = get_file_value_from_signed_url(signed_url)
         response = HttpResponse()
         response["Content-Disposition"] = (
-            'attachment; filename="' + file_value["base_name"][4:] + '"'
+            'attachment; filename="' + file_value["base_name"].split("-", 1)[-1] + '"'
         )
         response["X-Content-Type-Options"] = "nosniff"
         # response["Cache-Control"] = 'private, max-age=31536000'  # Cache for one year
@@ -25,7 +25,7 @@ class DownloadFile(LoginRequiredMixin, View):
 
 def image_viewer(request, signed_url):
     protected_uri = reverse("filespro:file_viewer", kwargs={"signed_url": signed_url})
-    file_name = "image name"
+    file_name = signed_url[signed_url.find("-") + 1 : signed_url.find(":")]
     return render(
         request,
         "filespro/image_viewer.html",

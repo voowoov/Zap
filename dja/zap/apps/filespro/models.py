@@ -21,7 +21,7 @@ def uploadPathFunction(instance, filename):
     extension = extension.lstrip(".")
     return (
         settings.PRIVATE_STORAGE_SUBFOLDER
-        + get_random_string(3)
+        + get_random_string(10)
         + "-"
         + file_name[:12]
         + "."

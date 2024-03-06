@@ -285,13 +285,13 @@ export default function setupWsiFileUpload() {
             ${element['file_name']}
           </a>`
         } else {
-          result += `<div class="file_name_long">
+          result += `<div class="text_color file_name_long">
             ${element['file_name']}
           </div>`
         }
         result += `</div>
         <div class="d-flex justify-content-center align-items-center flex-shrink-0" style="width: 40px;">
-          <a class="file_download_button" href="${element['dnld']}" draggable="false" title="${title_download}" target="_blank"> &#x2935;</a>
+          <a class="file_download_button" href="${element['dnld']}" draggable="false" title="${title_download}" target="_blank" style="text-decoration: none;"> &#x2935;</a>
         </div>
         </div>`;
       }

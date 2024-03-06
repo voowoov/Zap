@@ -15,7 +15,7 @@ class ChatSession(models.Model):
     users = models.ManyToManyField(User, blank=True)
 
     filespro_folder = models.ForeignKey(
-        FilesproFolder, on_delete=models.PROTECT, blank=True
+        FilesproFolder, on_delete=models.PROTECT, null=True, blank=True
     )
 
     ####### Conversation #######

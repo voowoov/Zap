@@ -31,7 +31,7 @@ class Author(models.Model):
 
 class Article(models.Model):
     article_slug = models.CharField(max_length=255, unique=True)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, blank=True)
     title_fr = models.CharField(max_length=255, blank=True)
     title_en = models.CharField(max_length=255, blank=True)
     subtitle_fr = models.CharField(max_length=255, blank=True)

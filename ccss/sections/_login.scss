@@ -14,12 +14,8 @@
 }
 
 .login_input {
-  background-color: $gray-100;
   border: 0.05rem solid black;
   border-radius: 0.6rem;
-  &:focus {
-    background-color: white;
-  }
 }
 
 .login_inp-error {

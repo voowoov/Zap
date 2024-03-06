@@ -3,7 +3,7 @@ import logging
 import os
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -82,6 +82,17 @@ class ClientAccount(models.Model):
         )
         self.save()
 
+    @classmethod
+    def create_client_account(cls):
+        # with transaction.atomic():
+        param = Param.objects.first()
+        new_acc_num = param.last_client_account_number + 1
+        param.last_client_account_number = new_acc_num
+        param.save()
+        s = cls(account_number=str(new_acc_num))
+        s.save()
+        return s
+
 
 class Project(models.Model):
     date = models.DateField(default=timezone.now)
@@ -101,7 +112,9 @@ class Invoice(models.Model):
     number = models.CharField(max_length=8)
     details = models.CharField(max_length=255)
     invoice_pdf = models.FileField(upload_to=uploadPathFunction)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=True)
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, null=True, blank=True
+    )
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="green")
     amount = models.DecimalField(decimal_places=2, max_digits=10)
 
@@ -117,7 +130,9 @@ class Deposit(models.Model):
     number = models.CharField(max_length=8)
     details = models.CharField(max_length=255)
     receipt_pdf = models.FileField(upload_to=uploadPathFunction)
-    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, blank=True)
+    invoice = models.ForeignKey(
+        Invoice, on_delete=models.CASCADE, null=True, blank=True
+    )
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="green")
     amount = models.DecimalField(decimal_places=2, max_digits=10)
 

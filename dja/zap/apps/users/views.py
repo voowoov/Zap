@@ -175,7 +175,7 @@ class Signin_Lev2(View):
 @method_decorator(
     never_cache, name="dispatch"
 )  # Add decorator for all request methods (on dispatch function)
-class CreateAccount(View):
+class CreateUserAccount(View):
     def get(self, request, uidb64, token):
         if self.validate_token(request, uidb64, token):
             initial_dict = {"email": self.email}
@@ -202,7 +202,7 @@ class CreateAccount(View):
                         )
                         return redirect("base:home")
                     except Exception as e:
-                        logger.error(f"error: CreateAccount, post: {e}")
+                        logger.error(f"error: CreateUserAccount, post: {e}")
             return self.this_render(request)
         return redirect("base:home")
 

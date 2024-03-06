@@ -15,7 +15,19 @@ urlpatterns = [
         TemplateView.as_view(template_name="users/create_account_info.html"),
         name="create_account_info",
     ),
-    path(_("create_an_account/<slug:uidb64>/<slug:token>"), views.CreateAccount.as_view(), name="create_user"),
-    path(_("password_reset/<slug:uidb64>/<slug:token>"), views.PasswordReset.as_view(), name="password_reset"),
-    path(_("password_reset"), views.PasswordResetInfo.as_view(), name="password_reset_info"),
+    path(
+        _("create_an_account/<slug:uidb64>/<slug:token>"),
+        views.CreateUserAccount.as_view(),
+        name="create_user",
+    ),
+    path(
+        _("password_reset/<slug:uidb64>/<slug:token>"),
+        views.PasswordReset.as_view(),
+        name="password_reset",
+    ),
+    path(
+        _("password_reset"),
+        views.PasswordResetInfo.as_view(),
+        name="password_reset_info",
+    ),
 ]

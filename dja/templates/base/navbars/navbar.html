@@ -164,7 +164,8 @@
             </li>
             <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Sign out" %}</a></li>
             {% else %}
-            <li><a class="dropdown-item" href="{% url 'users:signin_0' %}">{% trans "Sign in" %}</a></li>
+            <li><a class="dropdown-item"
+                href="{% url 'users:signin_0' %}?next={{ request.path|urlencode }}">{% trans "Sign in" %}</a></li>
             <li><a class="dropdown-item"
                 href="{% url 'users:create_account_info' %}">{% trans "Create an account" %}</a>
             </li>
