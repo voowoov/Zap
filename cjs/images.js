@@ -251,8 +251,7 @@
         const imageInfoName = document.createElement('div');
         imageInfoName.className = 'imageInfoS';
         let slug = window.location.href.split('/').pop();
-        let colonPosition = slug.indexOf(':');
-        let image_name = slug.substring(4, colonPosition);
+        let image_name = slug.substring(slug.indexOf('-') + 1, slug.indexOf(':'));
         imageInfoName.innerHTML = `${image_name}`;
         imageInfoName.style = "padding-right: 2ch;"
         imageInfo.appendChild(imageInfoName);

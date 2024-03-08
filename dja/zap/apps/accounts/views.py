@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views import View
+from zap.apps.users.mixins import LoginRequiredMixinLev2User
 
 from .forms import AddressCpProjectForm, ProjectForm
 
@@ -38,7 +39,7 @@ class ProjectView(View):
         return render(request, "accounts/register.html", ctx)
 
 
-class AccountSummary(LoginRequiredMixin, View):
+class AccountSummary(LoginRequiredMixinLev2User, View):
     def get(self, request):
 
         return self.this_render(request)

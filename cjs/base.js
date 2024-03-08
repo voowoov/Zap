@@ -4,7 +4,6 @@
     // Your code here
   };
 })();
-
 /////////////////////////////////////////////////////////////////////////////////
 // Determine dark or light theme for raster images
 /////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +20,7 @@
       break;
     case "Auto":
       document.getElementById("jsddnavthemeauto").classList.add("disabled");
-    case "Auto" || "":
+    case "":
       if (!window.matchMedia) {
         return false;
       } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {

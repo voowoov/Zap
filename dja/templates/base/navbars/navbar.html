@@ -73,6 +73,10 @@
               draggable="false">{% trans "Monitor" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_lobby' %}"
               draggable="false">{% trans "Chat&nbsp;lobb" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'accounts:account_summary' %}"
+              draggable="false">{% trans "Account" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'users:signin_0' %}"
+              draggable="false">{% trans "Sign&nbsp;in" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'chat:chat_staff' %}"
               draggable="false">{% trans "Chat&nbsp;Staff" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
@@ -162,8 +166,16 @@
             </li>
             <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
             </li>
-            <li><a class="dropdown-item" href="{% url 'users:logout' %}">{% trans "Sign out" %}</a></li>
+            <li>
+              <form method="post" action="{% url 'users:logout' %}?next={{ request.path|urlencode }}">
+                {% csrf_token %}
+                <button class="dropdown-item" type="submit">{% trans "Sign out" %}</button>
+              </form>
+            </li>
             {% else %}
+            <li>
+              <h6 class="dropdown-header">{% trans "Currently signed out" %}</h6>
+            </li>
             <li><a class="dropdown-item"
                 href="{% url 'users:signin_0' %}?next={{ request.path|urlencode }}">{% trans "Sign in" %}</a></li>
             <li><a class="dropdown-item"

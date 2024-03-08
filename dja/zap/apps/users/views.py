@@ -12,6 +12,7 @@ from django.contrib.auth import (
     password_validation,
 )
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sessions.models import Session
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -23,6 +24,8 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 from zap.apps.users.mixins import session_lev2_timestamp
 from zap.apps.xsys.models import CookieOnServer
 from zap.apps.xsys.tokens import password_reset_token, user_token_generator
@@ -31,6 +34,9 @@ logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
+from django.contrib.auth.views import LoginView, LogoutView
+
+from .forms import CustomLoginForm  # Import your custom form
 from .forms import (  # ResetPasswordForm,
     CreateUserNewAccountForm,
     PasswordResetForm,
@@ -39,136 +45,109 @@ from .forms import (  # ResetPasswordForm,
 )
 
 
-@method_decorator(
-    never_cache, name="dispatch"
-)  # Add decorator for all request methods (on dispatch function)
-class Signin_0(View):
-    warning_message = None
+class CustomLoginView(LoginView):
+    template_name = "users/login.html"
+    form_class = CustomLoginForm
 
-    def get(self, request):
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
         try:
             cookie_on_server = CookieOnServer.objects.get(
-                cos_id=request.COOKIES["cos_id"]
+                cos_id=self.request.COOKIES["cos_id"]
             )
-            initial_dict = {
-                "email": (
-                    cookie_on_server.last_login_email
-                    if cookie_on_server.remember_email == True
-                    else ""
-                ),
-                "remember_email": cookie_on_server.remember_email,
-                "stay_signed_in": cookie_on_server.stay_signed_in,
-            }
+            form.fields["username"].initial = (
+                cookie_on_server.last_login_email
+                if cookie_on_server.remember_email == True
+                else ""
+            )
+            form.fields["remember_email"].initial = cookie_on_server.remember_email
+            form.fields["stay_signed_in"].initial = cookie_on_server.stay_signed_in
         except:
-            initial_dict = {
-                "email": "",
-                "remember_email": True,
-                "stay_signed_in": True,
-            }
-        self.form = SigninForm0(initial=initial_dict)
-        return self.this_render(request)
+            form.fields["username"].initial = ""
+            form.fields["remember_email"].initial = True
+            form.fields["stay_signed_in"].initial = True
+        return form
 
-    def post(self, request):
-        self.form = SigninForm0(request.POST)
-        logger.warning(f"warning: Signin_0: form_errors: {self.form.errors}")
-        if self.form.is_valid():
-            # process the data in form.cleaned_data as required
-            email = self.form.cleaned_data["email"].lower()
-            password = self.form.cleaned_data["password"]
-            remember_email = self.form.cleaned_data["remember_email"]
-            stay_signed_in = self.form.cleaned_data["stay_signed_in"]
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                if user.is_closed:
-                    self.warning_message = _("This account was closed.")
-                elif not user.is_active:
-                    self.warning_message = _(
-                        "This account is awaiting email verification."
-                    )
-                else:
-                    do_login(request, user)
-                    if stay_signed_in:
-                        request.session.set_expiry(1000000)
-                    else:
-                        request.session.set_expiry(None)
-                    request.session["lev2_ts"] = session_lev2_timestamp.make_ts()
-                    # return to the forward (next) path of home path ("/") as default
-                    response = HttpResponseRedirect(
-                        request.POST.get("next", reverse("base:home"))
-                    )
-                    # Cookie on server
-                    try:
-                        cookie_on_server = CookieOnServer.objects.get(
-                            cos_id=request.COOKIES["cos_id"]
-                        )
-                    except:
-                        cookie_on_server = CookieOnServer.create_and_get_instance()
-                    cookie_on_server.last_login_email = email
-                    cookie_on_server.remember_email = remember_email
-                    cookie_on_server.stay_signed_in = stay_signed_in
-                    cookie_on_server.save()
-                    response.set_cookie("cos_id", cookie_on_server.cos_id, 1000000)
-                    # Change the timezone
-                    # time_zone = request.user.time_zone
-                    # if time_zone != "Auto":
-                    #     timezone.activate(zoneinfo.ZoneInfo(time_zone))
-                    # response.set_cookie("time_zone", time_zone, 1000000)
-                    return response
-            else:
-                self.warning_message = _("There was no match.")
-
-        return self.this_render(request)
-
-    def this_render(self, request):
-        ctx = {
-            "form": self.form,
-            "warning_message": self.warning_message,
-        }
-        return render(request, "users/signin_0.html", ctx)
-
-
-@method_decorator(
-    never_cache, name="dispatch"
-)  # Add decorator for all request methods (on dispatch function)
-class Signin_Lev2(View):
-    warning_message = None
-
-    def get(self, request):
-        try:
-            self.form = SigninFormLev2(initial={"email": request.user.email})
-        except Exception as e:
-            logger.error(f"error: Signin_Lev2, get: {e}")
-            return redirect("base:home")
-        return self.this_render(request)
-
-    def post(self, request):
-        try:
-            user = request.user
-            email = user.email
-            self.form = SigninFormLev2(initial={"email": request.user.email})
-        except Exception as e:
-            logger.error(f"error: Signin_Lev2, post: {e}")
-            return redirect("base:home")
-        password = request.POST.get("password")
-        user_res = authenticate(request, email=email, password=password)
-        if user == user_res:
-            request.session["lev2_ts"] = session_lev2_timestamp.make_ts()
-            # return to the forward (next) path of home path ("/") as default
-            response = HttpResponseRedirect(
-                request.POST.get("next", reverse("base:home"))
-            )
-            return response
+    def form_valid(self, form):
+        ###
+        response = super().form_valid(form)
+        ###
+        stay_signed_in = form.cleaned_data.get("stay_signed_in")
+        if stay_signed_in:
+            self.request.session.set_expiry(1000000)
         else:
-            self.warning_message = _("Incorrect password")
+            self.request.session.set_expiry(None)
+        ### Lev 2 validation expiry
+        session_lev2_timestamp.update_ts(self.request)
+        ### Cookie on server
+        try:
+            cookie_on_server = CookieOnServer.objects.get(
+                cos_id=self.request.COOKIES["cos_id"]
+            )
+        except:
+            cookie_on_server = CookieOnServer.create_and_get_instance()
+        cookie_on_server.last_login_email = form.cleaned_data.get("username")
+        cookie_on_server.remember_email = form.cleaned_data.get("remember_email")
+        cookie_on_server.stay_signed_in = form.cleaned_data.get("stay_signed_in")
+        cookie_on_server.save()
+        response.set_cookie("cos_id", cookie_on_server.cos_id, 1000000)
+        # Change the timezone
+        # time_zone = request.user.time_zone
+        # if time_zone != "Auto":
+        #     timezone.activate(zoneinfo.ZoneInfo(time_zone))
+        # response.set_cookie("time_zone", time_zone, 1000000)
 
-        return self.this_render(request)
+        ########## close wsi channel ##################
+        close_wsi_channel(self.request)
 
-    def this_render(self, request):
-        ctx = {
-            "form": self.form,
-            "warning_message": self.warning_message,
-        }
-        return render(request, "users/signin_lev2.html", ctx)
+        return response
+
+
+class CustomLoginLev2View(LoginView):
+    template_name = "users/login_lev2.html"
+
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        if self.redirect_authenticated_user and self.request.user.is_authenticated:
+            redirect_to = self.get_success_url()
+            if redirect_to == self.request.path:
+                raise ValueError(
+                    "Redirection loop for authenticated user detected. Check that "
+                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
+                )
+            return HttpResponseRedirect(redirect_to)
+        ### added this
+        if not self.request.user.is_authenticated:
+            return redirect(reverse("base:home"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if self.request.user.is_authenticated:
+            form.fields["username"].initial = self.request.user.username
+        return form
+
+    def form_valid(self, form):
+        session_lev2_timestamp.update_ts(self.request)
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class CustomLogoutView(LogoutView):
+    template_name = "users/logged_out.html"
+
+    def post(self, request, *args, **kwargs):
+        ########## close wsi channel ##################
+        close_wsi_channel(request)
+        return super().post(request, *args, **kwargs)
+
+
+def close_wsi_channel(request):
+    channel_name = request.session.get("channel_name", "")
+    if channel_name:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.send)(channel_name, {"type": "close.channel"})
 
 
 # @method_decorator(requires_csrf_token, name="dispatch")
@@ -295,27 +274,3 @@ class PasswordResetInfo(View):
     def this_render(self, request):
         ctx = {}
         return render(request, "users/signin_password_reset_info.html", ctx)
-
-
-@login_required
-def logoutUser(request):
-    do_logout(request)
-    return redirect("base:home")
-
-
-def do_login(request, user):
-    ### close the current wsi channel.
-    close_wsi_channel(request)
-    login(request, user)
-
-
-def do_logout(request):
-    close_wsi_channel(request)
-    logout(request)
-
-
-def close_wsi_channel(request):
-    channel_name = request.session.get("channel_name", "")
-    if channel_name:
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.send)(channel_name, {"type": "close.channel"})

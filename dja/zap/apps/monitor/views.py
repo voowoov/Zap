@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
-from zap.apps.users.mixins import SuperuserLoginRequiredMixin
+from zap.apps.users.mixins import LoginRequiredMixinLev2Superuser
 
 
-class StaffMonitor(SuperuserLoginRequiredMixin, View):
+class StaffMonitor(LoginRequiredMixinLev2Superuser, View):
     def get(self, request):
         return self.this_render(request)
 

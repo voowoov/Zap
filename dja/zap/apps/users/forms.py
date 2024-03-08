@@ -7,6 +7,21 @@ from django.forms import Form, ModelForm
 from django.utils.translation import gettext_lazy as _
 
 UserModel = get_user_model()
+from django.contrib.auth.forms import AuthenticationForm
+
+
+class CustomLoginForm(AuthenticationForm):
+    remember_email = forms.BooleanField(required=False)
+    stay_signed_in = forms.BooleanField(required=False)
+
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        ### custom validation step
+        if user.is_closed:
+            raise ValidationError(
+                _("This account is closed."),
+                code="closed",
+            )
 
 
 class CreateUserNewAccountForm(UserCreationForm):
@@ -41,6 +56,7 @@ class SigninForm0(Form):
     remember_email = forms.BooleanField(required=False)
     stay_signed_in = forms.BooleanField(required=False)
     email = forms.EmailField(max_length=35)
+    # username = UsernameField(widget=forms.TextInput(attrs={"autofocus": True}))
     password = forms.CharField(
         label=_("Password"),
         strip=False,

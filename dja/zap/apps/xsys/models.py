@@ -11,8 +11,9 @@ class CookieOnServer(models.Model):
     stay_signed_in = models.BooleanField(default=True)
 
     @classmethod
-    def create_and_get_instance(cls):
+    def create_and_get_instance(cls, save=False):
         random_string = get_random_string(32)
         instance = cls(cos_id=random_string)
-        instance.save()
+        if save:
+            instance.save()
         return instance

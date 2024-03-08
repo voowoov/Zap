@@ -10,6 +10,7 @@ from django.utils import timezone
 from zap.apps.accounts.models import AddressCpProject, AddressUPS, ClientAccount, Param
 from zap.apps.articles.forms import ArticleForm, AuthorForm, ImageContentForm
 from zap.apps.articles.models import Article, Author, ImageContent
+from zap.apps.filespro.models import FilesproFolder
 from zap.apps.users.models import User
 
 logger = logging.getLogger(__name__)
@@ -35,10 +36,13 @@ class Command(BaseCommand):
 
         ### Create a Superuser
         client_account = ClientAccount.create_client_account()
+        filespro_folder = FilesproFolder.create(10000000)
         superuser = User.objects.create_superuser(
-            email="a@a.com",
+            username="a@a.com",
             password="p",
+            email="a@a.com",
             client_account=client_account,
+            filespro_folder=filespro_folder,
             first_name="Etienne",
             last_name="Robert",
             role_en="Organizer in chief at Zap",
@@ -47,13 +51,24 @@ class Command(BaseCommand):
 
         ### Create a Staff
         user = User.objects.create_user(
-            email="e@e.com",
+            username="e@e.com",
             password="p",
+            email="e@e.com",
             first_name="John",
-            last_name="lennon",
+            last_name="Rambo",
             is_staff=True,
             role_en="staff at Zap",
             role_fr="staff at Zap",
+        )
+
+        ### Create a Visitor
+        user = User.objects.create_user(
+            username="v",
+            password="p",
+            first_name="Jacque",
+            last_name="Tibodeau",
+            role_en="potential client",
+            role_fr="client potentiel",
         )
 
         ### Create an addressCp
@@ -96,7 +111,7 @@ class Command(BaseCommand):
         # )
 
         ################### Add articles ##########################
-        user_id = str(User.objects.get(email="a@a.com").id)
+        user_id = str(User.objects.get(username="a@a.com").id)
         data = {
             "author_slug": "etienne",
             "user": user_id,

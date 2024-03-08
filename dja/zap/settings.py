@@ -123,12 +123,13 @@ ASGI_APPLICATION = "zap.asgi.application"
 ROOT_URLCONF = "zap.urls"
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "users:signin_0"
-LOGIN_REDIRECT_URL = "base:home"
+# LOGIN_REDIRECT_URL = "base:home"
+# LOGOUT_REDIRECT_URL = "base:home"
 SITE_ID = 1  # for sites and sitemaps
 
 ###### Custom Config #######
-LOGIN_URL_LEV2 = "signin_lev2"
-LEV2_SESSION_TIMEOUT = 5
+LOGIN_URL_NAME_LEV2 = "users:signin_lev2"
+LEV2_SESSION_TIMEOUT = 7200
 
 ###### For django-hosts #######
 # ROOT_HOSTCONF = "zap.hosts"

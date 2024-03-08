@@ -22,6 +22,7 @@ class WsiConsumer(
 
         ##### save the channel_name in session data for closing connection on login and logout
         self.scope["session"]["channel_name"] = self.channel_name
+        print(self.scope["session"]["channel_name"])
         await self.save_session()  # requires a database write
 
         await self.accept()

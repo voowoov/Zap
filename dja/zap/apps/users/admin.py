@@ -60,6 +60,7 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "fields": (
+                    "username",
                     "email",
                     "password",
                     "is_active",
@@ -94,7 +95,15 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    list_display = ("email",)
+    ### list_display is what's writen in the listing
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_active",
+    )
     list_filter = ("email",)
     search_fields = ("email",)
     ordering = ("email",)

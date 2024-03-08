@@ -33,28 +33,28 @@
       <br>
       {% endif %}
 
-      <form class="form p-0" action="" method="POST">
+      <form method="POST">
         {% csrf_token %}
         <div class="row mt-2">
           {% comment %} <label class="login_validate-label">{{ form.non_field_errors }}</label>
           <label class="login_validate-label">{{ form.email.errors }}</label> {% endcomment %}
           <div class="form-floating" style="padding: 0">
-            <input type="" class="form-control login_input" name="email" id="inputEmail"
-              value="{{ form.username.value }}" placeholder="Email" />
-            <label for="inputEmail">{% trans "username or email address" %}</label>
+            <input type="text" class="form-control login_input" name="username" id="inputUsername"
+              value="{{ form.username.value }}" placeholder="Username or email" autocomplete="username" required>
+            <label for="inputUsername">{% trans "Username or email" %}</label>
           </div>
         </div>
         <div class="row mt-2">
           <div class="form-floating" style="padding:0;">
-            <input class="form-control login_input" type="password" name="password" id="Password"
-              placeholder="Password">
+            <input class="form-control login_input" type="password" name="password" id="inpuPassword"
+              placeholder="Password" autocomplete="current-password" required>
             <label for="inputPassword">{% trans "Password" %}</label>
           </div>
         </div>
         {% comment %} pass url next= in post form {% endcomment %}
-        {% if request.GET.next %}
+        {% comment %} {% if request.GET.next %}
         <input type="hidden" name="next" value="{{ request.GET.next }}">
-        {% endif %}
+        {% endif %} {% endcomment %}
         <div class="row mt-2">
           <button type="submit" class="rounded-pill btn-login 
         btn-login__signin">{% trans "Sign in" %}</button>
@@ -67,7 +67,7 @@
                 <label class="form-check-label">
                   <input class="form-check-input me-2" type="checkbox" name="remember_email"
                     {% if form.remember_email.value %} checked {% endif %}>
-                  {% trans "Remember my email" %}
+                  {% trans "Remember my user" %}
                 </label>
               </div>
             </div>
