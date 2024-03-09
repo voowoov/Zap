@@ -8,30 +8,22 @@ from . import views
 app_name = "users"
 
 urlpatterns = [
-    path(_("login/"), views.CustomLoginView.as_view(), name="signin_0"),
-    path(_("login_lev2/"), views.CustomLoginLev2View.as_view(), name="signin_lev2"),
-    path(_("logout/"), views.CustomLogoutView.as_view(), name="logout"),
-    # path(_("signin_0/"), views.Signin_0.as_view(), name="signin_0"),
-    # path(_("Signin_Lev2/"), views.Signin_Lev2.as_view(), name="signin_lev2"),
-    # path(_("logout/"), views.logoutUser, name="logout"),
+    path(_("signin/"), views.CustomLoginView.as_view(), name="signin_0"),
+    path(_("signin_2/"), views.CustomLoginLev2View.as_view(), name="signin_lev2"),
+    path(_("signout/"), views.CustomLogoutView.as_view(), name="signout"),
     path(
-        _("create_an_account_info"),
-        TemplateView.as_view(template_name="users/create_account_info.html"),
-        name="create_account_info",
+        _("user_creation/"),
+        views.UserCreation.as_view(),
+        name="user_creation",
     ),
     path(
-        _("create_an_account/<slug:uidb64>/<slug:token>"),
-        views.CreateUserAccount.as_view(),
-        name="create_user",
+        _("password_reset_info"),
+        views.PasswordResetInfo.as_view(),
+        name="password_reset_info",
     ),
     path(
         _("password_reset/<slug:uidb64>/<slug:token>"),
         views.PasswordReset.as_view(),
         name="password_reset",
-    ),
-    path(
-        _("password_reset"),
-        views.PasswordResetInfo.as_view(),
-        name="password_reset_info",
     ),
 ]

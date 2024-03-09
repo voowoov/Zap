@@ -81,6 +81,8 @@
               draggable="false">{% trans "Chat&nbsp;Staff" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'articles:articles' %}"
               draggable="false">{% trans "Articles" %}</a>
+            <a class="btn_nav btn_nav__link" href="{% url 'users:user_creation' %}"
+              draggable="false">{% trans "Create" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:test' %}" draggable="false">{% trans "Test" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Explore" %}</a>
             <a class="btn_nav btn_nav__link" href="{% url 'base:home' %}" draggable="false">{% trans "Services" %}</a>
@@ -167,7 +169,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
             </li>
             <li>
-              <form method="post" action="{% url 'users:logout' %}?next={{ request.path|urlencode }}">
+              <form method="post" action="{% url 'users:signout' %}?next={{ request.path|urlencode }}">
                 {% csrf_token %}
                 <button class="dropdown-item" type="submit">{% trans "Sign out" %}</button>
               </form>
@@ -178,8 +180,7 @@
             </li>
             <li><a class="dropdown-item"
                 href="{% url 'users:signin_0' %}?next={{ request.path|urlencode }}">{% trans "Sign in" %}</a></li>
-            <li><a class="dropdown-item"
-                href="{% url 'users:create_account_info' %}">{% trans "Create an account" %}</a>
+            <li><a class="dropdown-item" href="{% url 'users:user_creation' %}">{% trans "Create an account" %}</a>
             </li>
             {% endif %}
             <!-- Settings -->

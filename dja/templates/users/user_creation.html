@@ -1,0 +1,150 @@
+{% extends 'main.html' %}
+{% load i18n %} {% load static %}
+{% block title %}{% trans "Create user" %}{% endblock %}
+{% block desc %}{% trans "" %}{% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block content %}
+
+<main class="d-flex flex-fill">
+  <section id="login_section" class="login_section">
+    <div class="container-fluid">
+      <div class="row text_color text-start">
+        <img class="p-0 Logo1Light" src="{% static '/images/Logo1Light.png' %}" height="30px" style="width: auto;"
+          alt="Logo">
+        <img class="p-0 Logo1Dark" src="{% static '/images/Logo1Dark.png' %}" height="30px"
+          style="width: auto; display:none;" alt="Logo">
+        <div class="fs-4 mt-1 p-0 pb-3">{% trans "Create a visitor account" %}
+        </div>
+      </div>
+      <form method="POST" action="{% url 'users:user_creation' %}">
+        {% csrf_token %}
+        {% comment %} {% for field in form %}
+        {{ field.errors }}{{ field.name }}
+        {% endfor %} {% endcomment %}
+        {% if form.non_field_errors %}
+        <div class="row login_warning" style="display: block">
+          <div class="d-flex flex-nowrap">
+            <div class="pe-2">
+              &#x26A0;
+            </div>
+            <span class="ms-1 mb-1">{{ form.non_field_errors }} </span>
+          </div>
+        </div>
+        {% else %}
+        <br>
+        {% endif %}
+        <div class="row mt-2 d-flex flex-nowrap">
+          <div class="form-floating col-6" style="padding: 0">
+            <input type="text" class="form-control login_input" name="first_name" id="inputFirstN"
+              value="{{ form.first_name.value }}" placeholder="{% trans "First name" %}" required>
+            <label for="inputFirstN">{% trans "First name" %}</label>
+          </div>
+          <div class="form-floating col-6" style="padding: 0">
+            <input type="text" class="form-control login_input" name="last_name" id="inputLastN"
+              value="{{ form.last_name.value }}" placeholder="{% trans "Last name" %}" required>
+            <label for="inputLastN">{% trans "Last name" %}</label>
+          </div>
+        </div>
+        {% if CURRENT_LANGUAGE == 'fr' %}
+        <div class="row mt-2">
+          <div class="form-floating" style="padding: 0">
+            <input type="text" class="form-control login_input" name="role_fr" id="inputRole"
+              value="{{ form.role_fr.value }}" placeholder="{% trans "Your professional role" %}">
+            <label for="inputRole">{% trans "Your professional role" %}</label>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          Traduire
+          <a class="" data-bs-toggle="collapse" href="#collapseRole" role="button" aria-expanded="false"
+            aria-controls="collapseRole">
+            en anglais
+          </a> </div>
+        <div class="collapse" id="collapseRole">
+          <div class="card card-body row mt-2 p-0" style="border: none; background:none;">
+            <div class="form-floating" style="padding: 0">
+              <input type="text" class="form-control login_input" name="role_en" id="inputRole2"
+                value="{{ form.role_en.value }}" placeholder="{% trans "Your professional role" %}">
+              <label for="inputRole2">Votre rôle professionel en anglais</label>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="row mt-2">
+          <div class="form-floating" style="padding: 0">
+            <input type="text" class="form-control login_input" name="role_en" id="inputRole"
+              value="{{ form.role_en.value }}" placeholder="{% trans "Your professional role" %}">
+            <label for="inputRole">{% trans "Your professional role" %}</label>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          Translate
+          <a class="" data-bs-toggle="collapse" href="#collapseRole" role="button" aria-expanded="false"
+            aria-controls="collapseRole">
+            in french
+          </a> </div>
+        <div class="collapse" id="collapseRole">
+          <div class="card card-body row mt-2 p-0" style="border: none; background:none;">
+            <div class="form-floating" style="padding: 0">
+              <input type="text" class="form-control login_input" name="role_fr" id="inputRole2"
+                value="{{ form.role_fr.value }}" placeholder="{% trans "Your professional role" %}">
+              <label for="inputRole2">Your professional role in french</label>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="row mt-2">
+          <div class="takeNoteOf">
+            <div class="form-floating" style="padding: 0">
+              <input type="text" class="form-control login_input" name="username" id="inputUsername"
+                value="{{ form.username.value }}" placeholder="{% trans "Username" %}" autocomplete="username" required>
+              <label for="inputUsername">{% trans "Username" %}</label>
+            </div>
+            <div class="form-floating" style="padding:0;">
+              <input class="form-control login_input" type="password" name="password1" id="inpuPassword"
+                placeholder="Password" autocomplete="new-password" required>
+              <label for="inputPassword">{% trans "Password" %}</label>
+            </div>
+            <div class="takeNoteInnerDiv"> &#x1F4DD;
+            </div>
+          </div>
+
+        </div>
+        <div class="row login_row text_color text-center">
+          <div class="login-agreement">
+            {% trans "When you <strong>Register</strong>, you agree to our" %} <a class="link_1"
+              href="{% url 'legal:terms_of_service' %}">{% trans "User Agreement" %}</a> {% trans "and" %}
+            {% trans "aknowledge reading our" %} <a class="link_1"
+              href="{% url 'legal:privacy_policy' %}">{% trans "User Privacy Notice" %}</a>.
+          </div>
+        </div>
+        <div class="row mt-2">
+          <button type="submit" class="rounded-pill btn-login 
+        btn-login__signin">{% trans "Register" %}</button>
+        </div>
+      </form>
+    </div>
+
+    <style>
+      .takeNoteOf {
+        width: 200px;
+        height: 170px;
+        border: 2px solid #333;
+        position: relative;
+      }
+
+      .takeNoteInnerDiv {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        transform: translateY(-50%);
+      }
+    </style>
+
+  </section>
+</main>
+{% include 'base/footers/footer_small.html' %}
+
+{% endblock %}

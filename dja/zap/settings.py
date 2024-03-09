@@ -123,8 +123,8 @@ ASGI_APPLICATION = "zap.asgi.application"
 ROOT_URLCONF = "zap.urls"
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "users:signin_0"
-# LOGIN_REDIRECT_URL = "base:home"
-# LOGOUT_REDIRECT_URL = "base:home"
+LOGIN_REDIRECT_URL = "base:home"
+LOGOUT_REDIRECT_URL = "base:home"
 SITE_ID = 1  # for sites and sitemaps
 
 ###### Custom Config #######

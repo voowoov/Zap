@@ -24,26 +24,35 @@ class CustomLoginForm(AuthenticationForm):
             )
 
 
-class CreateUserNewAccountForm(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = UserModel
-        fields = ["email"]
-        widgets = {"email": forms.HiddenInput()}
+        fields = [
+            "username",
+            "password1",
+            "first_name",
+            "last_name",
+            "role_en",
+            "role_fr",
+        ]
+        # widgets = {"email": forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
-        super(CreateUserNewAccountForm, self).__init__(*args, **kwargs)
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         del self.fields["password2"]
+        for field_name in self.fields:
+            self.fields[field_name].initial = ""
 
-    def _post_clean(self):
-        super()._post_clean()
-        # Validate the password after self.instance is updated with form data
-        # by super().
-        password = self.cleaned_data.get("password1")
-        if password:
-            try:
-                password_validation.validate_password(password, self.instance)
-            except ValidationError as error:
-                self.add_error("password1", error)
+    # def _post_clean(self):
+    #     super()._post_clean()
+    #     # Validate the password after self.instance is updated with form data
+    #     # by super().
+    #     password = self.cleaned_data.get("password1")
+    #     if password:
+    #         try:
+    #             password_validation.validate_password(password, self.instance)
+    #         except ValidationError as error:
+    #             self.add_error("password1", error)
 
 
 class MyUserChangeForm(UserChangeForm):

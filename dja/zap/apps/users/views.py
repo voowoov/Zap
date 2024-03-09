@@ -16,7 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sessions.models import Session
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
@@ -26,6 +26,7 @@ from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic.edit import FormView
 from zap.apps.users.mixins import session_lev2_timestamp
 from zap.apps.xsys.models import CookieOnServer
 from zap.apps.xsys.tokens import password_reset_token, user_token_generator
@@ -36,9 +37,9 @@ UserModel = get_user_model()
 
 from django.contrib.auth.views import LoginView, LogoutView
 
-from .forms import CustomLoginForm  # Import your custom form
-from .forms import (  # ResetPasswordForm,
-    CreateUserNewAccountForm,
+from .forms import (  # Import your custom form; ResetPasswordForm,
+    CustomLoginForm,
+    CustomUserCreationForm,
     PasswordResetForm,
     SigninForm0,
     SigninFormLev2,
@@ -150,6 +151,31 @@ def close_wsi_channel(request):
         async_to_sync(channel_layer.send)(channel_name, {"type": "close.channel"})
 
 
+class UserCreation(FormView):
+    template_name = "users/user_creation.html"
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy("users:signin_0")
+
+    # def get_initial(self):
+    #     initial = super(UserCreation, self).get_initial()
+    #     # initial.update(
+    #     #     {
+    #     #         "user_name": self.request.user.get_full_name(),
+    #     #         "complaint": "I am unhappy with this order!",
+    #     #     }
+    #     # )
+    #     return initial
+
+    def form_valid(self, form):
+        user = form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print(form["username"])
+        # Re-render the form with submitted data and errors
+        return self.render_to_response(self.get_context_data(form=form))
+
+
 # @method_decorator(requires_csrf_token, name="dispatch")
 @method_decorator(
     never_cache, name="dispatch"
@@ -158,13 +184,13 @@ class CreateUserAccount(View):
     def get(self, request, uidb64, token):
         if self.validate_token(request, uidb64, token):
             initial_dict = {"email": self.email}
-            self.form = CreateUserNewAccountForm(initial=initial_dict)
+            # self.form = CreateUserNewAccountForm(initial=initial_dict)
         else:
             return redirect("base:home")
         return self.this_render(request)
 
     def post(self, request, uidb64, token):
-        self.form = CreateUserNewAccountForm(request.POST)
+        # self.form = CreateUserNewAccountForm(request.POST)
         if self.validate_token(request, uidb64, token):
             if self.form.is_valid():
                 email = request.POST.get("email")
