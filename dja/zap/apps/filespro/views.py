@@ -24,12 +24,12 @@ class DownloadFile(LoginRequiredMixin, View):
 
 
 def image_viewer(request, signed_url):
-    protected_uri = reverse("filespro:file_viewer", kwargs={"signed_url": signed_url})
+    image_uri = reverse("filespro:file_viewer", kwargs={"signed_url": signed_url})
     file_name = signed_url[signed_url.find("-") + 1 : signed_url.find(":")]
     return render(
         request,
         "filespro/image_viewer.html",
-        {"protected_uri": protected_uri, "file_name": file_name},
+        {"image_uri": image_uri, "file_name": file_name},
     )
 
 

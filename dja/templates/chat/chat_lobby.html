@@ -12,44 +12,32 @@
   </div>
   <div class="offcanvas-body">
     <p>
-      {% trans "To register, please" %}
-      <a href="{% url 'users:signin_0' %}">{% trans "sign in" %}</a>
-      {% trans "if you have a user account or otherwise fill the following form bellow to identify you for the purpose of using this chat application." %}
+      {% if request.user.is_authenticated %}
+      Welcome {{ request.user.first_name }}.
+      {% else %}
+      {% trans "Please" %}
+      <a href="{% url 'users:signin_0' %}?next={{ request.path }}">{% trans "sign in" %}</a>
+      {% trans "or otherwise" %}
+      <a href="{% url 'users:user_creation' %}">{% trans "create a visitor account" %}</a>.
+      {% endif %}
     </p>
-    <div class="chatWindowLobbyForm">
-      <div class="chatBlockTitle">{% trans "Guest user form" %}</div>
-      <div class="chatLobbyFormContent">
-        <div class="form-floating">
-          <input type="text" class="form-control" maxlength="45" id="chatNameAndTitle" placeholder="Name and titles">
-          <label for="chatNameAndTitle">{% trans "Name and titles" %}</label>
-        </div>
-        <div class="form-floating">
-          <input type="text" class="form-control" maxlength="50" id="chatProRole" placeholder="Professionnal role">
-          <label for="chatProRole">{% trans "Professionnal role" %}</label>
-        </div>
-        <button class="chatLobbyFormBtn" disabled>{% trans "Create user" %}</button>
-        <div class="">
-          &#9888;<a data-bs-toggle="collapse" href="#chatPrudCollapse" role="button" aria-expanded="false"
-            aria-controls="chatPrudCollapse"> {% trans "Use on a private device only." %}</a>
-          <div class="collapse" id="chatPrudCollapse">
-            <div class="card card-body">
-              {% trans "This application saves a sessionid cookie on this device which allows it to access your guest user history and utilities, that could be exposed to anyone else using this device." %}
-            </div>
-          </div>
-          <div>
-            {% trans "Guest user history and utilities will become unavailable if you sign in or clear your browsing data. Also, they will be deleted automatically 14 days after sending your last chat request." %}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      Welcome User.
-    </div>
-    <div class="chatWindowBlockParti">
+    <div class="chatWindowBlockParti" id="listSessions">
       <div class="chatBlockTitle">{% trans "Available chat sessions" %}</div>
       <div class="chatBlockContent chatScrollbar">
-        <div class="chatParticipantRow">
-          ASdf
+        <div class="chatSessionRow">
+          <div class="chatAvatar">
+            <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
+          </div>
+          <div class="chatSession0">
+            <div class="chatSessionName">
+              <span class="chatMessName">Etienne Robert</span> <span class="chatMessTime">Online</span>
+            </div>
+            <div class="chatSessionRole">
+              <div class="chatText">
+                asfasdf dafasfasdf &#x1F600; dafassss ssdf dafasfasdf dafassss ssdf dafasfasdf
+              </div>
+            </div>
+          </div>
         </div>
         <div class="chatParticipantRow">
           ASdf
@@ -73,7 +61,7 @@
           <div class="chatBlockTitle">{% trans "Chat session participants" %}</div>
           <div class="chatBlockContent chatScrollbar">
             <div class="chatParticipantRow">
-              ASdf
+              asdf
             </div>
             <div class="chatParticipantRow">
               ASdf
@@ -130,7 +118,8 @@
         <div class="chatStream chatScrollbar">
           <div class="chatMessageRow">
             <div class="chatAvatar">
-              <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
+              {% comment %} <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar"
+                draggable="false"> {% endcomment %}
             </div>
             <div class="chatMessageArea0">
               <div class="chatMessDesc">
@@ -146,7 +135,8 @@
           </div>
           <div class="chatMessageRow">
             <div class="chatAvatar">
-              <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
+              {% comment %} <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar"
+                draggable="false"> {% endcomment %}
             </div>
             <div class="chatMessageArea0">
               <div class="chatMessDesc">
@@ -175,6 +165,10 @@
   </section>
 </main>
 {% include 'base/footers/footer_small.html' %}
+
+<script type="text/javascript">
+  var chatSessionJson = "{{ chat_default_sessions_json }}";
+</script>
 
 
 

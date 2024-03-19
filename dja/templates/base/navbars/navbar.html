@@ -169,7 +169,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:account_summary' %}">{% trans "Account summary" %}</a>
             </li>
             <li>
-              <form method="post" action="{% url 'users:signout' %}?next={{ request.path|urlencode }}">
+              <form method="post" action="{% url 'users:signout' %}?next={{ request.path }}">
                 {% csrf_token %}
                 <button class="dropdown-item" type="submit">{% trans "Sign out" %}</button>
               </form>
@@ -179,7 +179,7 @@
               <h6 class="dropdown-header">{% trans "Currently signed out" %}</h6>
             </li>
             <li><a class="dropdown-item"
-                href="{% url 'users:signin_0' %}?next={{ request.path|urlencode }}">{% trans "Sign in" %}</a></li>
+                href="{% url 'users:signin_0' %}?next={{ request.path }}">{% trans "Sign in" %}</a></li>
             <li><a class="dropdown-item" href="{% url 'users:user_creation' %}">{% trans "Create an account" %}</a>
             </li>
             {% endif %}

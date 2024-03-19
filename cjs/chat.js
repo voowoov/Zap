@@ -39,7 +39,12 @@ export default function setupWsiChat() {
     };
   }
 
+  if (imageUri) {
+    img.src = imageUri;
+  }
+
   function askForListOfSessions() {
+
     try {
       wsiSend('c' + wsiCurrentTabId + "u" + pageLanguage);
     } catch (error) {
@@ -50,9 +55,17 @@ export default function setupWsiChat() {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Offcanvas Lobby
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  var offcanvasElement = document.getElementById('chatOffcanvasId')
-  var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement)
+  let offcanvasElement = document.getElementById('chatOffcanvasId')
+  let bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement)
   bsOffcanvas.show()
+
+  let listSessions = document.getElementById('listSessions')
+
+  function setChatSessionsList() {
+    listSessions
+  }
+
+
 
   return {
     askForListOfSessions: askForListOfSessions,

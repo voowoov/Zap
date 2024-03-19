@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
+from zap.apps.chat._functions import set_default_chat_sessions
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,8 @@ from zap.apps.users.mixins import LoginRequiredMixinLev2Superuser
 
 class StaffMonitor(LoginRequiredMixinLev2Superuser, View):
     def get(self, request):
+        set_default_chat_sessions(["a@a.com", "e@e.com"])
+
         return self.this_render(request)
 
     def post(self, request):

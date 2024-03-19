@@ -58,7 +58,7 @@ class WsiFilesproMixin:
         # the message is pageLanguage
         language_code = message[3:]
         if language_code == "en" or language_code == "fr":
-            activate(language_code)
+            activate(language_code)  # to have the url with right language
         try:
             data = await sync_to_async(list)(
                 FilesproFile.objects.filter(

@@ -11,6 +11,8 @@ from zap.apps.users.models import User
 
 
 class ChatSession(models.Model):
+    name = models.CharField(max_length=255)
+
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host_user")
     users = models.ManyToManyField(User, blank=True)
 

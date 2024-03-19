@@ -29,8 +29,8 @@
     let colorSelectNew = true;
 
     let img = new Image;
-    if (protectedUri) {
-      img.src = protectedUri;
+    if (imageUri) {
+      img.src = imageUri;
     }
     img.onload = function() {
       img2X = img.width / 2;

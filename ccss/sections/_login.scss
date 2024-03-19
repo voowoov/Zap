@@ -2,20 +2,58 @@
 @use '../components/mixins' as *;
 .login_section {
   @include gradientBg;
-  padding: 3rem 0.5rem 1rem 0.5rem;
-  width: 100%;
-  .container-fluid {
-    max-width: 400px;
-    margin: auto;
-    padding: 2rem;
-    border: 0.05rem solid var(--color-text);
-    border-radius: 0.4rem;
-  }
+  padding: 0.7rem 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.loginCtn {
+  max-width: 400px;
+  margin: auto;
+  padding: 1.5rem;
+  border: 0.05rem solid var(--color-text);
+  border-radius: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 .login_input {
   border: 0.05rem solid black;
   border-radius: 0.6rem;
+  width: 100%;
+}
+
+.loginRow {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  padding: 0;
+}
+
+.loginFormField {
+  flex: 1;
+}
+
+.takeNoteOf {
+  width: 97%;
+  border: 2px solid #333;
+  position: relative;
+  padding: 8px;
+  padding-right: 20px;
+  margin: 16px 0px;
+}
+
+.takeNoteInnerDiv {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  right: -17px;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  cursor: default;
 }
 
 .login_inp-error {
@@ -64,6 +102,7 @@
   height: 50px;
   font-weight: 600;
   font-size: 1.2rem;
+  width: 100%;
   &__signin {
     background-color: $primary;
     border: none;

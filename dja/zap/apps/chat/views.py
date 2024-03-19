@@ -1,6 +1,8 @@
 # chat/views.py
+import json
 import logging
 
+from django.core.cache import cache
 from django.shortcuts import redirect, render
 from django.views import View
 from zap.apps.chat.objects import ListStaffChat
@@ -19,10 +21,11 @@ class ChatLobby(View):
         return self.this_render(request)
 
     def this_render(self, request):
-        user = request.user
         try:
             ctx = {
-                "room_name": "roomNameAasdf",
+                "chat_default_sessions_json": json.dumps(
+                    cache.get("chat_default_sessions_json", [])
+                ),
             }
             return render(request, "chat/chat_lobby.html", ctx)
         except Exception as e:
