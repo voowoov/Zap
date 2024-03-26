@@ -13,13 +13,16 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.files import File
 from django.db import transaction
+from django.templatetags.static import static
 from django.utils.crypto import get_random_string
 from django.utils.translation import activate, get_language
 from PIL import Image
+from zap.apps.chat.models import ChatSession
 from zap.apps.filespro._functions import get_link_for_file_viewer_and_download
+from zap.apps.wsi._functions import get_wsi_connection_track_count
 
 UserModel = get_user_model()
-
+default_avatar = "/images/icons/avatar.svg"
 
 from .models import ChatSession
 
@@ -31,7 +34,7 @@ class WsiChatMixin:
     async def wsi_chat_received_message(self, message):
         await self.init_chat()
         match message[2]:
-            case "u":  # update list of files in filespro_folder
+            case "u":  # update list of available sessions
                 await self.send_sessions_list(message)
         #     case "s":  # start the upload
         #         if not self.filespro_transfer_underway:
@@ -53,59 +56,45 @@ class WsiChatMixin:
     async def send_sessions_list(self, message):
         tab_id = message[1]
         language_code = message[3:]
-        if language_code == "en" or language_code == "fr":
-            activate(language_code)
+        # if language_code == "en" or language_code == "fr":
+        #     activate(language_code)
         try:
-            cache.get("chat_staff_list", [])
-            # cache.set("chat_staff_list", chat_staff_list)
+            sessions = await sync_to_async(
+                ChatSession.objects.prefetch_related("users").filter
+            )(users=self.scope["user"])
+            sessions = await sync_to_async(list)(sessions)
+            data = []
+            for obj in sessions:
+                users = await sync_to_async(list)(obj.users.all())
+                users.remove(self.scope["user"])
+                users.insert(0, self.scope["user"])  ### put first in the list
+                subject = obj.subject
 
-            if self.scope["user"].get("chat_guest_id", None):
-                if self.scope["session"].get("chat_guest_id", None):
-                    pass
-                else:
-                    pass
-            else:
-                pass
-            # data = await sync_to_async(list)(
-            #     FilesproFile.objects.filter(
-            #         filespro_folder_id=self.filespro_folder_id
-            #     ).values("file_name", "file")
-            # )
-            # for d in data:
-            #     file_url = d.get("file")
-            #     urls = get_link_for_file_viewer_and_download(file_url)
-            #     d["view"] = urls["viewer_url"]  # Add into the dictionary
-            #     d["dnld"] = urls["download_url"]  # Add into the dictionary
-            #     del d["file"]
-            # data_json = json.dumps(data)
-            # await self.send("f" + self.tab_id + "u" + str(data_json))
+                # Construct a list of dictionaries for the users with custom variable names
+                users_data = []
+                for user in users:
+                    user_data = get_user_info_dict(user, language_code)
+                    users_data.append(user_data)
+
+                # Construct a dictionary for the session with custom variable names
+                session_data = {
+                    "subject": subject,
+                    "users": users_data,
+                }
+                data.append(session_data)
+            data_json = json.dumps(data)
+            await self.send("c" + tab_id + "u" + str(data_json))
         except Exception as e:
             logger.error(f"error: send_sessions_list: {e}")
             await self.close()
 
 
-def set_default_chat_available_sessions():
-    try:
-        email = "a@a.com"  # Replace with the desired email address
-        user = UserModel.objects.get(email=email)
-        session_name_en = "Zap - business relationships"
-        session_name_fr = "Zap - relations d'affaires"
-        json_en = {
-            "user": {
-                "session_name": session_name_en,
-                "name": user.name,
-                "role": user.role,
-            },
-        }
-        json_fr = json_en.replace(session_name_en, session_name_fr)
-        cache.set("default_chat_available_sessions_en", json_en)
-        cache.set("default_chat_available_sessions_fr", json_fr)
-    except Exception as e:
-        logger.error(f"error: get_default_chat_available_sessions: {e}")
-
-
-def get_default_chat_available_sessions():
-    try:
-        return cache.get("default_chat_available_sessions", [])
-    except Exception as e:
-        logger.error(f"error: get_default_chat_available_sessions: {e}")
+def get_user_info_dict(user, language_code):
+    return {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "role": user.role_fr if language_code == "fr" else user.role_en,
+        "avatar": user.avatar.url if user.avatar else static(default_avatar),
+        "online": "true" if get_wsi_connection_track_count(user) > 0 else "false",
+        # Add more fields as needed
+    }

@@ -59,7 +59,7 @@ function handleWsEvent(event) {
       if (wsOpenedByMe) {
         wsOpenedByMe = false;
         console.log('WebSocket is open');
-        sendMessagesToBeSentAtOpen();
+        sendMessagesToBeSentAtOpen(); /// list of unsent messages
         ///// does the following for every tab /////
         // if (typeof searchFunctions !== 'undefined') {
         //   searchFunctions.makeSearchQuery();

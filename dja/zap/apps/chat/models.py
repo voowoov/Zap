@@ -2,6 +2,7 @@ import datetime
 
 from dateutil import tz
 from django.conf import settings
+from django.core.cache import cache
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.utils import timezone
@@ -9,12 +10,17 @@ from django.utils.translation import gettext_lazy as _
 from zap.apps.filespro.models import FilesproFolder
 from zap.apps.users.models import User
 
+chat_fs = FileSystemStorage(location=settings.PRIVATE_STORAGE_ROOT / "chat_files")
+
+
+def upload_to_path(instance, filename):
+    return f"{instance.id}.txt"
+
 
 class ChatSession(models.Model):
-    name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
 
-    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host_user")
-    users = models.ManyToManyField(User, blank=True)
+    users = models.ManyToManyField(User, blank=True, through="Usership")
 
     filespro_folder = models.ForeignKey(
         FilesproFolder, on_delete=models.PROTECT, null=True, blank=True
@@ -26,7 +32,8 @@ class ChatSession(models.Model):
     ### 1 ASCII characters for type: 0 for message, 1 for image, 2 for other files
     ### Message text or filename;
     ### "ããã20Hello,ããã00Hi,ãã21filename.png" csv of user id or anonymous id (stored in session) if "a" at beginning (remove the "a")
-    conversation = models.TextField()
+
+    chat_file = models.FileField(storage=chat_fs, upload_to=upload_to_path, blank=True)
 
     # def get_conversation(self):
     #     list = []
@@ -46,3 +53,9 @@ class ChatSession(models.Model):
     #         + datetime.timedelta(milliseconds=ord(three_chars[2]))
     #     )
     #     return time
+
+
+class Usership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_session = models.ForeignKey(ChatSession, on_delete=models.CASCADE)
+    is_host = models.BooleanField(_("is_host"), default=False)

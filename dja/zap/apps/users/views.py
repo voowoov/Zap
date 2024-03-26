@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import zoneinfo
 
@@ -13,11 +14,15 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.sessions.models import Session
-from django.http import HttpResponseRedirect
+from django.core.cache import cache
+from django.db import transaction
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
@@ -26,23 +31,33 @@ from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import FormView
+from zap.apps.chat.models import ChatSession
 from zap.apps.users.mixins import session_lev2_timestamp
 from zap.apps.xsys.models import CookieOnServer
 from zap.apps.xsys.tokens import password_reset_token, user_token_generator
+
+from .forms import (  # Import your custom form; ResetPasswordForm,
+    CustomLoginForm,
+    CustomUserCreationForm,
+)
 
 logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
-from django.contrib.auth.views import LoginView, LogoutView
 
-from .forms import (  # Import your custom form; ResetPasswordForm,
-    CustomLoginForm,
-    CustomUserCreationForm,
-    PasswordResetForm,
-    SigninForm0,
-    SigninFormLev2,
+# [[session_name, session_host, [list_of_users]], ]
+cache.set(
+    "default_chat_sessions",
+    [
+        {
+            "subject": "Chat with Zap staff",
+            "users": ["a@a.com", "e@e.com", "v"],
+        },
+        {"subject": "Chat with Zap staff", "users": ["a@a.com", "e@e.com"]},
+    ],
 )
 
 
@@ -92,6 +107,8 @@ class CustomLoginView(LoginView):
         cookie_on_server.stay_signed_in = form.cleaned_data.get("stay_signed_in")
         cookie_on_server.save()
         response.set_cookie("cos_id", cookie_on_server.cos_id, 1000000)
+        if len(self.request.user.level_valid) > 2:
+            response.set_cookie("pow_str", self.request.user.level_valid, 1000000)
         # Change the timezone
         # time_zone = request.user.time_zone
         # if time_zone != "Auto":
@@ -167,7 +184,21 @@ class UserCreation(FormView):
     #     return initial
 
     def form_valid(self, form):
-        user = form.save()
+
+        with transaction.atomic():
+            user = form.save()
+            #### add the chat sessions to the user
+            default_chat_sessions = cache.get("default_chat_sessions")
+            for item in default_chat_sessions:
+                related_usernames = item.pop("users")
+                related_users = UserModel.objects.filter(username__in=related_usernames)
+                obj = ChatSession(**item)
+                obj.save()  # Save the object to get an id
+                obj.users.set(related_users)  # Set the ManyToMany field
+                obj.users.add(user)
+        messages.add_message(
+            self.request, messages.INFO, _("Your account was created.")
+        )
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -176,127 +207,35 @@ class UserCreation(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-# @method_decorator(requires_csrf_token, name="dispatch")
-@method_decorator(
-    never_cache, name="dispatch"
-)  # Add decorator for all request methods (on dispatch function)
-class CreateUserAccount(View):
-    def get(self, request, uidb64, token):
-        if self.validate_token(request, uidb64, token):
-            initial_dict = {"email": self.email}
-            # self.form = CreateUserNewAccountForm(initial=initial_dict)
-        else:
-            return redirect("base:home")
-        return self.this_render(request)
-
-    def post(self, request, uidb64, token):
-        # self.form = CreateUserNewAccountForm(request.POST)
-        if self.validate_token(request, uidb64, token):
-            if self.form.is_valid():
-                email = request.POST.get("email")
-                password = request.POST.get("password1")
-                if email == self.email:
-                    try:
-                        password_validation.validate_password(password)
-                        new_user = UserModel.objects.create_user(
-                            email=email, password=password
-                        )
-                        new_user.save()
-                        messages.add_message(
-                            request, messages.INFO, _("Your account was created.")
-                        )
-                        return redirect("base:home")
-                    except Exception as e:
-                        logger.error(f"error: CreateUserAccount, post: {e}")
-            return self.this_render(request)
-        return redirect("base:home")
-
-    def this_render(self, request):
-        ctx = {
-            "form": self.form,
-        }
-        return render(request, "users/create_user.html", ctx)
-
-    def validate_token(self, request, uidb64, token):
-        try:
-            self.email = force_str(urlsafe_base64_decode(uidb64))
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-            self.email = None
-        if self.email is not None:
-            try:
-                UserModel.objects.get(email=self.email)
-                messages.add_message(
-                    request, messages.INFO, _("This user already exists")
-                )
-                return False
-            except:
-                if user_token_generator.check_token(self.email, token):
-                    return True
-        messages.add_message(
-            request, messages.INFO, _("This activation link is invalid.")
-        )
-        return False
-
-
-@method_decorator(
-    never_cache, name="dispatch"
-)  # Add decorator for all request methods (on dispatch function)
-class PasswordReset(View):
-    def get(self, request, uidb64, token):
-        if self.validate_token(request, uidb64, token):
-            initial_dict = {"email": self.user.email}
-            self.form = PasswordResetForm(initial=initial_dict)
-        else:
-            return redirect("base:home")
-        return self.this_render(request)
-
-    def post(self, request, uidb64, token):
-        self.form = PasswordResetForm(request.POST)
-        if self.validate_token(request, uidb64, token):
-            email = request.POST.get("email")
-            password = request.POST.get("password1")
-            # check that form email is the same as token email
-            if email == self.user.email and not password_validation.validate_password(
-                password
-            ):
-                self.user.set_password(password)
-                self.user.save()
-                messages.add_message(
-                    request, messages.INFO, _("Your password reset is completed.")
-                )
-                return redirect("base:home")
-            else:
-                return self.this_render(request)
-        return redirect("base:home")
-
-    def this_render(self, request):
-        ctx = {
-            "form": self.form,
-        }
-        return render(request, "users/password_reset.html", ctx)
-
-    def validate_token(self, request, uidb64, token):
-        try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            self.user = UserModel.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-            self.user = None
-        if self.user is not None and password_reset_token.check_token(self.user, token):
-            if self.user.is_active:
-                return True
-        messages.add_message(
-            request, messages.INFO, _("This activation link is invalid.")
-        )
-        return False
-
-
-@method_decorator(
-    never_cache, name="dispatch"
-)  # Add decorator for all request methods (on dispatch function)
 class PasswordResetInfo(View):
     def get(self, request):
         return self.this_render(request)
 
     def this_render(self, request):
         ctx = {}
-        return render(request, "users/signin_password_reset_info.html", ctx)
+        return render(request, "users/password_reset_info.html", ctx)
+
+
+### proof of work solution, ajax from js
+@method_decorator(csrf_protect, name="dispatch")
+@method_decorator(require_POST, name="dispatch")
+class AjaxPowView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse({"error": "Invalid request"}, status=400)
+        solution = request.POST.get("message")
+        challenge = request.user.level_valid
+        if pow_verify(challenge, solution, 6):
+            user = request.user
+            user.level_valid = "0"
+            user.save()
+            close_wsi_channel(request)
+            return JsonResponse({"response": "true"})
+        return JsonResponse({"response": "false"})
+
+
+def pow_verify(challenge, solution, difficulty):
+    hash = hashlib.sha256((challenge + str(solution)).encode()).hexdigest()
+    if hash[:difficulty] == "0" * difficulty:  # Adjust difficulty as needed
+        return True
+    return False

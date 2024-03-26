@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
-private_storage = FileSystemStorage(
+private_fs = FileSystemStorage(
     location=settings.PRIVATE_STORAGE_ROOT, base_url=settings.PRIVATE_STORAGE_BASE_URL
 )
 
@@ -91,7 +91,7 @@ class FilesproFolder(models.Model):
 
 class FilesproFile(models.Model):
     filespro_folder = models.ForeignKey(FilesproFolder, on_delete=models.CASCADE)
-    file = models.FileField(upload_to=uploadPathFunction, storage=private_storage)
+    file = models.FileField(upload_to=uploadPathFunction, storage=private_fs)
     file_name = models.CharField(max_length=255)
     file_size = models.PositiveIntegerField()
 

@@ -4,10 +4,14 @@ import time
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core.cache import cache
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from zap.apps.chat._wsi_functions import WsiChatMixin
 from zap.apps.filespro._wsi_functions import WsiFilesproMixin
 from zap.apps.search._wsi_functions import WsiSearchMixin
+
+from ._functions import delete_wsi_connection_track, set_wsi_connection_track
 
 logger = logging.getLogger(__name__)
 
@@ -16,14 +20,16 @@ class WsiConsumer(
     AsyncWebsocketConsumer, WsiFilesproMixin, WsiSearchMixin, WsiChatMixin
 ):
     async def connect(self):
+        self.channel_name = get_random_string(8)
         self.channel_name_abr = None
         self.filespro_folder_id = None
         self.filespro_transfer_underway = False
 
         ##### save the channel_name in session data for closing connection on login and logout
         self.scope["session"]["channel_name"] = self.channel_name
-        print(self.scope["session"]["channel_name"])
         await self.save_session()  # requires a database write
+
+        set_wsi_connection_track(self.scope["user"], self.channel_name)
 
         await self.accept()
 
@@ -31,6 +37,7 @@ class WsiConsumer(
         if self.filespro_folder_id:
             await self.update_file_tranfer_freq_limiting()
             await self.delete_tmp_files()
+        delete_wsi_connection_track(self.channel_name)
 
     async def send(self, text_data):
         logger.debug(f"WSI Sending: {text_data}")

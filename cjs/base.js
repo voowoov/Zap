@@ -129,6 +129,9 @@ function getCookie(cookieNameEndsBy) {
   return cookieStr.substring(startIndex, endIndex > 0 ? endIndex : cookieStr.length);
 }
 
+function deleteCookie(name) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
 /////////////////////////////////////////////////////////////////////////////////
 // Back-to-top button functions
 /////////////////////////////////////////////////////////////////////////////////
@@ -240,21 +243,97 @@ export function throttle(func, delay) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
+//  proof of work - after create visitor user
+// difficulty: 4: easy, 5: few seconds, 6: 1.5 min
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(function() {
+  let powStr = getCookie('pow_str');
+  if (powStr) {
+
+    function doProofOfWork(challenge, difficulty) {
+      if (window.Worker) {
+        var worker = new Worker('/static/js/pow_worker.js');
+        worker.onmessage = function(event) {
+          sendAjaxPow(event.data);
+        };
+        worker.postMessage(difficulty.toString() + challenge);
+        showPowToast();
+      } else {
+        console.log('Web Workers are not supported in your browser.');
+      }
+    }
+
+    const mainTag = document.querySelector("main");
+
+    function showPowToast() {
+      let divToast = document.createElement("div");
+      divToast.innerHTML = `
+      <button type="button" class="btn btn-primary pow_btn" id="powLiveToastBtn">
+      ${(pageLanguage == "fr" ? "Preuve de travail en cours ..." : "Proof of work underway ...")}
+      </button>
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="powLiveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
+          <div class="toast-header">
+            <img src="" class="rounded me-2" alt="...">
+            <strong class="me-auto">Zap</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" id="powToastBody">
+          ${(pageLanguage == "fr" ? "Preuve de travail en cours sur un seul coeur (estimé 2 min)." : "Proof of work is underway on a single core (estimated 2 min).")}
+          </div>
+        </div>
+      </div>      
+      `;
+      divToast.id = "divToastPowId";
+      mainTag.appendChild(divToast);
+      const powLiveToastBtn = document.getElementById('powLiveToastBtn')
+      const powLiveToast = document.getElementById('powLiveToast')
+      const powToastBootstrap = bootstrap.Toast.getOrCreateInstance(powLiveToast)
+      powLiveToastBtn.addEventListener('click', () => {
+        powToastBootstrap.show()
+      })
+      powToastBootstrap.show();
+    }
+
+    function sendAjaxPow(solution) {
+      let myURLsendRequest = "/en/AjaxPowView/";
+      let csrf_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+      let formData = new FormData();
+      formData.append("csrfmiddlewaretoken", csrf_token);
+      formData.append("message", solution);
+      fetch(myURLsendRequest, {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData,
+        }).then(response => response.json())
+        .then(response => {
+          if (response["response"] == "true") {
+            deleteCookie('pow_str')
+            modifyDivToast();
+            setTimeout(document.getElementById("divToastPowId").remove(), 10000);
+          }
+        });
+    };
+
+    function modifyDivToast() {
+      let powLiveToastBtn = document.getElementById("powLiveToastBtn");
+      powLiveToastBtn.click();
+      powLiveToastBtn.remove();
+      document.getElementById("powToastBody").innerHTML = (pageLanguage == "fr" ? "Preuve de travail complétée." : "Proof of work was completed.");
+    }
+
+    ///// run the calculation to find a hash, it makes a Web Worker
+    doProofOfWork(powStr, 6);
+  }
+})();
+
+
+/////////////////////////////////////////////////////////////////////////////////
 // Cookie banner and custom options
 /////////////////////////////////////////////////////////////////////////////////
 (function() {
     // get the cookie_pref cookie, default ""
-    function getCookie(cookieNameEndsBy) {
-      let cookieStr = document.cookie;
-      let startIndex = cookieStr.indexOf(cookieNameEndsBy)
-      if (startIndex > 0) {
-        startIndex += cookieNameEndsBy.length + 1;
-      } else {
-        return "";
-      }
-      let endIndex = cookieStr.indexOf(";", startIndex);
-      return cookieStr.substring(startIndex, endIndex > 0 ? endIndex : cookieStr.length);
-    }
 
     function getCookiePrefCookie() { return getCookie("ie_pref") }
 
@@ -550,12 +629,6 @@ export function throttle(func, delay) {
   });
 })();
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,9 @@
       <div class="chatBlockTitle">{% trans "Available chat sessions" %}</div>
       <div class="chatBlockContent chatScrollbar">
         <div class="chatSessionRow">
-          <div class="chatAvatar">
+          {% comment %} <div class="chatAvatar">
             <img src="{{ request.user.avatar.url }}" width="40px" height="40px" alt="Avatar" draggable="false">
-          </div>
+          </div> {% endcomment %}
           <div class="chatSession0">
             <div class="chatSessionName">
               <span class="chatMessName">Etienne Robert</span> <span class="chatMessTime">Online</span>
@@ -164,12 +164,7 @@
     </div>
   </section>
 </main>
+
 {% include 'base/footers/footer_small.html' %}
-
-<script type="text/javascript">
-  var chatSessionJson = "{{ chat_default_sessions_json }}";
-</script>
-
-
 
 {% endblock %}

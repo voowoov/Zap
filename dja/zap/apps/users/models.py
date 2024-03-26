@@ -1,5 +1,7 @@
 import datetime
 import logging
+import random
+import string
 import zoneinfo
 
 from django.contrib import auth
@@ -7,6 +9,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models, transaction
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -38,11 +41,15 @@ class User(AbstractUser):
     client_account = models.ForeignKey(
         ClientAccount, on_delete=models.PROTECT, null=True, blank=True
     )
-    level = models.PositiveSmallIntegerField(default=0)
+    level_valid = models.CharField(
+        max_length=10, default=get_random_string(10)
+    )  # default is for validation proof-of-work string (10 chars), otherwise a single character is set for the level
     role_en = models.CharField(_("role"), max_length=150, blank=True)
     role_fr = models.CharField(_("role"), max_length=150, blank=True)
     avatar = models.ImageField(
-        upload_to=uploadPathFunctionAvatar, null=True, blank=True
+        upload_to=uploadPathFunctionAvatar,
+        null=True,
+        blank=True,
     )
     phones = models.ManyToManyField(PhoneNumbers, blank=True)
     is_closed = models.BooleanField(_("closed"), default=False)
